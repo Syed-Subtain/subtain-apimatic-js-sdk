@@ -27,6 +27,40 @@ import { BaseController } from './baseController';
 
 export class SubscriptionProductsController extends BaseController {
   /**
+   * ## Previewing a future date
+   * It is also possible to preview the migration for a date in the future, as long as it's still within
+   * the subscription's current billing period, by passing a `proration_date` along with the request (eg:
+   * `"proration_date": "2020-12-18T18:25:43.511Z"`).
+   *
+   * This will calculate the prorated adjustment, charge, payment and credit applied values assuming the
+   * migration is done at that date in the future as opposed to right now.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param body
+   * @return Response from the API call
+   */
+  async previewSubscriptionProductMigration(
+    subscriptionId: string,
+    body?: SubscriptionMigrationPreviewRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SubscriptionMigrationPreviewResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(subscriptionMigrationPreviewRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/migrations/preview.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(
+      subscriptionMigrationPreviewResponseSchema,
+      requestOptions
+    );
+  }
+
+  /**
    * In order to create a migration, you must pass the `product_id` or `product_handle` in the object
    * when you send a POST request. You may also pass either a `product_price_point_id` or
    * `product_price_point_handle` to choose which price point the subscription is moved to. If no price
@@ -138,39 +172,7 @@ export class SubscriptionProductsController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/migrations.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
-  }
-
-  /**
-   * ## Previewing a future date
-   * It is also possible to preview the migration for a date in the future, as long as it's still within
-   * the subscription's current billing period, by passing a `proration_date` along with the request (eg:
-   * `"proration_date": "2020-12-18T18:25:43.511Z"`).
-   *
-   * This will calculate the prorated adjustment, charge, payment and credit applied values assuming the
-   * migration is done at that date in the future as opposed to right now.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body
-   * @return Response from the API call
-   */
-  async previewSubscriptionProductMigration(
-    subscriptionId: string,
-    body?: SubscriptionMigrationPreviewRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionMigrationPreviewResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(subscriptionMigrationPreviewRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/migrations/preview.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(
-      subscriptionMigrationPreviewResponseSchema,
-      requestOptions
-    );
   }
 }

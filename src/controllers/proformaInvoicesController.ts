@@ -38,78 +38,48 @@ import { BaseController } from './baseController';
 
 export class ProformaInvoicesController extends BaseController {
   /**
-   * This endpoint will trigger the creation of a consolidated proforma invoice asynchronously. It will
-   * return a 201 with no message, or a 422 with any errors. To find and view the new consolidated
-   * proforma invoice, you may poll the subscription group listing for proforma invoices; only one
-   * consolidated proforma invoice may be created per group at a time.
+   * This endpoint is only available for Relationship Invoicing sites. It cannot be used to create
+   * consolidated proforma invoice previews or preview prepaid subscriptions.
    *
-   * If the information becomes outdated, simply void the old consolidated proforma invoice and generate
-   * a new one.
+   * Create a signup preview in the format of a proforma invoice to preview costs before a subscription's
+   * signup. You have the option of optionally previewing the first renewal's costs as well. The proforma
+   * invoice preview will not be persisted.
    *
-   * ## Restrictions
+   * Pass a payload that resembles a subscription create or signup preview request. For example, you can
+   * specify components, coupons/a referral, offers, custom pricing, and an existing customer or payment
+   * profile to populate a shipping or billing address.
    *
-   * Proforma invoices are only available on Relationship Invoicing sites. To create a proforma invoice,
-   * the subscription must not be prepaid, and must be in a live state.
+   * A product and customer first name, last name, and email are the minimum requirements.
    *
-   * @param uid The uid of the subscription group
+   * @param includeNextProformaInvoice    Choose to include a proforma invoice
+   *                                                                          preview for the first renewal
+   * @param body
    * @return Response from the API call
    */
-  async createConsolidatedProformaInvoice(
-    uid: string,
+  async previewSignupProformaInvoice(
+    includeNextProformaInvoice?: string,
+    body?: CreateSubscriptionRequest,
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({ uid: [uid, string()] });
-    req.appendTemplatePath`/subscription_groups/${mapped.uid}/proforma_invoices.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
-  }
-
-  /**
-   * Only proforma invoices with a `consolidation_level` of parent are returned.
-   *
-   * By default, proforma invoices returned on the index will only include totals, not detailed
-   * breakdowns for `line_items`, `discounts`, `taxes`, `credits`, `payments`, `custom_fields`. To
-   * include breakdowns, pass the specific field as a key in the query with a value set to true.
-   *
-   *
-   * @param uid The uid of the subscription group
-   * @return Response from the API call
-   */
-  async listSubscriptionGroupProformaInvoices(
-    uid: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ProformaInvoice>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({ uid: [uid, string()] });
-    req.appendTemplatePath`/subscription_groups/${mapped.uid}/proforma_invoices.json`;
-    req.throwOn(403, ApiError, 'Forbidden');
-    req.throwOn(404, ApiError, 'Not Found');
-    return req.callAsJson(proformaInvoiceSchema, requestOptions);
-  }
-
-  /**
-   * Use this endpoint to read the details of an existing proforma invoice.
-   *
-   * ## Restrictions
-   *
-   * Proforma invoices are only available on Relationship Invoicing sites.
-   *
-   * @param proformaInvoiceUid   The uid of the proforma invoice
-   * @return Response from the API call
-   */
-  async readProformaInvoice(
-    proformaInvoiceUid: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ProformaInvoice>> {
-    const req = this.createRequest('GET');
+  ): Promise<ApiResponse<SignupProformaPreviewResponse>> {
+    const req = this.createRequest(
+      'POST',
+      '/subscriptions/proforma_invoices/preview.json'
+    );
     const mapped = req.prepareArgs({
-      proformaInvoiceUid: [proformaInvoiceUid, number()],
+      includeNextProformaInvoice: [
+        includeNextProformaInvoice,
+        optional(string()),
+      ],
+      body: [body, optional(createSubscriptionRequestSchema)],
     });
-    req.appendTemplatePath`/proforma_invoices/${mapped.proformaInvoiceUid}.json`;
+    req.header('Content-Type', 'application/json');
+    req.query('include=next_proforma_invoice', mapped.includeNextProformaInvoice);
+    req.json(mapped.body);
+    req.throwOn(400, ProformaBadRequestErrorResponseError, 'Bad Request');
     req.throwOn(403, ApiError, 'Forbidden');
-    req.throwOn(404, ApiError, 'Not Found');
-    return req.callAsJson(proformaInvoiceSchema, requestOptions);
+    req.throwOn(422, ErrorMapResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(signupProformaPreviewResponseSchema, requestOptions);
   }
 
   /**
@@ -138,6 +108,7 @@ export class ProformaInvoicesController extends BaseController {
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/proforma_invoices.json`;
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(proformaInvoiceSchema, requestOptions);
   }
 
@@ -229,6 +200,7 @@ export class ProformaInvoicesController extends BaseController {
     req.query('payments', mapped.payments);
     req.query('custom_fields', mapped.customFields);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/proforma_invoices.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(proformaInvoiceSchema), requestOptions);
   }
 
@@ -266,6 +238,85 @@ export class ProformaInvoicesController extends BaseController {
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(proformaInvoiceSchema, requestOptions);
+  }
+
+  /**
+   * This endpoint will trigger the creation of a consolidated proforma invoice asynchronously. It will
+   * return a 201 with no message, or a 422 with any errors. To find and view the new consolidated
+   * proforma invoice, you may poll the subscription group listing for proforma invoices; only one
+   * consolidated proforma invoice may be created per group at a time.
+   *
+   * If the information becomes outdated, simply void the old consolidated proforma invoice and generate
+   * a new one.
+   *
+   * ## Restrictions
+   *
+   * Proforma invoices are only available on Relationship Invoicing sites. To create a proforma invoice,
+   * the subscription must not be prepaid, and must be in a live state.
+   *
+   * @param uid The uid of the subscription group
+   * @return Response from the API call
+   */
+  async createConsolidatedProformaInvoice(
+    uid: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({ uid: [uid, string()] });
+    req.appendTemplatePath`/subscription_groups/${mapped.uid}/proforma_invoices.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * Only proforma invoices with a `consolidation_level` of parent are returned.
+   *
+   * By default, proforma invoices returned on the index will only include totals, not detailed
+   * breakdowns for `line_items`, `discounts`, `taxes`, `credits`, `payments`, `custom_fields`. To
+   * include breakdowns, pass the specific field as a key in the query with a value set to true.
+   *
+   *
+   * @param uid The uid of the subscription group
+   * @return Response from the API call
+   */
+  async listSubscriptionGroupProformaInvoices(
+    uid: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ProformaInvoice>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({ uid: [uid, string()] });
+    req.appendTemplatePath`/subscription_groups/${mapped.uid}/proforma_invoices.json`;
+    req.throwOn(403, ApiError, 'Forbidden');
+    req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(proformaInvoiceSchema, requestOptions);
+  }
+
+  /**
+   * Use this endpoint to read the details of an existing proforma invoice.
+   *
+   * ## Restrictions
+   *
+   * Proforma invoices are only available on Relationship Invoicing sites.
+   *
+   * @param proformaInvoiceUid   The uid of the proforma invoice
+   * @return Response from the API call
+   */
+  async readProformaInvoice(
+    proformaInvoiceUid: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ProformaInvoice>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      proformaInvoiceUid: [proformaInvoiceUid, number()],
+    });
+    req.appendTemplatePath`/proforma_invoices/${mapped.proformaInvoiceUid}.json`;
+    req.throwOn(403, ApiError, 'Forbidden');
+    req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(proformaInvoiceSchema, requestOptions);
   }
 
@@ -301,6 +352,7 @@ export class ProformaInvoicesController extends BaseController {
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(proformaInvoicePreviewSchema, requestOptions);
   }
 
@@ -338,50 +390,7 @@ export class ProformaInvoicesController extends BaseController {
     req.throwOn(400, ProformaBadRequestErrorResponseError, 'Bad Request');
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(422, ErrorMapResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(proformaInvoiceSchema, requestOptions);
-  }
-
-  /**
-   * This endpoint is only available for Relationship Invoicing sites. It cannot be used to create
-   * consolidated proforma invoice previews or preview prepaid subscriptions.
-   *
-   * Create a signup preview in the format of a proforma invoice to preview costs before a subscription's
-   * signup. You have the option of optionally previewing the first renewal's costs as well. The proforma
-   * invoice preview will not be persisted.
-   *
-   * Pass a payload that resembles a subscription create or signup preview request. For example, you can
-   * specify components, coupons/a referral, offers, custom pricing, and an existing customer or payment
-   * profile to populate a shipping or billing address.
-   *
-   * A product and customer first name, last name, and email are the minimum requirements.
-   *
-   * @param includeNextProformaInvoice    Choose to include a proforma invoice
-   *                                                                          preview for the first renewal
-   * @param body
-   * @return Response from the API call
-   */
-  async previewSignupProformaInvoice(
-    includeNextProformaInvoice?: string,
-    body?: CreateSubscriptionRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SignupProformaPreviewResponse>> {
-    const req = this.createRequest(
-      'POST',
-      '/subscriptions/proforma_invoices/preview.json'
-    );
-    const mapped = req.prepareArgs({
-      includeNextProformaInvoice: [
-        includeNextProformaInvoice,
-        optional(string()),
-      ],
-      body: [body, optional(createSubscriptionRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.query('include=next_proforma_invoice', mapped.includeNextProformaInvoice);
-    req.json(mapped.body);
-    req.throwOn(400, ProformaBadRequestErrorResponseError, 'Bad Request');
-    req.throwOn(403, ApiError, 'Forbidden');
-    req.throwOn(422, ErrorMapResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(signupProformaPreviewResponseSchema, requestOptions);
   }
 }

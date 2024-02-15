@@ -92,6 +92,234 @@ import { BaseController } from './baseController';
 
 export class SubscriptionComponentsController extends BaseController {
   /**
+   * Creates multiple allocations, setting the current allocated quantity for each of the components and
+   * recording a memo. The charges and/or credits that are created will be rolled up into a single total
+   * which is used to determine whether this is an upgrade or a downgrade. Be aware of the Order of
+   * Resolutions explained below in determining the proration scheme.
+   *
+   * A `component_id` is required for each allocation.
+   *
+   * This endpoint only responds to JSON. It is not available for XML.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param body
+   * @return Response from the API call
+   */
+  async allocateComponents(
+    subscriptionId: string,
+    body?: AllocateComponents,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<AllocationResponse[]>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(allocateComponentsSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/allocations.json`;
+    req.throwOn(401, ApiError, 'Unauthorized');
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(array(allocationResponseSchema), requestOptions);
+  }
+
+  /**
+   * When the expiration interval options are selected on a prepaid usage component price point, all
+   * allocations will be created with an expiration date. This expiration date can be changed after the
+   * fact to allow for extending or shortening the allocation's active window.
+   *
+   * In order to change a prepaid usage allocation's expiration date, a PUT call must be made to the
+   * allocation's endpoint with a new expiration date.
+   *
+   * ## Limitations
+   *
+   * A few limitations exist when changing an allocation's expiration date:
+   *
+   * - An expiration date can only be changed for an allocation that belongs to a price point with
+   * expiration interval options explicitly set.
+   * - An expiration date can be changed towards the future with no limitations.
+   * - An expiration date can be changed towards the past (essentially expiring it) up to the
+   * subscription's current period beginning date.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param componentId     The Chargify id of the component
+   * @param allocationId    The Chargify id of the allocation
+   * @param body
+   * @return Response from the API call
+   */
+  async updatePrepaidUsageAllocation(
+    subscriptionId: string,
+    componentId: number,
+    allocationId: number,
+    body?: UpdateAllocationExpirationDate,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      componentId: [componentId, number()],
+      allocationId: [allocationId, number()],
+      body: [body, optional(updateAllocationExpirationDateSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations/${mapped.allocationId}.json`;
+    req.throwOn(422, SubscriptionComponentAllocationError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * Prepaid Usage components are unique in that their allocations are always additive. In order to
+   * reduce a subscription's allocated quantity for a prepaid usage component each allocation must be
+   * destroyed individually via this endpoint.
+   *
+   * ## Credit Scheme
+   *
+   * By default, destroying an allocation will generate a service credit on the subscription. This
+   * behavior can be modified with the optional `credit_scheme` parameter on this endpoint. The accepted
+   * values are:
+   *
+   * 1. `none`: The allocation will be destroyed and the balances will be updated but no service credit
+   * or refund will be created.
+   * 2. `credit`: The allocation will be destroyed and the balances will be updated and a service credit
+   * will be generated. This is also the default behavior if the `credit_scheme` param is not passed.
+   * 3. `refund`: The allocation will be destroyed and the balances will be updated and a refund will be
+   * issued along with a Credit Note.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param componentId     The Chargify id of the component
+   * @param allocationId    The Chargify id of the allocation
+   * @param body
+   * @return Response from the API call
+   */
+  async deletePrepaidUsageAllocation(
+    subscriptionId: string,
+    componentId: number,
+    allocationId: number,
+    body?: CreditSchemeRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      componentId: [componentId, number()],
+      allocationId: [allocationId, number()],
+      body: [body, optional(creditSchemeRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations/${mapped.allocationId}.json`;
+    req.throwOn(422, SubscriptionComponentAllocationError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * ## Documentation
+   *
+   * Full documentation on how to create Components in the Chargify UI can be located [here](https:
+   * //maxio-chargify.zendesk.com/hc/en-us/articles/5405020625677#creating-components). Additionally, for
+   * information on how to record component usage against a subscription, please see the following
+   * resources:
+   *
+   * + [Recording Metered Component Usage](https://maxio-chargify.zendesk.com/hc/en-
+   * us/articles/5404527849997#reporting-metered-component-usage)
+   * + [Reporting Prepaid Component Status](https://maxio-chargify.zendesk.com/hc/en-
+   * us/articles/5404527849997#reporting-prepaid-component-status)
+   *
+   * You may choose to report metered or prepaid usage to Chargify as often as you wish. You may report
+   * usage as it happens. You may also report usage periodically, such as each night or once per billing
+   * period. If usage events occur in your system very frequently (on the order of thousands of times an
+   * hour), it is best to accumulate usage into batches on your side, and then report those batches less
+   * frequently, such as daily. This will ensure you remain below any API throttling limits. If your use
+   * case requires higher rates of usage reporting, we recommend utilizing Events Based Components.
+   *
+   * ## Create Usage for Subscription
+   *
+   * This endpoint allows you to record an instance of metered or prepaid usage for a subscription. The
+   * `quantity` from usage for each component is accumulated to the `unit_balance` on the [Component Line
+   * Item](./b3A6MTQxMDgzNzQ-read-subscription-component) for the subscription.
+   *
+   * ## Price Point ID usage
+   *
+   * If you are using price points, for metered and prepaid usage components, Chargify gives you the
+   * option to specify a price point in your request.
+   *
+   * You do not need to specify a price point ID. If a price point is not included, the default price
+   * point for the component will be used when the usage is recorded.
+   *
+   * If an invalid `price_point_id` is submitted, the endpoint will return an error.
+   *
+   * ## Deducting Usage
+   *
+   * In the event that you need to reverse a previous usage report or otherwise deduct from the current
+   * usage balance, you may provide a negative quantity.
+   *
+   * Example:
+   *
+   * Previously recorded:
+   *
+   * ```json
+   * {
+   * "usage": {
+   * "quantity": 5000,
+   * "memo": "Recording 5000 units"
+   * }
+   * }
+   * ```
+   *
+   * At this point, `unit_balance` would be `5000`. To reduce the balance to `0`, POST the following
+   * payload:
+   *
+   * ```json
+   * {
+   * "usage": {
+   * "quantity": -5000,
+   * "memo": "Deducting 5000 units"
+   * }
+   * }
+   * ```
+   *
+   * The `unit_balance` has a floor of `0`; negative unit balances are never allowed. For example, if the
+   * usage balance is 100 and you deduct 200 units, the unit balance would then be `0`, not `-100`.
+   *
+   * ## FAQ
+   *
+   * Q. Is it possible to record metered usage for more than one component at a time?
+   *
+   * A. No. Usage should be reported as one API call per component on a single subscription. For example,
+   * to record that a subscriber has sent both an SMS Message and an Email, send an API call for each.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param componentId     Either the Chargify id for the component or the component's
+   *                                                     handle prefixed by `handle:`
+   * @param body
+   * @return Response from the API call
+   */
+  async createUsage(
+    subscriptionId: string,
+    componentId: number,
+    body?: CreateUsageRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<UsageResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      componentId: [componentId, number()],
+      body: [body, optional(createUsageRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/usages.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(usageResponseSchema, requestOptions);
+  }
+
+  /**
    * This request will list information regarding a specific component owned by a subscription.
    *
    * @param subscriptionId  The Chargify id of the subscription
@@ -111,6 +339,7 @@ export class SubscriptionComponentsController extends BaseController {
     });
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}.json`;
     req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionComponentResponseSchema, requestOptions);
   }
 
@@ -259,41 +488,9 @@ export class SubscriptionComponentsController extends BaseController {
     req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
     req.query('filter[currencies]', mapped.filterCurrencies, commaPrefix);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       array(subscriptionComponentResponseSchema),
-      requestOptions
-    );
-  }
-
-  /**
-   * Updates the price points on one or more of a subscription's components.
-   *
-   * The `price_point` key can take either a:
-   * 1. Price point id (integer)
-   * 2. Price point handle (string)
-   * 3. `"_default"` string, which will reset the price point to the component's current default price
-   * point.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body
-   * @return Response from the API call
-   */
-  async updateSubscriptionComponentsPricePoints(
-    subscriptionId: string,
-    body?: BulkComponentSPricePointAssignment,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<BulkComponentSPricePointAssignment>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(bulkComponentSPricePointAssignmentSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/price_points.json`;
-    req.throwOn(422, ComponentPricePointError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(
-      bulkComponentSPricePointAssignmentSchema,
       requestOptions
     );
   }
@@ -316,7 +513,181 @@ export class SubscriptionComponentsController extends BaseController {
       subscriptionId: [subscriptionId, string()],
     });
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/price_points/reset.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
+  }
+
+  /**
+   * This endpoint returns the 50 most recent Allocations, ordered by most recent first.
+   *
+   * ## On/Off Components
+   *
+   * When a subscription's on/off component has been toggled to on (`1`) or off (`0`), usage will be
+   * logged in this response.
+   *
+   * ## Querying data via Chargify gem
+   *
+   * You can also query the current quantity via the [official Chargify Gem.](http://github.
+   * com/chargify/chargify_api_ares)
+   *
+   * ```# First way
+   * component = Chargify::Subscription::Component.find(1, :params => {:subscription_id => 7})
+   * puts component.allocated_quantity
+   * # => 23
+   *
+   * # Second way
+   * component = Chargify::Subscription.find(7).component(1)
+   * puts component.allocated_quantity
+   * # => 23
+   * ```
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param componentId     The Chargify id of the component
+   * @param page            Result records are organized in pages. By default, the first page of results is
+   *                                  displayed. The page parameter specifies a page number of results to fetch. You
+   *                                  can start navigating through the pages to consume the results. You do this by
+   *                                  passing in a page parameter. Retrieve the next page by adding ?page=2 to the
+   *                                  query string. If there are no results to return, then an empty result set will be
+   *                                  returned. Use in query `page=1`.
+   * @return Response from the API call
+   */
+  async listAllocations(
+    subscriptionId: string,
+    componentId: number,
+    page?: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<AllocationResponse[]>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      componentId: [componentId, number()],
+      page: [page, optional(number())],
+    });
+    req.query('page', mapped.page);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations.json`;
+    req.throwOn(401, ApiError, 'Unauthorized');
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(array(allocationResponseSchema), requestOptions);
+  }
+
+  /**
+   * This request will return a list of the usages associated with a subscription for a particular
+   * metered component. This will display the previously recorded components for a subscription.
+   *
+   * This endpoint is not compatible with quantity-based components.
+   *
+   * ## Since Date and Until Date Usage
+   *
+   * Note: The `since_date` and `until_date` attributes each default to midnight on the date specified.
+   * For example, in order to list usages for January 20th, you would need to append the following to the
+   * URL.
+   *
+   * ```
+   * ?since_date=2016-01-20&until_date=2016-01-21
+   * ```
+   *
+   * ## Read Usage by Handle
+   *
+   * Use this endpoint to read the previously recorded components for a subscription.  You can now
+   * specify either the component id (integer) or the component handle prefixed by "handle:" to specify
+   * the unique identifier for the component you are working with.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param componentId     Either the Chargify id for the component or the component's handle prefixed by
+   *                                  `handle:`
+   * @param sinceId         Returns usages with an id greater than or equal to the one specified
+   * @param maxId           Returns usages with an id less than or equal to the one specified
+   * @param sinceDate       Returns usages with a created_at date greater than or equal to midnight (12:00
+   *                                  AM) on the date specified.
+   * @param untilDate       Returns usages with a created_at date less than or equal to midnight (12:00 AM)
+   *                                  on the date specified.
+   * @param page            Result records are organized in pages. By default, the first page of results is
+   *                                  displayed. The page parameter specifies a page number of results to fetch. You
+   *                                  can start navigating through the pages to consume the results. You do this by
+   *                                  passing in a page parameter. Retrieve the next page by adding ?page=2 to the
+   *                                  query string. If there are no results to return, then an empty result set will be
+   *                                  returned. Use in query `page=1`.
+   * @param perPage         This parameter indicates how many records to fetch in each request. Default
+   *                                  value is 20. The maximum allowed values is 200; any per_page value over 200 will
+   *                                  be changed to 200. Use in query `per_page=200`.
+   * @return Response from the API call
+   */
+  async listUsages({
+    subscriptionId,
+    componentId,
+    sinceId,
+    maxId,
+    sinceDate,
+    untilDate,
+    page,
+    perPage,
+  }: {
+    subscriptionId: string,
+    componentId: number,
+    sinceId?: number,
+    maxId?: number,
+    sinceDate?: string,
+    untilDate?: string,
+    page?: number,
+    perPage?: number,
+  },
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<UsageResponse[]>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      componentId: [componentId, number()],
+      sinceId: [sinceId, optional(number())],
+      maxId: [maxId, optional(number())],
+      sinceDate: [sinceDate, optional(string())],
+      untilDate: [untilDate, optional(string())],
+      page: [page, optional(number())],
+      perPage: [perPage, optional(number())],
+    });
+    req.query('since_id', mapped.sinceId);
+    req.query('max_id', mapped.maxId);
+    req.query('since_date', mapped.sinceDate);
+    req.query('until_date', mapped.untilDate);
+    req.query('page', mapped.page);
+    req.query('per_page', mapped.perPage);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/usages.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(array(usageResponseSchema), requestOptions);
+  }
+
+  /**
+   * In order to bill your subscribers on your Events data under the Events-Based Billing feature, the
+   * components must be activated for the subscriber.
+   *
+   * Learn more about the role of activation in the [Events-Based Billing docs](https://chargify.zendesk.
+   * com/hc/en-us/articles/4407720810907#activating-components-for-subscribers).
+   *
+   * Use this endpoint to activate an event-based component for a single subscription. Activating an
+   * event-based component causes Chargify to bill for events when the subscription is renewed.
+   *
+   * *Note: it is possible to stream events for a subscription at any time, regardless of component
+   * activation status. The activation status only determines if the subscription should be billed for
+   * event-based component usage at renewal.*
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param componentId     The Chargify id of the component
+   * @return Response from the API call
+   */
+  async activateEventBasedComponent(
+    subscriptionId: number,
+    componentId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, number()],
+      componentId: [componentId, number()],
+    });
+    req.appendTemplatePath`/event_based_billing/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/activate.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
   }
 
   /**
@@ -408,94 +779,8 @@ export class SubscriptionComponentsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(allocationResponseSchema, requestOptions);
-  }
-
-  /**
-   * This endpoint returns the 50 most recent Allocations, ordered by most recent first.
-   *
-   * ## On/Off Components
-   *
-   * When a subscription's on/off component has been toggled to on (`1`) or off (`0`), usage will be
-   * logged in this response.
-   *
-   * ## Querying data via Chargify gem
-   *
-   * You can also query the current quantity via the [official Chargify Gem.](http://github.
-   * com/chargify/chargify_api_ares)
-   *
-   * ```# First way
-   * component = Chargify::Subscription::Component.find(1, :params => {:subscription_id => 7})
-   * puts component.allocated_quantity
-   * # => 23
-   *
-   * # Second way
-   * component = Chargify::Subscription.find(7).component(1)
-   * puts component.allocated_quantity
-   * # => 23
-   * ```
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param componentId     The Chargify id of the component
-   * @param page            Result records are organized in pages. By default, the first page of results is
-   *                                  displayed. The page parameter specifies a page number of results to fetch. You
-   *                                  can start navigating through the pages to consume the results. You do this by
-   *                                  passing in a page parameter. Retrieve the next page by adding ?page=2 to the
-   *                                  query string. If there are no results to return, then an empty result set will be
-   *                                  returned. Use in query `page=1`.
-   * @return Response from the API call
-   */
-  async listAllocations(
-    subscriptionId: string,
-    componentId: number,
-    page?: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<AllocationResponse[]>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      componentId: [componentId, number()],
-      page: [page, optional(number())],
-    });
-    req.query('page', mapped.page);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations.json`;
-    req.throwOn(401, ApiError, 'Unauthorized');
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(array(allocationResponseSchema), requestOptions);
-  }
-
-  /**
-   * Creates multiple allocations, setting the current allocated quantity for each of the components and
-   * recording a memo. The charges and/or credits that are created will be rolled up into a single total
-   * which is used to determine whether this is an upgrade or a downgrade. Be aware of the Order of
-   * Resolutions explained below in determining the proration scheme.
-   *
-   * A `component_id` is required for each allocation.
-   *
-   * This endpoint only responds to JSON. It is not available for XML.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body
-   * @return Response from the API call
-   */
-  async allocateComponents(
-    subscriptionId: string,
-    body?: AllocateComponents,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<AllocationResponse[]>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(allocateComponentsSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/allocations.json`;
-    req.throwOn(401, ApiError, 'Unauthorized');
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(array(allocationResponseSchema), requestOptions);
   }
 
   /**
@@ -530,314 +815,8 @@ export class SubscriptionComponentsController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/allocations/preview.json`;
     req.throwOn(422, ComponentAllocationError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(allocationPreviewResponseSchema, requestOptions);
-  }
-
-  /**
-   * When the expiration interval options are selected on a prepaid usage component price point, all
-   * allocations will be created with an expiration date. This expiration date can be changed after the
-   * fact to allow for extending or shortening the allocation's active window.
-   *
-   * In order to change a prepaid usage allocation's expiration date, a PUT call must be made to the
-   * allocation's endpoint with a new expiration date.
-   *
-   * ## Limitations
-   *
-   * A few limitations exist when changing an allocation's expiration date:
-   *
-   * - An expiration date can only be changed for an allocation that belongs to a price point with
-   * expiration interval options explicitly set.
-   * - An expiration date can be changed towards the future with no limitations.
-   * - An expiration date can be changed towards the past (essentially expiring it) up to the
-   * subscription's current period beginning date.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param componentId     The Chargify id of the component
-   * @param allocationId    The Chargify id of the allocation
-   * @param body
-   * @return Response from the API call
-   */
-  async updatePrepaidUsageAllocation(
-    subscriptionId: string,
-    componentId: number,
-    allocationId: number,
-    body?: UpdateAllocationExpirationDate,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      componentId: [componentId, number()],
-      allocationId: [allocationId, number()],
-      body: [body, optional(updateAllocationExpirationDateSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations/${mapped.allocationId}.json`;
-    req.throwOn(422, SubscriptionComponentAllocationError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
-  }
-
-  /**
-   * Prepaid Usage components are unique in that their allocations are always additive. In order to
-   * reduce a subscription's allocated quantity for a prepaid usage component each allocation must be
-   * destroyed individually via this endpoint.
-   *
-   * ## Credit Scheme
-   *
-   * By default, destroying an allocation will generate a service credit on the subscription. This
-   * behavior can be modified with the optional `credit_scheme` parameter on this endpoint. The accepted
-   * values are:
-   *
-   * 1. `none`: The allocation will be destroyed and the balances will be updated but no service credit
-   * or refund will be created.
-   * 2. `credit`: The allocation will be destroyed and the balances will be updated and a service credit
-   * will be generated. This is also the default behavior if the `credit_scheme` param is not passed.
-   * 3. `refund`: The allocation will be destroyed and the balances will be updated and a refund will be
-   * issued along with a Credit Note.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param componentId     The Chargify id of the component
-   * @param allocationId    The Chargify id of the allocation
-   * @param body
-   * @return Response from the API call
-   */
-  async deletePrepaidUsageAllocation(
-    subscriptionId: string,
-    componentId: number,
-    allocationId: number,
-    body?: CreditSchemeRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      componentId: [componentId, number()],
-      allocationId: [allocationId, number()],
-      body: [body, optional(creditSchemeRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations/${mapped.allocationId}.json`;
-    req.throwOn(422, SubscriptionComponentAllocationError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
-  }
-
-  /**
-   * ## Documentation
-   *
-   * Full documentation on how to create Components in the Chargify UI can be located [here](https:
-   * //maxio-chargify.zendesk.com/hc/en-us/articles/5405020625677#creating-components). Additionally, for
-   * information on how to record component usage against a subscription, please see the following
-   * resources:
-   *
-   * + [Recording Metered Component Usage](https://maxio-chargify.zendesk.com/hc/en-
-   * us/articles/5404527849997#reporting-metered-component-usage)
-   * + [Reporting Prepaid Component Status](https://maxio-chargify.zendesk.com/hc/en-
-   * us/articles/5404527849997#reporting-prepaid-component-status)
-   *
-   * You may choose to report metered or prepaid usage to Chargify as often as you wish. You may report
-   * usage as it happens. You may also report usage periodically, such as each night or once per billing
-   * period. If usage events occur in your system very frequently (on the order of thousands of times an
-   * hour), it is best to accumulate usage into batches on your side, and then report those batches less
-   * frequently, such as daily. This will ensure you remain below any API throttling limits. If your use
-   * case requires higher rates of usage reporting, we recommend utilizing Events Based Components.
-   *
-   * ## Create Usage for Subscription
-   *
-   * This endpoint allows you to record an instance of metered or prepaid usage for a subscription. The
-   * `quantity` from usage for each component is accumulated to the `unit_balance` on the [Component Line
-   * Item](./b3A6MTQxMDgzNzQ-read-subscription-component) for the subscription.
-   *
-   * ## Price Point ID usage
-   *
-   * If you are using price points, for metered and prepaid usage components, Chargify gives you the
-   * option to specify a price point in your request.
-   *
-   * You do not need to specify a price point ID. If a price point is not included, the default price
-   * point for the component will be used when the usage is recorded.
-   *
-   * If an invalid `price_point_id` is submitted, the endpoint will return an error.
-   *
-   * ## Deducting Usage
-   *
-   * In the event that you need to reverse a previous usage report or otherwise deduct from the current
-   * usage balance, you may provide a negative quantity.
-   *
-   * Example:
-   *
-   * Previously recorded:
-   *
-   * ```json
-   * {
-   * "usage": {
-   * "quantity": 5000,
-   * "memo": "Recording 5000 units"
-   * }
-   * }
-   * ```
-   *
-   * At this point, `unit_balance` would be `5000`. To reduce the balance to `0`, POST the following
-   * payload:
-   *
-   * ```json
-   * {
-   * "usage": {
-   * "quantity": -5000,
-   * "memo": "Deducting 5000 units"
-   * }
-   * }
-   * ```
-   *
-   * The `unit_balance` has a floor of `0`; negative unit balances are never allowed. For example, if the
-   * usage balance is 100 and you deduct 200 units, the unit balance would then be `0`, not `-100`.
-   *
-   * ## FAQ
-   *
-   * Q. Is it possible to record metered usage for more than one component at a time?
-   *
-   * A. No. Usage should be reported as one API call per component on a single subscription. For example,
-   * to record that a subscriber has sent both an SMS Message and an Email, send an API call for each.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param componentId     Either the Chargify id for the component or the component's
-   *                                                     handle prefixed by `handle:`
-   * @param body
-   * @return Response from the API call
-   */
-  async createUsage(
-    subscriptionId: string,
-    componentId: number,
-    body?: CreateUsageRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<UsageResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      componentId: [componentId, number()],
-      body: [body, optional(createUsageRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/usages.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(usageResponseSchema, requestOptions);
-  }
-
-  /**
-   * This request will return a list of the usages associated with a subscription for a particular
-   * metered component. This will display the previously recorded components for a subscription.
-   *
-   * This endpoint is not compatible with quantity-based components.
-   *
-   * ## Since Date and Until Date Usage
-   *
-   * Note: The `since_date` and `until_date` attributes each default to midnight on the date specified.
-   * For example, in order to list usages for January 20th, you would need to append the following to the
-   * URL.
-   *
-   * ```
-   * ?since_date=2016-01-20&until_date=2016-01-21
-   * ```
-   *
-   * ## Read Usage by Handle
-   *
-   * Use this endpoint to read the previously recorded components for a subscription.  You can now
-   * specify either the component id (integer) or the component handle prefixed by "handle:" to specify
-   * the unique identifier for the component you are working with.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param componentId     Either the Chargify id for the component or the component's handle prefixed by
-   *                                  `handle:`
-   * @param sinceId         Returns usages with an id greater than or equal to the one specified
-   * @param maxId           Returns usages with an id less than or equal to the one specified
-   * @param sinceDate       Returns usages with a created_at date greater than or equal to midnight (12:00
-   *                                  AM) on the date specified.
-   * @param untilDate       Returns usages with a created_at date less than or equal to midnight (12:00 AM)
-   *                                  on the date specified.
-   * @param page            Result records are organized in pages. By default, the first page of results is
-   *                                  displayed. The page parameter specifies a page number of results to fetch. You
-   *                                  can start navigating through the pages to consume the results. You do this by
-   *                                  passing in a page parameter. Retrieve the next page by adding ?page=2 to the
-   *                                  query string. If there are no results to return, then an empty result set will be
-   *                                  returned. Use in query `page=1`.
-   * @param perPage         This parameter indicates how many records to fetch in each request. Default
-   *                                  value is 20. The maximum allowed values is 200; any per_page value over 200 will
-   *                                  be changed to 200. Use in query `per_page=200`.
-   * @return Response from the API call
-   */
-  async listUsages({
-    subscriptionId,
-    componentId,
-    sinceId,
-    maxId,
-    sinceDate,
-    untilDate,
-    page,
-    perPage,
-  }: {
-    subscriptionId: string,
-    componentId: number,
-    sinceId?: number,
-    maxId?: number,
-    sinceDate?: string,
-    untilDate?: string,
-    page?: number,
-    perPage?: number,
-  },
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<UsageResponse[]>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      componentId: [componentId, number()],
-      sinceId: [sinceId, optional(number())],
-      maxId: [maxId, optional(number())],
-      sinceDate: [sinceDate, optional(string())],
-      untilDate: [untilDate, optional(string())],
-      page: [page, optional(number())],
-      perPage: [perPage, optional(number())],
-    });
-    req.query('since_id', mapped.sinceId);
-    req.query('max_id', mapped.maxId);
-    req.query('since_date', mapped.sinceDate);
-    req.query('until_date', mapped.untilDate);
-    req.query('page', mapped.page);
-    req.query('per_page', mapped.perPage);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/usages.json`;
-    return req.callAsJson(array(usageResponseSchema), requestOptions);
-  }
-
-  /**
-   * In order to bill your subscribers on your Events data under the Events-Based Billing feature, the
-   * components must be activated for the subscriber.
-   *
-   * Learn more about the role of activation in the [Events-Based Billing docs](https://chargify.zendesk.
-   * com/hc/en-us/articles/4407720810907#activating-components-for-subscribers).
-   *
-   * Use this endpoint to activate an event-based component for a single subscription. Activating an
-   * event-based component causes Chargify to bill for events when the subscription is renewed.
-   *
-   * *Note: it is possible to stream events for a subscription at any time, regardless of component
-   * activation status. The activation status only determines if the subscription should be billed for
-   * event-based component usage at renewal.*
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param componentId     The Chargify id of the component
-   * @return Response from the API call
-   */
-  async activateEventBasedComponent(
-    subscriptionId: number,
-    componentId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, number()],
-      componentId: [componentId, number()],
-    });
-    req.appendTemplatePath`/event_based_billing/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/activate.json`;
-    return req.call(requestOptions);
   }
 
   /**
@@ -859,60 +838,42 @@ export class SubscriptionComponentsController extends BaseController {
       componentId: [componentId, number()],
     });
     req.appendTemplatePath`/event_based_billing/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/deactivate.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
 
   /**
-   * ## Documentation
+   * Updates the price points on one or more of a subscription's components.
    *
-   * Events-Based Billing is an evolved form of metered billing that is based on data-rich events
-   * streamed in real-time from your system to Chargify.
+   * The `price_point` key can take either a:
+   * 1. Price point id (integer)
+   * 2. Price point handle (string)
+   * 3. `"_default"` string, which will reset the price point to the component's current default price
+   * point.
    *
-   * These events can then be transformed, enriched, or analyzed to form the computed totals of usage
-   * charges billed to your customers.
-   *
-   * This API allows you to stream events into the Chargify data ingestion engine.
-   *
-   * Learn more about the feature in general in the [Events-Based Billing help docs](https://chargify.
-   * zendesk.com/hc/en-us/articles/4407720613403).
-   *
-   * ## Record Event
-   *
-   * Use this endpoint to record a single event.
-   *
-   * *Note: this endpoint differs from the standard Chargify endpoints in that the URL subdomain will be
-   * `events` and your site subdomain will be included in the URL path. For example:*
-   *
-   * ```
-   * https://events.chargify.com/my-site-subdomain/events/my-stream-api-handle
-   * ```
-   *
-   * @param subdomain    Your site's subdomain
-   * @param apiHandle    Identifies the Stream for which the event should be published.
-   * @param storeUid     If you've attached your own Keen project as a Chargify event data-store,
-   *                                        use this parameter to indicate the data-store.
+   * @param subscriptionId  The Chargify id of the subscription
    * @param body
    * @return Response from the API call
    */
-  async recordEvent(
-    subdomain: string,
-    apiHandle: string,
-    storeUid?: string,
-    body?: EBBEvent,
+  async updateSubscriptionComponentsPricePoints(
+    subscriptionId: string,
+    body?: BulkComponentSPricePointAssignment,
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
+  ): Promise<ApiResponse<BulkComponentSPricePointAssignment>> {
     const req = this.createRequest('POST');
     const mapped = req.prepareArgs({
-      subdomain: [subdomain, string()],
-      apiHandle: [apiHandle, string()],
-      storeUid: [storeUid, optional(string())],
-      body: [body, optional(eBBEventSchema)],
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(bulkComponentSPricePointAssignmentSchema)],
     });
     req.header('Content-Type', 'application/json');
-    req.query('store_uid', mapped.storeUid);
     req.json(mapped.body);
-    req.appendTemplatePath`/${mapped.subdomain}/events/${mapped.apiHandle}.json`;
-    return req.call(requestOptions);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/price_points.json`;
+    req.throwOn(422, ComponentPricePointError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(
+      bulkComponentSPricePointAssignmentSchema,
+      requestOptions
+    );
   }
 
   /**
@@ -949,6 +910,7 @@ export class SubscriptionComponentsController extends BaseController {
     req.query('store_uid', mapped.storeUid);
     req.json(mapped.body);
     req.appendTemplatePath`/${mapped.subdomain}/events/${mapped.apiHandle}/bulk.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
 
@@ -1372,9 +1334,64 @@ export class SubscriptionComponentsController extends BaseController {
     req.query('filter[subscription][start_datetime]', mapped.filterSubscriptionStartDatetime);
     req.query('filter[subscription][end_date]', mapped.filterSubscriptionEndDate);
     req.query('filter[subscription][end_datetime]', mapped.filterSubscriptionEndDatetime);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       listSubscriptionComponentsResponseSchema,
       requestOptions
     );
+  }
+
+  /**
+   * ## Documentation
+   *
+   * Events-Based Billing is an evolved form of metered billing that is based on data-rich events
+   * streamed in real-time from your system to Chargify.
+   *
+   * These events can then be transformed, enriched, or analyzed to form the computed totals of usage
+   * charges billed to your customers.
+   *
+   * This API allows you to stream events into the Chargify data ingestion engine.
+   *
+   * Learn more about the feature in general in the [Events-Based Billing help docs](https://chargify.
+   * zendesk.com/hc/en-us/articles/4407720613403).
+   *
+   * ## Record Event
+   *
+   * Use this endpoint to record a single event.
+   *
+   * *Note: this endpoint differs from the standard Chargify endpoints in that the URL subdomain will be
+   * `events` and your site subdomain will be included in the URL path. For example:*
+   *
+   * ```
+   * https://events.chargify.com/my-site-subdomain/events/my-stream-api-handle
+   * ```
+   *
+   * @param subdomain    Your site's subdomain
+   * @param apiHandle    Identifies the Stream for which the event should be published.
+   * @param storeUid     If you've attached your own Keen project as a Chargify event data-store,
+   *                                        use this parameter to indicate the data-store.
+   * @param body
+   * @return Response from the API call
+   */
+  async recordEvent(
+    subdomain: string,
+    apiHandle: string,
+    storeUid?: string,
+    body?: EBBEvent,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subdomain: [subdomain, string()],
+      apiHandle: [apiHandle, string()],
+      storeUid: [storeUid, optional(string())],
+      body: [body, optional(eBBEventSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.query('store_uid', mapped.storeUid);
+    req.json(mapped.body);
+    req.appendTemplatePath`/${mapped.subdomain}/events/${mapped.apiHandle}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
   }
 }

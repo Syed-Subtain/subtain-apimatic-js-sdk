@@ -32,6 +32,97 @@ import { BaseController } from './baseController';
 
 export class BillingPortalController extends BaseController {
   /**
+   * You can revoke a customer's Billing Portal invitation.
+   *
+   * If you attempt to revoke an invitation when the Billing Portal is already disabled for a Customer,
+   * you will receive a 422 error response.
+   *
+   * ## Limitations
+   *
+   * This endpoint will only return a JSON response.
+   *
+   * @param customerId  The Chargify id of the customer
+   * @return Response from the API call
+   */
+  async revokeBillingPortalAccess(
+    customerId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<RevokedInvitation>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({ customerId: [customerId, number()] });
+    req.appendTemplatePath`/portal/customers/${mapped.customerId}/invitations/revoke.json`;
+    req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(revokedInvitationSchema, requestOptions);
+  }
+
+  /**
+   * This method will provide to the API user the exact URL required for a subscriber to access the
+   * Billing Portal.
+   *
+   * ## Rules for Management Link API
+   *
+   * + When retrieving a management URL, multiple requests for the same customer in a short period will
+   * return the **same** URL
+   * + We will not generate a new URL for 15 days
+   * + You must cache and remember this URL if you are going to need it again within 15 days
+   * + Only request a new URL after the `new_link_available_at` date
+   * + You are limited to 15 requests for the same URL. If you make more than 15 requests before
+   * `new_link_available_at`, you will be blocked from further Management URL requests (with a response
+   * code `429`)
+   *
+   * @param customerId  The Chargify id of the customer
+   * @return Response from the API call
+   */
+  async readBillingPortalLink(
+    customerId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<PortalManagementLink>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({ customerId: [customerId, number()] });
+    req.appendTemplatePath`/portal/customers/${mapped.customerId}/management_link.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(429, TooManyManagementLinkRequestsError, 'Too Many Requests');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(portalManagementLinkSchema, requestOptions);
+  }
+
+  /**
+   * You can resend a customer's Billing Portal invitation.
+   *
+   * If you attempt to resend an invitation 5 times within 30 minutes, you will receive a `422` response
+   * with `error` message in the body.
+   *
+   * If you attempt to resend an invitation when the Billing Portal is already disabled for a Customer,
+   * you will receive a `422` error response.
+   *
+   * If you attempt to resend an invitation when the Billing Portal is already disabled for a Customer,
+   * you will receive a `422` error response.
+   *
+   * If you attempt to resend an invitation when the Customer does not exist a Customer, you will receive
+   * a `404` error response.
+   *
+   * ## Limitations
+   *
+   * This endpoint will only return a JSON response.
+   *
+   * @param customerId  The Chargify id of the customer
+   * @return Response from the API call
+   */
+  async resendBillingPortalInvitation(
+    customerId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ResentInvitation>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({ customerId: [customerId, number()] });
+    req.appendTemplatePath`/portal/customers/${mapped.customerId}/invitations/invite.json`;
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(resentInvitationSchema, requestOptions);
+  }
+
+  /**
    * ## Billing Portal Documentation
    *
    * Full documentation on how the Billing Portal operates within the Chargify UI can be located
@@ -76,94 +167,7 @@ export class BillingPortalController extends BaseController {
     req.query('auto_invite', mapped.autoInvite);
     req.appendTemplatePath`/portal/customers/${mapped.customerId}/enable.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(customerResponseSchema, requestOptions);
-  }
-
-  /**
-   * This method will provide to the API user the exact URL required for a subscriber to access the
-   * Billing Portal.
-   *
-   * ## Rules for Management Link API
-   *
-   * + When retrieving a management URL, multiple requests for the same customer in a short period will
-   * return the **same** URL
-   * + We will not generate a new URL for 15 days
-   * + You must cache and remember this URL if you are going to need it again within 15 days
-   * + Only request a new URL after the `new_link_available_at` date
-   * + You are limited to 15 requests for the same URL. If you make more than 15 requests before
-   * `new_link_available_at`, you will be blocked from further Management URL requests (with a response
-   * code `429`)
-   *
-   * @param customerId  The Chargify id of the customer
-   * @return Response from the API call
-   */
-  async readBillingPortalLink(
-    customerId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<PortalManagementLink>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({ customerId: [customerId, number()] });
-    req.appendTemplatePath`/portal/customers/${mapped.customerId}/management_link.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    req.throwOn(429, TooManyManagementLinkRequestsError, 'Too Many Requests');
-    return req.callAsJson(portalManagementLinkSchema, requestOptions);
-  }
-
-  /**
-   * You can resend a customer's Billing Portal invitation.
-   *
-   * If you attempt to resend an invitation 5 times within 30 minutes, you will receive a `422` response
-   * with `error` message in the body.
-   *
-   * If you attempt to resend an invitation when the Billing Portal is already disabled for a Customer,
-   * you will receive a `422` error response.
-   *
-   * If you attempt to resend an invitation when the Billing Portal is already disabled for a Customer,
-   * you will receive a `422` error response.
-   *
-   * If you attempt to resend an invitation when the Customer does not exist a Customer, you will receive
-   * a `404` error response.
-   *
-   * ## Limitations
-   *
-   * This endpoint will only return a JSON response.
-   *
-   * @param customerId  The Chargify id of the customer
-   * @return Response from the API call
-   */
-  async resendBillingPortalInvitation(
-    customerId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ResentInvitation>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({ customerId: [customerId, number()] });
-    req.appendTemplatePath`/portal/customers/${mapped.customerId}/invitations/invite.json`;
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(resentInvitationSchema, requestOptions);
-  }
-
-  /**
-   * You can revoke a customer's Billing Portal invitation.
-   *
-   * If you attempt to revoke an invitation when the Billing Portal is already disabled for a Customer,
-   * you will receive a 422 error response.
-   *
-   * ## Limitations
-   *
-   * This endpoint will only return a JSON response.
-   *
-   * @param customerId  The Chargify id of the customer
-   * @return Response from the API call
-   */
-  async revokeBillingPortalAccess(
-    customerId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<RevokedInvitation>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({ customerId: [customerId, number()] });
-    req.appendTemplatePath`/portal/customers/${mapped.customerId}/invitations/revoke.json`;
-    req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(revokedInvitationSchema, requestOptions);
   }
 }

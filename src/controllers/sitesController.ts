@@ -17,61 +17,6 @@ import { BaseController } from './baseController';
 
 export class SitesController extends BaseController {
   /**
-   * This endpoint allows you to fetch some site data.
-   *
-   * Full documentation on Sites in the Chargify UI can be located [here](https://chargify.zendesk.
-   * com/hc/en-us/articles/4407870738587).
-   *
-   * Specifically, the [Clearing Site Data](https://maxio-chargify.zendesk.com/hc/en-
-   * us/articles/5405428327309) section is extremely relevant to this endpoint documentation.
-   *
-   * #### Relationship invoicing enabled
-   * If site has RI enabled then you will see more settings like:
-   *
-   * "customer_hierarchy_enabled": true,
-   * "whopays_enabled": true,
-   * "whopays_default_payer": "self"
-   * You can read more about these settings here:
-   * [Who Pays & Customer Hierarchy](https://chargify.zendesk.com/hc/en-us/articles/4407746683291)
-   *
-   * @return Response from the API call
-   */
-  async readSite(
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SiteResponse>> {
-    const req = this.createRequest('GET', '/site.json');
-    return req.callAsJson(siteResponseSchema, requestOptions);
-  }
-
-  /**
-   * This call is asynchronous and there may be a delay before the site data is fully deleted. If you are
-   * clearing site data for an automated test, you will need to build in a delay and/or check that there
-   * are no products, etc., in the site before proceeding.
-   *
-   * **This functionality will only work on sites in TEST mode. Attempts to perform this on sites in
-   * “live” mode will result in a response of 403 FORBIDDEN.**
-   *
-   *
-   * @param cleanupScope  `all`: Will clear all products, customers, and related subscriptions from
-   *                                      the site.  `customers`: Will clear only customers and related subscriptions
-   *                                      (leaving the products untouched) for the site.  Revenue will also be reset to
-   *                                      0. Use in query `cleanup_scope=all`.
-   * @return Response from the API call
-   */
-  async clearSite(
-    cleanupScope?: CleanupScope,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('POST', '/sites/clear_data.json');
-    const mapped = req.prepareArgs({
-      cleanupScope: [cleanupScope, optional(cleanupScopeSchema)],
-    });
-    req.query('cleanup_scope', mapped.cleanupScope);
-    req.throwOn(403, ApiError, 'Forbidden');
-    return req.call(requestOptions);
-  }
-
-  /**
    * This endpoint returns public keys used for Chargify.js.
    *
    * @param page     Result records are organized in pages. By default, the first page of results is
@@ -100,6 +45,64 @@ export class SitesController extends BaseController {
     });
     req.query('page', mapped.page);
     req.query('per_page', mapped.perPage);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listPublicKeysResponseSchema, requestOptions);
+  }
+
+  /**
+   * This call is asynchronous and there may be a delay before the site data is fully deleted. If you are
+   * clearing site data for an automated test, you will need to build in a delay and/or check that there
+   * are no products, etc., in the site before proceeding.
+   *
+   * **This functionality will only work on sites in TEST mode. Attempts to perform this on sites in
+   * “live” mode will result in a response of 403 FORBIDDEN.**
+   *
+   *
+   * @param cleanupScope  `all`: Will clear all products, customers, and related subscriptions from
+   *                                      the site.  `customers`: Will clear only customers and related subscriptions
+   *                                      (leaving the products untouched) for the site.  Revenue will also be reset to
+   *                                      0. Use in query `cleanup_scope=all`.
+   * @return Response from the API call
+   */
+  async clearSite(
+    cleanupScope?: CleanupScope,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('POST', '/sites/clear_data.json');
+    const mapped = req.prepareArgs({
+      cleanupScope: [cleanupScope, optional(cleanupScopeSchema)],
+    });
+    req.query('cleanup_scope', mapped.cleanupScope);
+    req.throwOn(403, ApiError, 'Forbidden');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * This endpoint allows you to fetch some site data.
+   *
+   * Full documentation on Sites in the Chargify UI can be located [here](https://chargify.zendesk.
+   * com/hc/en-us/articles/4407870738587).
+   *
+   * Specifically, the [Clearing Site Data](https://maxio-chargify.zendesk.com/hc/en-
+   * us/articles/5405428327309) section is extremely relevant to this endpoint documentation.
+   *
+   * #### Relationship invoicing enabled
+   * If site has RI enabled then you will see more settings like:
+   *
+   * "customer_hierarchy_enabled": true,
+   * "whopays_enabled": true,
+   * "whopays_default_payer": "self"
+   * You can read more about these settings here:
+   * [Who Pays & Customer Hierarchy](https://chargify.zendesk.com/hc/en-us/articles/4407746683291)
+   *
+   * @return Response from the API call
+   */
+  async readSite(
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SiteResponse>> {
+    const req = this.createRequest('GET', '/site.json');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(siteResponseSchema, requestOptions);
   }
 }

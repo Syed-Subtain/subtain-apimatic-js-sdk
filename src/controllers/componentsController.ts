@@ -71,57 +71,6 @@ import { BaseController } from './baseController';
 
 export class ComponentsController extends BaseController {
   /**
-   * This request will create a component definition under the specified product family. These component
-   * definitions determine what components are named, how they are measured, and how much they cost.
-   *
-   * Components can then be added and “allocated” for each subscription to a product in the product
-   * family. These component line-items affect how much a subscription will be charged, depending on the
-   * current allocations (i.e. 4 IP Addresses, or SSL “enabled”)
-   *
-   * This documentation covers both component definitions and component line-items. Please understand the
-   * difference.
-   *
-   * Please note that you may not edit components via API. To do so, please log into the application.
-   *
-   * ### Component Documentation
-   *
-   * For more information on components, please see our documentation [here](https://maxio-chargify.
-   * zendesk.com/hc/en-us/articles/5405020625677).
-   *
-   * For information on how to record component usage against a subscription, please see the following
-   * resources:
-   *
-   * + [Proration and Component Allocations](https://maxio-chargify.zendesk.com/hc/en-
-   * us/articles/5405020625677#applying-proration-and-recording-components)
-   * + [Recording component usage against a subscription](https://maxio-chargify.zendesk.com/hc/en-
-   * us/articles/5404606587917#recording-component-usage)
-   *
-   * @param productFamilyId   The Chargify id of the product family to which the component
-   *                                                 belongs
-   * @param componentKind     The component kind
-   * @param body
-   * @return Response from the API call
-   */
-  async createComponent(
-    productFamilyId: number,
-    componentKind: ComponentKindPath,
-    body?: CreateComponentBody,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      productFamilyId: [productFamilyId, number()],
-      componentKind: [componentKind, componentKindPathSchema],
-      body: [body, optional(createComponentBodySchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/${mapped.componentKind}.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(componentResponseSchema, requestOptions);
-  }
-
-  /**
    * This request will return information regarding a component having the handle you provide. You can
    * identify your components with a handle so you don't have to save or reference the IDs we generate.
    *
@@ -135,87 +84,7 @@ export class ComponentsController extends BaseController {
     const req = this.createRequest('GET', '/components/lookup.json');
     const mapped = req.prepareArgs({ handle: [handle, string()] });
     req.query('handle', mapped.handle);
-    return req.callAsJson(componentResponseSchema, requestOptions);
-  }
-
-  /**
-   * This request will return information regarding a component from a specific product family.
-   *
-   * You may read the component by either the component's id or handle. When using the handle, it must be
-   * prefixed with `handle:`.
-   *
-   * @param productFamilyId   The Chargify id of the product family to which the component belongs
-   * @param componentId       Either the Chargify id of the component or the handle for the component
-   *                                    prefixed with `handle:`
-   * @return Response from the API call
-   */
-  async readComponentById(
-    productFamilyId: number,
-    componentId: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentResponse>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({
-      productFamilyId: [productFamilyId, number()],
-      componentId: [componentId, string()],
-    });
-    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components/${mapped.componentId}.json`;
-    return req.callAsJson(componentResponseSchema, requestOptions);
-  }
-
-  /**
-   * This request will update a component from a specific product family.
-   *
-   * You may read the component by either the component's id or handle. When using the handle, it must be
-   * prefixed with `handle:`.
-   *
-   * @param productFamilyId   The Chargify id of the product family to which the
-   *                                                           component belongs
-   * @param componentId       Either the Chargify id of the component or the handle
-   *                                                           for the component prefixed with `handle:`
-   * @param body
-   * @return Response from the API call
-   */
-  async updateProductFamilyComponent(
-    productFamilyId: number,
-    componentId: string,
-    body?: UpdateComponentRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentResponse>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      productFamilyId: [productFamilyId, number()],
-      componentId: [componentId, string()],
-      body: [body, optional(updateComponentRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components/${mapped.componentId}.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(componentResponseSchema, requestOptions);
-  }
-
-  /**
-   * Sending a DELETE request to this endpoint will archive the component. All current subscribers will
-   * be unffected; their subscription/purchase will continue to be charged as usual.
-   *
-   * @param productFamilyId   The Chargify id of the product family to which the component belongs
-   * @param componentId       Either the Chargify id of the component or the handle for the component
-   *                                    prefixed with `handle:`
-   * @return Response from the API call
-   */
-  async archiveComponent(
-    productFamilyId: number,
-    componentId: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentResponse>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      productFamilyId: [productFamilyId, number()],
-      componentId: [componentId, string()],
-    });
-    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components/${mapped.componentId}.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(componentResponseSchema, requestOptions);
   }
 
@@ -315,33 +184,227 @@ export class ComponentsController extends BaseController {
     req.query('per_page', mapped.perPage);
     req.query('filter[ids]', mapped.filterIds, commaPrefix);
     req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(componentResponseSchema), requestOptions);
   }
 
   /**
-   * This request will update a component.
+   * This request will return information regarding a component from a specific product family.
    *
    * You may read the component by either the component's id or handle. When using the handle, it must be
    * prefixed with `handle:`.
    *
-   * @param componentId  The id or handle of the component
+   * @param productFamilyId   The Chargify id of the product family to which the component belongs
+   * @param componentId       Either the Chargify id of the component or the handle for the component
+   *                                    prefixed with `handle:`
+   * @return Response from the API call
+   */
+  async readComponentById(
+    productFamilyId: number,
+    componentId: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentResponse>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      productFamilyId: [productFamilyId, number()],
+      componentId: [componentId, string()],
+    });
+    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components/${mapped.componentId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentResponseSchema, requestOptions);
+  }
+
+  /**
+   * This request will update a component from a specific product family.
+   *
+   * You may read the component by either the component's id or handle. When using the handle, it must be
+   * prefixed with `handle:`.
+   *
+   * @param productFamilyId   The Chargify id of the product family to which the
+   *                                                           component belongs
+   * @param componentId       Either the Chargify id of the component or the handle
+   *                                                           for the component prefixed with `handle:`
    * @param body
    * @return Response from the API call
    */
-  async updateComponent(
+  async updateProductFamilyComponent(
+    productFamilyId: number,
     componentId: string,
     body?: UpdateComponentRequest,
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
+  ): Promise<ApiResponse<ComponentResponse>> {
     const req = this.createRequest('PUT');
     const mapped = req.prepareArgs({
+      productFamilyId: [productFamilyId, number()],
       componentId: [componentId, string()],
       body: [body, optional(updateComponentRequestSchema)],
     });
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
-    req.appendTemplatePath`/components/${mapped.componentId}.json`;
-    return req.call(requestOptions);
+    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components/${mapped.componentId}.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentResponseSchema, requestOptions);
+  }
+
+  /**
+   * This request will create a component definition under the specified product family. These component
+   * definitions determine what components are named, how they are measured, and how much they cost.
+   *
+   * Components can then be added and “allocated” for each subscription to a product in the product
+   * family. These component line-items affect how much a subscription will be charged, depending on the
+   * current allocations (i.e. 4 IP Addresses, or SSL “enabled”)
+   *
+   * This documentation covers both component definitions and component line-items. Please understand the
+   * difference.
+   *
+   * Please note that you may not edit components via API. To do so, please log into the application.
+   *
+   * ### Component Documentation
+   *
+   * For more information on components, please see our documentation [here](https://maxio-chargify.
+   * zendesk.com/hc/en-us/articles/5405020625677).
+   *
+   * For information on how to record component usage against a subscription, please see the following
+   * resources:
+   *
+   * + [Proration and Component Allocations](https://maxio-chargify.zendesk.com/hc/en-
+   * us/articles/5405020625677#applying-proration-and-recording-components)
+   * + [Recording component usage against a subscription](https://maxio-chargify.zendesk.com/hc/en-
+   * us/articles/5404606587917#recording-component-usage)
+   *
+   * @param productFamilyId   The Chargify id of the product family to which the component
+   *                                                 belongs
+   * @param componentKind     The component kind
+   * @param body
+   * @return Response from the API call
+   */
+  async createComponent(
+    productFamilyId: number,
+    componentKind: ComponentKindPath,
+    body?: CreateComponentBody,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      productFamilyId: [productFamilyId, number()],
+      componentKind: [componentKind, componentKindPathSchema],
+      body: [body, optional(createComponentBodySchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/${mapped.componentKind}.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentResponseSchema, requestOptions);
+  }
+
+  /**
+   * Sending a DELETE request to this endpoint will archive the component. All current subscribers will
+   * be unffected; their subscription/purchase will continue to be charged as usual.
+   *
+   * @param productFamilyId   The Chargify id of the product family to which the component belongs
+   * @param componentId       Either the Chargify id of the component or the handle for the component
+   *                                    prefixed with `handle:`
+   * @return Response from the API call
+   */
+  async archiveComponent(
+    productFamilyId: number,
+    componentId: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentResponse>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      productFamilyId: [productFamilyId, number()],
+      componentId: [componentId, string()],
+    });
+    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components/${mapped.componentId}.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentResponseSchema, requestOptions);
+  }
+
+  /**
+   * When updating a price point, it's prices can be updated as well by creating new prices or editing /
+   * removing existing ones.
+   *
+   * Passing in a price bracket without an `id` will attempt to create a new price.
+   *
+   * Including an `id` will update the corresponding price, and including the `_destroy` flag set to true
+   * along with the `id` will remove that price.
+   *
+   * Note: Custom price points cannot be updated directly. They must be edited through the Subscription.
+   *
+   * @param componentId    The Chargify id of the component to which the
+   *                                                                  price point belongs
+   * @param pricePointId   The Chargify id of the price point
+   * @param body
+   * @return Response from the API call
+   */
+  async updateComponentPricePoint(
+    componentId: number,
+    pricePointId: number,
+    body?: UpdateComponentPricePointRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentPricePointResponse>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, number()],
+      pricePointId: [pricePointId, number()],
+      body: [body, optional(updateComponentPricePointRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentPricePointResponseSchema, requestOptions);
+  }
+
+  /**
+   * A price point can be archived at any time. Subscriptions using a price point that has been archived
+   * will continue using it until they're moved to another price point.
+   *
+   * @param componentId    The Chargify id of the component to which the price point belongs
+   * @param pricePointId   The Chargify id of the price point
+   * @return Response from the API call
+   */
+  async archiveComponentPricePoint(
+    componentId: number,
+    pricePointId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentPricePointResponse>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, number()],
+      pricePointId: [pricePointId, number()],
+    });
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentPricePointResponseSchema, requestOptions);
+  }
+
+  /**
+   * This endpoint can be used to create a new price point for an existing component.
+   *
+   * @param componentId  The Chargify id of the component
+   * @param body
+   * @return Response from the API call
+   */
+  async createComponentPricePoint(
+    componentId: number,
+    body?: CreateComponentPricePointRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentPricePointResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, number()],
+      body: [body, optional(createComponentPricePointRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentPricePointResponseSchema, requestOptions);
   }
 
   /**
@@ -368,135 +431,35 @@ export class ComponentsController extends BaseController {
       pricePointId: [pricePointId, number()],
     });
     req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/default.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
 
   /**
-   * This request will return a list of components for a particular product family.
+   * This request will update a component.
    *
-   * @param productFamilyId                The Chargify id of the product family
-   * @param includeArchived                Include archived items.
-   * @param filterIds                      Allows fetching components with matching id based on
-   *                                                         provided value. Use in query `filter[ids]=1,2`.
-   * @param page                           Result records are organized in pages. By default, the
-   *                                                         first page of results is displayed. The page parameter
-   *                                                         specifies a page number of results to fetch. You can start
-   *                                                         navigating through the pages to consume the results. You
-   *                                                         do this by passing in a page parameter. Retrieve the next
-   *                                                         page by adding ?page=2 to the query string. If there are
-   *                                                         no results to return, then an empty result set will be
-   *                                                         returned. Use in query `page=1`.
-   * @param perPage                        This parameter indicates how many records to fetch in
-   *                                                         each request. Default value is 20. The maximum allowed
-   *                                                         values is 200; any per_page value over 200 will be changed
-   *                                                         to 200. Use in query `per_page=200`.
-   * @param dateField                      The type of filter you would like to apply to your search.
-   *                                                         Use in query `date_field=created_at`.
-   * @param endDate                        The end date (format YYYY-MM-DD) with which to filter the
-   *                                                         date_field. Returns components with a timestamp up to and
-   *                                                         including 11:59:59PM in your site’s time zone on the date
-   *                                                         specified.
-   * @param endDatetime                    The end date and time (format YYYY-MM-DD HH:MM:SS) with
-   *                                                         which to filter the date_field. Returns components with a
-   *                                                         timestamp at or before exact time provided in query. You
-   *                                                         can specify timezone in query - otherwise your site's time
-   *                                                         zone will be used. If provided, this parameter will be
-   *                                                         used instead of end_date. optional.
-   * @param startDate                      The start date (format YYYY-MM-DD) with which to filter
-   *                                                         the date_field. Returns components with a timestamp at or
-   *                                                         after midnight (12:00:00 AM) in your site’s time zone on
-   *                                                         the date specified.
-   * @param startDatetime                  The start date and time (format YYYY-MM-DD HH:MM:SS) with
-   *                                                         which to filter the date_field. Returns components with a
-   *                                                         timestamp at or after exact time provided in query. You
-   *                                                         can specify timezone in query - otherwise your site's time
-   *                                                         zone will be used. If provided, this parameter will be
-   *                                                         used instead of start_date.
-   * @param filterUseSiteExchangeRate      Allows fetching components with matching
-   *                                                         use_site_exchange_rate based on provided value (refers to
-   *                                                         default price point). Use in query
-   *                                                         `filter[use_site_exchange_rate]=true`.
-   * @return Response from the API call
-   */
-  async listComponentsForProductFamily({
-    productFamilyId,
-    includeArchived,
-    filterIds,
-    page,
-    perPage,
-    dateField,
-    endDate,
-    endDatetime,
-    startDate,
-    startDatetime,
-    filterUseSiteExchangeRate,
-  }: {
-    productFamilyId: number,
-    includeArchived?: boolean,
-    filterIds?: number[],
-    page?: number,
-    perPage?: number,
-    dateField?: BasicDateField,
-    endDate?: string,
-    endDatetime?: string,
-    startDate?: string,
-    startDatetime?: string,
-    filterUseSiteExchangeRate?: boolean,
-  },
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentResponse[]>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({
-      productFamilyId: [productFamilyId, number()],
-      includeArchived: [includeArchived, optional(boolean())],
-      filterIds: [filterIds, optional(array(number()))],
-      page: [page, optional(number())],
-      perPage: [perPage, optional(number())],
-      dateField: [dateField, optional(basicDateFieldSchema)],
-      endDate: [endDate, optional(string())],
-      endDatetime: [endDatetime, optional(string())],
-      startDate: [startDate, optional(string())],
-      startDatetime: [startDatetime, optional(string())],
-      filterUseSiteExchangeRate: [
-        filterUseSiteExchangeRate,
-        optional(boolean()),
-      ],
-    });
-    req.query('include_archived', mapped.includeArchived);
-    req.query('filter[ids]', mapped.filterIds, commaPrefix);
-    req.query('page', mapped.page);
-    req.query('per_page', mapped.perPage);
-    req.query('date_field', mapped.dateField);
-    req.query('end_date', mapped.endDate);
-    req.query('end_datetime', mapped.endDatetime);
-    req.query('start_date', mapped.startDate);
-    req.query('start_datetime', mapped.startDatetime);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
-    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components.json`;
-    return req.callAsJson(array(componentResponseSchema), requestOptions);
-  }
-
-  /**
-   * This endpoint can be used to create a new price point for an existing component.
+   * You may read the component by either the component's id or handle. When using the handle, it must be
+   * prefixed with `handle:`.
    *
-   * @param componentId  The Chargify id of the component
+   * @param componentId  The id or handle of the component
    * @param body
    * @return Response from the API call
    */
-  async createComponentPricePoint(
-    componentId: number,
-    body?: CreateComponentPricePointRequest,
+  async updateComponent(
+    componentId: string,
+    body?: UpdateComponentRequest,
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentPricePointResponse>> {
-    const req = this.createRequest('POST');
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('PUT');
     const mapped = req.prepareArgs({
-      componentId: [componentId, number()],
-      body: [body, optional(createComponentPricePointRequestSchema)],
+      componentId: [componentId, string()],
+      body: [body, optional(updateComponentRequestSchema)],
     });
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points.json`;
-    return req.callAsJson(componentPricePointResponseSchema, requestOptions);
+    req.appendTemplatePath`/components/${mapped.componentId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
   }
 
   /**
@@ -555,165 +518,8 @@ export class ComponentsController extends BaseController {
     req.query('per_page', mapped.perPage);
     req.query('filter[type]', mapped.filterType, commaPrefix);
     req.appendTemplatePath`/components/${mapped.componentId}/price_points.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(componentPricePointsResponseSchema, requestOptions);
-  }
-
-  /**
-   * Use this endpoint to create multiple component price points in one request.
-   *
-   * @param componentId  The Chargify id of the component for which you
-   *                                                                 want to fetch price points.
-   * @param body
-   * @return Response from the API call
-   */
-  async createComponentPricePoints(
-    componentId: string,
-    body?: CreateComponentPricePointsRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentPricePointsResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      componentId: [componentId, string()],
-      body: [body, optional(createComponentPricePointsRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points/bulk.json`;
-    return req.callAsJson(componentPricePointsResponseSchema, requestOptions);
-  }
-
-  /**
-   * When updating a price point, it's prices can be updated as well by creating new prices or editing /
-   * removing existing ones.
-   *
-   * Passing in a price bracket without an `id` will attempt to create a new price.
-   *
-   * Including an `id` will update the corresponding price, and including the `_destroy` flag set to true
-   * along with the `id` will remove that price.
-   *
-   * Note: Custom price points cannot be updated directly. They must be edited through the Subscription.
-   *
-   * @param componentId    The Chargify id of the component to which the
-   *                                                                  price point belongs
-   * @param pricePointId   The Chargify id of the price point
-   * @param body
-   * @return Response from the API call
-   */
-  async updateComponentPricePoint(
-    componentId: number,
-    pricePointId: number,
-    body?: UpdateComponentPricePointRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentPricePointResponse>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      componentId: [componentId, number()],
-      pricePointId: [pricePointId, number()],
-      body: [body, optional(updateComponentPricePointRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}.json`;
-    return req.callAsJson(componentPricePointResponseSchema, requestOptions);
-  }
-
-  /**
-   * A price point can be archived at any time. Subscriptions using a price point that has been archived
-   * will continue using it until they're moved to another price point.
-   *
-   * @param componentId    The Chargify id of the component to which the price point belongs
-   * @param pricePointId   The Chargify id of the price point
-   * @return Response from the API call
-   */
-  async archiveComponentPricePoint(
-    componentId: number,
-    pricePointId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentPricePointResponse>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      componentId: [componentId, number()],
-      pricePointId: [pricePointId, number()],
-    });
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}.json`;
-    return req.callAsJson(componentPricePointResponseSchema, requestOptions);
-  }
-
-  /**
-   * Use this endpoint to unarchive a component price point.
-   *
-   * @param componentId    The Chargify id of the component to which the price point belongs
-   * @param pricePointId   The Chargify id of the price point
-   * @return Response from the API call
-   */
-  async unarchiveComponentPricePoint(
-    componentId: number,
-    pricePointId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ComponentPricePointResponse>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      componentId: [componentId, number()],
-      pricePointId: [pricePointId, number()],
-    });
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/unarchive.json`;
-    return req.callAsJson(componentPricePointResponseSchema, requestOptions);
-  }
-
-  /**
-   * This endpoint allows you to create currency prices for a given currency that has been defined on the
-   * site level in your settings.
-   *
-   * When creating currency prices, they need to mirror the structure of your primary pricing. For each
-   * price level defined on the component price point, there should be a matching price level created in
-   * the given currency.
-   *
-   * Note: Currency Prices are not able to be created for custom price points.
-   *
-   * @param pricePointId   The Chargify id of the price point
-   * @param body
-   * @return Response from the API call
-   */
-  async createCurrencyPrices(
-    pricePointId: number,
-    body?: CreateCurrencyPricesRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<CurrencyPrice[]>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      pricePointId: [pricePointId, number()],
-      body: [body, optional(createCurrencyPricesRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/price_points/${mapped.pricePointId}/currency_prices.json`;
-    return req.callAsJson(array(currencyPriceSchema), requestOptions);
-  }
-
-  /**
-   * This endpoint allows you to update currency prices for a given currency that has been defined on the
-   * site level in your settings.
-   *
-   * Note: Currency Prices are not able to be updated for custom price points.
-   *
-   * @param pricePointId   The Chargify id of the price point
-   * @param body
-   * @return Response from the API call
-   */
-  async updateCurrencyPrices(
-    pricePointId: number,
-    body?: UpdateCurrencyPricesRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<CurrencyPrice[]>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      pricePointId: [pricePointId, number()],
-      body: [body, optional(updateCurrencyPricesRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/price_points/${mapped.pricePointId}/currency_prices.json`;
-    return req.callAsJson(array(currencyPriceSchema), requestOptions);
   }
 
   /**
@@ -846,9 +652,221 @@ export class ComponentsController extends BaseController {
     req.query('filter[ids]', mapped.filterIds, commaPrefix);
     req.query('filter[archived_at]', mapped.filterArchivedAt);
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       listComponentsPricePointsResponseSchema,
       requestOptions
     );
+  }
+
+  /**
+   * This request will return a list of components for a particular product family.
+   *
+   * @param productFamilyId                The Chargify id of the product family
+   * @param includeArchived                Include archived items.
+   * @param filterIds                      Allows fetching components with matching id based on
+   *                                                         provided value. Use in query `filter[ids]=1,2`.
+   * @param page                           Result records are organized in pages. By default, the
+   *                                                         first page of results is displayed. The page parameter
+   *                                                         specifies a page number of results to fetch. You can start
+   *                                                         navigating through the pages to consume the results. You
+   *                                                         do this by passing in a page parameter. Retrieve the next
+   *                                                         page by adding ?page=2 to the query string. If there are
+   *                                                         no results to return, then an empty result set will be
+   *                                                         returned. Use in query `page=1`.
+   * @param perPage                        This parameter indicates how many records to fetch in
+   *                                                         each request. Default value is 20. The maximum allowed
+   *                                                         values is 200; any per_page value over 200 will be changed
+   *                                                         to 200. Use in query `per_page=200`.
+   * @param dateField                      The type of filter you would like to apply to your search.
+   *                                                         Use in query `date_field=created_at`.
+   * @param endDate                        The end date (format YYYY-MM-DD) with which to filter the
+   *                                                         date_field. Returns components with a timestamp up to and
+   *                                                         including 11:59:59PM in your site’s time zone on the date
+   *                                                         specified.
+   * @param endDatetime                    The end date and time (format YYYY-MM-DD HH:MM:SS) with
+   *                                                         which to filter the date_field. Returns components with a
+   *                                                         timestamp at or before exact time provided in query. You
+   *                                                         can specify timezone in query - otherwise your site's time
+   *                                                         zone will be used. If provided, this parameter will be
+   *                                                         used instead of end_date. optional.
+   * @param startDate                      The start date (format YYYY-MM-DD) with which to filter
+   *                                                         the date_field. Returns components with a timestamp at or
+   *                                                         after midnight (12:00:00 AM) in your site’s time zone on
+   *                                                         the date specified.
+   * @param startDatetime                  The start date and time (format YYYY-MM-DD HH:MM:SS) with
+   *                                                         which to filter the date_field. Returns components with a
+   *                                                         timestamp at or after exact time provided in query. You
+   *                                                         can specify timezone in query - otherwise your site's time
+   *                                                         zone will be used. If provided, this parameter will be
+   *                                                         used instead of start_date.
+   * @param filterUseSiteExchangeRate      Allows fetching components with matching
+   *                                                         use_site_exchange_rate based on provided value (refers to
+   *                                                         default price point). Use in query
+   *                                                         `filter[use_site_exchange_rate]=true`.
+   * @return Response from the API call
+   */
+  async listComponentsForProductFamily({
+    productFamilyId,
+    includeArchived,
+    filterIds,
+    page,
+    perPage,
+    dateField,
+    endDate,
+    endDatetime,
+    startDate,
+    startDatetime,
+    filterUseSiteExchangeRate,
+  }: {
+    productFamilyId: number,
+    includeArchived?: boolean,
+    filterIds?: number[],
+    page?: number,
+    perPage?: number,
+    dateField?: BasicDateField,
+    endDate?: string,
+    endDatetime?: string,
+    startDate?: string,
+    startDatetime?: string,
+    filterUseSiteExchangeRate?: boolean,
+  },
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentResponse[]>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      productFamilyId: [productFamilyId, number()],
+      includeArchived: [includeArchived, optional(boolean())],
+      filterIds: [filterIds, optional(array(number()))],
+      page: [page, optional(number())],
+      perPage: [perPage, optional(number())],
+      dateField: [dateField, optional(basicDateFieldSchema)],
+      endDate: [endDate, optional(string())],
+      endDatetime: [endDatetime, optional(string())],
+      startDate: [startDate, optional(string())],
+      startDatetime: [startDatetime, optional(string())],
+      filterUseSiteExchangeRate: [
+        filterUseSiteExchangeRate,
+        optional(boolean()),
+      ],
+    });
+    req.query('include_archived', mapped.includeArchived);
+    req.query('filter[ids]', mapped.filterIds, commaPrefix);
+    req.query('page', mapped.page);
+    req.query('per_page', mapped.perPage);
+    req.query('date_field', mapped.dateField);
+    req.query('end_date', mapped.endDate);
+    req.query('end_datetime', mapped.endDatetime);
+    req.query('start_date', mapped.startDate);
+    req.query('start_datetime', mapped.startDatetime);
+    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(array(componentResponseSchema), requestOptions);
+  }
+
+  /**
+   * Use this endpoint to create multiple component price points in one request.
+   *
+   * @param componentId  The Chargify id of the component for which you
+   *                                                                 want to fetch price points.
+   * @param body
+   * @return Response from the API call
+   */
+  async createComponentPricePoints(
+    componentId: string,
+    body?: CreateComponentPricePointsRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentPricePointsResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, string()],
+      body: [body, optional(createComponentPricePointsRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points/bulk.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentPricePointsResponseSchema, requestOptions);
+  }
+
+  /**
+   * Use this endpoint to unarchive a component price point.
+   *
+   * @param componentId    The Chargify id of the component to which the price point belongs
+   * @param pricePointId   The Chargify id of the price point
+   * @return Response from the API call
+   */
+  async unarchiveComponentPricePoint(
+    componentId: number,
+    pricePointId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ComponentPricePointResponse>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, number()],
+      pricePointId: [pricePointId, number()],
+    });
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/unarchive.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(componentPricePointResponseSchema, requestOptions);
+  }
+
+  /**
+   * This endpoint allows you to create currency prices for a given currency that has been defined on the
+   * site level in your settings.
+   *
+   * When creating currency prices, they need to mirror the structure of your primary pricing. For each
+   * price level defined on the component price point, there should be a matching price level created in
+   * the given currency.
+   *
+   * Note: Currency Prices are not able to be created for custom price points.
+   *
+   * @param pricePointId   The Chargify id of the price point
+   * @param body
+   * @return Response from the API call
+   */
+  async createCurrencyPrices(
+    pricePointId: number,
+    body?: CreateCurrencyPricesRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<CurrencyPrice[]>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      pricePointId: [pricePointId, number()],
+      body: [body, optional(createCurrencyPricesRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/price_points/${mapped.pricePointId}/currency_prices.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(array(currencyPriceSchema), requestOptions);
+  }
+
+  /**
+   * This endpoint allows you to update currency prices for a given currency that has been defined on the
+   * site level in your settings.
+   *
+   * Note: Currency Prices are not able to be updated for custom price points.
+   *
+   * @param pricePointId   The Chargify id of the price point
+   * @param body
+   * @return Response from the API call
+   */
+  async updateCurrencyPrices(
+    pricePointId: number,
+    body?: UpdateCurrencyPricesRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<CurrencyPrice[]>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      pricePointId: [pricePointId, number()],
+      body: [body, optional(updateCurrencyPricesRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/price_points/${mapped.pricePointId}/currency_prices.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(array(currencyPriceSchema), requestOptions);
   }
 }

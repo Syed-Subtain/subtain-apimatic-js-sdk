@@ -65,6 +65,7 @@ export class SubscriptionStatusController extends BaseController {
     });
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/retry.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
   }
 
@@ -91,63 +92,7 @@ export class SubscriptionStatusController extends BaseController {
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}.json`;
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(subscriptionResponseSchema, requestOptions);
-  }
-
-  /**
-   * Resume a paused (on-hold) subscription. If the normal next renewal date has not passed, the
-   * subscription will return to active and will renew on that date.  Otherwise, it will behave like a
-   * reactivation, setting the billing date to 'now' and charging the subscriber.
-   *
-   * @param subscriptionId                        The Chargify id of the subscription
-   * @param calendarBillingResumptionCharge       (For calendar billing subscriptions only) The
-   *                                                                  way that the resumed subscription's charge should
-   *                                                                  be handled
-   * @return Response from the API call
-   */
-  async resumeSubscription(
-    subscriptionId: string,
-    calendarBillingResumptionCharge?: ResumptionCharge,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      calendarBillingResumptionCharge: [
-        calendarBillingResumptionCharge,
-        optional(resumptionChargeSchema),
-      ],
-    });
-    req.query('calendar_billing[\'resumption_charge\']', mapped.calendarBillingResumptionCharge);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/resume.json`;
-    return req.callAsJson(subscriptionResponseSchema, requestOptions);
-  }
-
-  /**
-   * This will place the subscription in the on_hold state and it will not renew.
-   *
-   * ## Limitations
-   *
-   * You may not place a subscription on hold if the `next_billing` date is within 24 hours.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body
-   * @return Response from the API call
-   */
-  async pauseSubscription(
-    subscriptionId: string,
-    body?: PauseRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(pauseRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/hold.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
   }
 
@@ -180,6 +125,66 @@ export class SubscriptionStatusController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/hold.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(subscriptionResponseSchema, requestOptions);
+  }
+
+  /**
+   * Resume a paused (on-hold) subscription. If the normal next renewal date has not passed, the
+   * subscription will return to active and will renew on that date.  Otherwise, it will behave like a
+   * reactivation, setting the billing date to 'now' and charging the subscriber.
+   *
+   * @param subscriptionId                        The Chargify id of the subscription
+   * @param calendarBillingResumptionCharge       (For calendar billing subscriptions only) The
+   *                                                                  way that the resumed subscription's charge should
+   *                                                                  be handled
+   * @return Response from the API call
+   */
+  async resumeSubscription(
+    subscriptionId: string,
+    calendarBillingResumptionCharge?: ResumptionCharge,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SubscriptionResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      calendarBillingResumptionCharge: [
+        calendarBillingResumptionCharge,
+        optional(resumptionChargeSchema),
+      ],
+    });
+    req.query('calendar_billing[\'resumption_charge\']', mapped.calendarBillingResumptionCharge);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/resume.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(subscriptionResponseSchema, requestOptions);
+  }
+
+  /**
+   * This will place the subscription in the on_hold state and it will not renew.
+   *
+   * ## Limitations
+   *
+   * You may not place a subscription on hold if the `next_billing` date is within 24 hours.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param body
+   * @return Response from the API call
+   */
+  async pauseSubscription(
+    subscriptionId: string,
+    body?: PauseRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SubscriptionResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(pauseRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/hold.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
   }
 
@@ -373,62 +378,8 @@ export class SubscriptionStatusController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/reactivate.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
-  }
-
-  /**
-   * Chargify offers the ability to cancel a subscription at the end of the current billing period. This
-   * period is set by its current product.
-   *
-   * Requesting to cancel the subscription at the end of the period sets the `cancel_at_end_of_period`
-   * flag to true.
-   *
-   * Note that you cannot set `cancel_at_end_of_period` at subscription creation, or if the subscription
-   * is past due.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body
-   * @return Response from the API call
-   */
-  async initiateDelayedCancellation(
-    subscriptionId: string,
-    body?: CancellationRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<DelayedCancellationResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(cancellationRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/delayed_cancel.json`;
-    req.throwOn(404, ApiError, 'Not Found');
-    return req.callAsJson(delayedCancellationResponseSchema, requestOptions);
-  }
-
-  /**
-   * Removing the delayed cancellation on a subscription will ensure that it doesn't get canceled at the
-   * end of the period that it is in. The request will reset the `cancel_at_end_of_period` flag to
-   * `false`.
-   *
-   * This endpoint is idempotent. If the subscription was not set to cancel in the future, removing the
-   * delayed cancellation has no effect and the call will be successful.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @return Response from the API call
-   */
-  async stopDelayedCancellation(
-    subscriptionId: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<DelayedCancellationResponse>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-    });
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/delayed_cancel.json`;
-    req.throwOn(404, ApiError, 'Not Found');
-    return req.callAsJson(delayedCancellationResponseSchema, requestOptions);
   }
 
   /**
@@ -447,6 +398,7 @@ export class SubscriptionStatusController extends BaseController {
       subscriptionId: [subscriptionId, string()],
     });
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/cancel_dunning.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
   }
 
@@ -502,6 +454,64 @@ export class SubscriptionStatusController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/renewals/preview.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(renewalPreviewResponseSchema, requestOptions);
+  }
+
+  /**
+   * Chargify offers the ability to cancel a subscription at the end of the current billing period. This
+   * period is set by its current product.
+   *
+   * Requesting to cancel the subscription at the end of the period sets the `cancel_at_end_of_period`
+   * flag to true.
+   *
+   * Note that you cannot set `cancel_at_end_of_period` at subscription creation, or if the subscription
+   * is past due.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param body
+   * @return Response from the API call
+   */
+  async initiateDelayedCancellation(
+    subscriptionId: string,
+    body?: CancellationRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<DelayedCancellationResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(cancellationRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/delayed_cancel.json`;
+    req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(delayedCancellationResponseSchema, requestOptions);
+  }
+
+  /**
+   * Removing the delayed cancellation on a subscription will ensure that it doesn't get canceled at the
+   * end of the period that it is in. The request will reset the `cancel_at_end_of_period` flag to
+   * `false`.
+   *
+   * This endpoint is idempotent. If the subscription was not set to cancel in the future, removing the
+   * delayed cancellation has no effect and the call will be successful.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @return Response from the API call
+   */
+  async stopDelayedCancellation(
+    subscriptionId: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<DelayedCancellationResponse>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+    });
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/delayed_cancel.json`;
+    req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(delayedCancellationResponseSchema, requestOptions);
   }
 }

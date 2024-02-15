@@ -43,6 +43,42 @@ import { BaseController } from './baseController';
 
 export class WebhooksController extends BaseController {
   /**
+   * Posting to the replay endpoint does not immediately resend the webhooks. They are added to a queue
+   * and will be sent as soon as possible, depending on available system resources.
+   *
+   * You may submit an array of up to 1000 webhook IDs to replay in the request.
+   *
+   * @param body
+   * @return Response from the API call
+   */
+  async replayWebhooks(
+    body?: ReplayWebhooksRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ReplayWebhooksResponse>> {
+    const req = this.createRequest('POST', '/webhooks/replay.json');
+    const mapped = req.prepareArgs({
+      body: [body, optional(replayWebhooksRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(replayWebhooksResponseSchema, requestOptions);
+  }
+
+  /**
+   * This method returns created endpoints for site.
+   *
+   * @return Response from the API call
+   */
+  async listEndpoints(
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<Endpoint[]>> {
+    const req = this.createRequest('GET', '/endpoints.json');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(array(endpointSchema), requestOptions);
+  }
+
+  /**
    * ## Webhooks Intro
    *
    * The Webhooks API allows you to view a list of all webhooks and to selectively resend individual or
@@ -121,6 +157,7 @@ export class WebhooksController extends BaseController {
     req.query('per_page', mapped.perPage);
     req.query('order', mapped.order);
     req.query('subscription', mapped.subscription);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(webhookResponseSchema), requestOptions);
   }
 
@@ -140,29 +177,8 @@ export class WebhooksController extends BaseController {
     });
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(enableWebhooksResponseSchema, requestOptions);
-  }
-
-  /**
-   * Posting to the replay endpoint does not immediately resend the webhooks. They are added to a queue
-   * and will be sent as soon as possible, depending on available system resources.
-   *
-   * You may submit an array of up to 1000 webhook IDs to replay in the request.
-   *
-   * @param body
-   * @return Response from the API call
-   */
-  async replayWebhooks(
-    body?: ReplayWebhooksRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ReplayWebhooksResponse>> {
-    const req = this.createRequest('POST', '/webhooks/replay.json');
-    const mapped = req.prepareArgs({
-      body: [body, optional(replayWebhooksRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    return req.callAsJson(replayWebhooksResponseSchema, requestOptions);
   }
 
   /**
@@ -187,19 +203,8 @@ export class WebhooksController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(endpointResponseSchema, requestOptions);
-  }
-
-  /**
-   * This method returns created endpoints for site.
-   *
-   * @return Response from the API call
-   */
-  async listEndpoints(
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<Endpoint[]>> {
-    const req = this.createRequest('GET', '/endpoints.json');
-    return req.callAsJson(array(endpointSchema), requestOptions);
   }
 
   /**
@@ -235,6 +240,7 @@ export class WebhooksController extends BaseController {
     req.appendTemplatePath`/endpoints/${mapped.endpointId}.json`;
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(endpointResponseSchema, requestOptions);
   }
 }

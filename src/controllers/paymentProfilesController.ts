@@ -380,49 +380,113 @@ export class PaymentProfilesController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(createPaymentProfileResponseSchema, requestOptions);
   }
 
   /**
-   * This method will return all of the active `payment_profiles` for a Site, or for one Customer within
-   * a site.  If no payment profiles are found, this endpoint will return an empty array, not a 404.
+   * Deletes an unused payment profile.
    *
-   * @param page        Result records are organized in pages. By default, the first page of results is
-   *                              displayed. The page parameter specifies a page number of results to fetch. You can
-   *                              start navigating through the pages to consume the results. You do this by passing in
-   *                              a page parameter. Retrieve the next page by adding ?page=2 to the query string. If
-   *                              there are no results to return, then an empty result set will be returned. Use in
-   *                              query `page=1`.
-   * @param perPage     This parameter indicates how many records to fetch in each request. Default value is
-   *                              20. The maximum allowed values is 200; any per_page value over 200 will be changed to
-   *                              200. Use in query `per_page=200`.
-   * @param customerId  The ID of the customer for which you wish to list payment profiles
+   * If the payment profile is in use by one or more subscriptions or groups, a 422 and error message
+   * will be returned.
+   *
+   * @param paymentProfileId   The Chargify id of the payment profile
    * @return Response from the API call
    */
-  async listPaymentProfiles({
-    page,
-    perPage,
-    customerId,
-  }: {
-    page?: number,
-    perPage?: number,
-    customerId?: number,
-  },
+  async deleteUnusedPaymentProfile(
+    paymentProfileId: string,
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ListPaymentProfilesResponse[]>> {
-    const req = this.createRequest('GET', '/payment_profiles.json');
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('DELETE');
     const mapped = req.prepareArgs({
-      page: [page, optional(number())],
-      perPage: [perPage, optional(number())],
-      customerId: [customerId, optional(number())],
+      paymentProfileId: [paymentProfileId, string()],
     });
-    req.query('page', mapped.page);
-    req.query('per_page', mapped.perPage);
-    req.query('customer_id', mapped.customerId);
-    return req.callAsJson(
-      array(listPaymentProfilesResponseSchema),
-      requestOptions
-    );
+    req.appendTemplatePath`/payment_profiles/${mapped.paymentProfileId}.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * This will delete a payment profile belonging to the customer on the subscription.
+   *
+   * + If the customer has multiple subscriptions, the payment profile will be removed from all of them.
+   *
+   * + If you delete the default payment profile for a subscription, you will need to specify another
+   * payment profile to be the default through the api, or either prompt the user to enter a card in the
+   * billing portal or on the self-service page, or visit the Payment Details tab on the subscription in
+   * the Admin UI and use the “Add New Credit Card” or “Make Active Payment Method” link, (depending on
+   * whether there are other cards present).
+   *
+   * @param subscriptionId     The Chargify id of the subscription
+   * @param paymentProfileId   The Chargify id of the payment profile
+   * @return Response from the API call
+   */
+  async deleteSubscriptionsPaymentProfile(
+    subscriptionId: string,
+    paymentProfileId: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      paymentProfileId: [paymentProfileId, string()],
+    });
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/payment_profiles/${mapped.paymentProfileId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * This will delete a Payment Profile belonging to a Subscription Group.
+   *
+   * **Note**: If the Payment Profile belongs to multiple Subscription Groups and/or Subscriptions, it
+   * will be removed from all of them.
+   *
+   * @param uid                The uid of the subscription group
+   * @param paymentProfileId   The Chargify id of the payment profile
+   * @return Response from the API call
+   */
+  async deleteSubscriptionGroupPaymentProfile(
+    uid: string,
+    paymentProfileId: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      uid: [uid, string()],
+      paymentProfileId: [paymentProfileId, string()],
+    });
+    req.appendTemplatePath`/subscription_groups/${mapped.uid}/payment_profiles/${mapped.paymentProfileId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * One Time Tokens aka Chargify Tokens house the credit card or ACH (Authorize.Net or Stripe only) data
+   * for a customer.
+   *
+   * You can use One Time Tokens while creating a subscription or payment profile instead of passing all
+   * bank account or credit card data directly to a given API endpoint.
+   *
+   * To obtain a One Time Token you have to use [chargify.js](https://developers.chargify.
+   * com/docs/developer-docs/ZG9jOjE0NjAzNDI0-overview).
+   *
+   * @param chargifyToken  Chargify Token
+   * @return Response from the API call
+   */
+  async readOneTimeToken(
+    chargifyToken: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<GetOneTimeTokenRequest>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      chargifyToken: [chargifyToken, string()],
+    });
+    req.appendTemplatePath`/one_time_tokens/${mapped.chargifyToken}.json`;
+    req.throwOn(404, ErrorListResponseError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(getOneTimeTokenRequestSchema, requestOptions);
   }
 
   /**
@@ -475,6 +539,7 @@ export class PaymentProfilesController extends BaseController {
       paymentProfileId: [paymentProfileId, string()],
     });
     req.appendTemplatePath`/payment_profiles/${mapped.paymentProfileId}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(readPaymentProfileResponseSchema, requestOptions);
   }
 
@@ -543,108 +608,8 @@ export class PaymentProfilesController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/payment_profiles/${mapped.paymentProfileId}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(updatePaymentProfileResponseSchema, requestOptions);
-  }
-
-  /**
-   * Deletes an unused payment profile.
-   *
-   * If the payment profile is in use by one or more subscriptions or groups, a 422 and error message
-   * will be returned.
-   *
-   * @param paymentProfileId   The Chargify id of the payment profile
-   * @return Response from the API call
-   */
-  async deleteUnusedPaymentProfile(
-    paymentProfileId: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      paymentProfileId: [paymentProfileId, string()],
-    });
-    req.appendTemplatePath`/payment_profiles/${mapped.paymentProfileId}.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
-  }
-
-  /**
-   * This will delete a payment profile belonging to the customer on the subscription.
-   *
-   * + If the customer has multiple subscriptions, the payment profile will be removed from all of them.
-   *
-   * + If you delete the default payment profile for a subscription, you will need to specify another
-   * payment profile to be the default through the api, or either prompt the user to enter a card in the
-   * billing portal or on the self-service page, or visit the Payment Details tab on the subscription in
-   * the Admin UI and use the “Add New Credit Card” or “Make Active Payment Method” link, (depending on
-   * whether there are other cards present).
-   *
-   * @param subscriptionId     The Chargify id of the subscription
-   * @param paymentProfileId   The Chargify id of the payment profile
-   * @return Response from the API call
-   */
-  async deleteSubscriptionsPaymentProfile(
-    subscriptionId: string,
-    paymentProfileId: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      paymentProfileId: [paymentProfileId, string()],
-    });
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/payment_profiles/${mapped.paymentProfileId}.json`;
-    return req.call(requestOptions);
-  }
-
-  /**
-   * Submit the two small deposit amounts the customer received in their bank account in order to verify
-   * the bank account. (Stripe only)
-   *
-   * @param bankAccountId   Identifier of the bank account in the system.
-   * @param body
-   * @return Response from the API call
-   */
-  async verifyBankAccount(
-    bankAccountId: number,
-    body?: BankAccountVerificationRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<BankAccountResponse>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      bankAccountId: [bankAccountId, number()],
-      body: [body, optional(bankAccountVerificationRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/bank_accounts/${mapped.bankAccountId}/verification.json`;
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(bankAccountResponseSchema, requestOptions);
-  }
-
-  /**
-   * This will delete a Payment Profile belonging to a Subscription Group.
-   *
-   * **Note**: If the Payment Profile belongs to multiple Subscription Groups and/or Subscriptions, it
-   * will be removed from all of them.
-   *
-   * @param uid                The uid of the subscription group
-   * @param paymentProfileId   The Chargify id of the payment profile
-   * @return Response from the API call
-   */
-  async deleteSubscriptionGroupPaymentProfile(
-    uid: string,
-    paymentProfileId: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      uid: [uid, string()],
-      paymentProfileId: [paymentProfileId, string()],
-    });
-    req.appendTemplatePath`/subscription_groups/${mapped.uid}/payment_profiles/${mapped.paymentProfileId}.json`;
-    return req.call(requestOptions);
   }
 
   /**
@@ -670,6 +635,7 @@ export class PaymentProfilesController extends BaseController {
     });
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/payment_profiles/${mapped.paymentProfileId}/change_payment_profile.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(paymentProfileResponseSchema, requestOptions);
   }
 
@@ -699,33 +665,78 @@ export class PaymentProfilesController extends BaseController {
     });
     req.appendTemplatePath`/subscription_groups/${mapped.uid}/payment_profiles/${mapped.paymentProfileId}/change_payment_profile.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(paymentProfileResponseSchema, requestOptions);
   }
 
   /**
-   * One Time Tokens aka Chargify Tokens house the credit card or ACH (Authorize.Net or Stripe only) data
-   * for a customer.
+   * This method will return all of the active `payment_profiles` for a Site, or for one Customer within
+   * a site.  If no payment profiles are found, this endpoint will return an empty array, not a 404.
    *
-   * You can use One Time Tokens while creating a subscription or payment profile instead of passing all
-   * bank account or credit card data directly to a given API endpoint.
-   *
-   * To obtain a One Time Token you have to use [chargify.js](https://developers.chargify.
-   * com/docs/developer-docs/ZG9jOjE0NjAzNDI0-overview).
-   *
-   * @param chargifyToken  Chargify Token
+   * @param page        Result records are organized in pages. By default, the first page of results is
+   *                              displayed. The page parameter specifies a page number of results to fetch. You can
+   *                              start navigating through the pages to consume the results. You do this by passing in
+   *                              a page parameter. Retrieve the next page by adding ?page=2 to the query string. If
+   *                              there are no results to return, then an empty result set will be returned. Use in
+   *                              query `page=1`.
+   * @param perPage     This parameter indicates how many records to fetch in each request. Default value is
+   *                              20. The maximum allowed values is 200; any per_page value over 200 will be changed to
+   *                              200. Use in query `per_page=200`.
+   * @param customerId  The ID of the customer for which you wish to list payment profiles
    * @return Response from the API call
    */
-  async readOneTimeToken(
-    chargifyToken: string,
+  async listPaymentProfiles({
+    page,
+    perPage,
+    customerId,
+  }: {
+    page?: number,
+    perPage?: number,
+    customerId?: number,
+  },
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<GetOneTimeTokenRequest>> {
-    const req = this.createRequest('GET');
+  ): Promise<ApiResponse<ListPaymentProfilesResponse[]>> {
+    const req = this.createRequest('GET', '/payment_profiles.json');
     const mapped = req.prepareArgs({
-      chargifyToken: [chargifyToken, string()],
+      page: [page, optional(number())],
+      perPage: [perPage, optional(number())],
+      customerId: [customerId, optional(number())],
     });
-    req.appendTemplatePath`/one_time_tokens/${mapped.chargifyToken}.json`;
-    req.throwOn(404, ErrorListResponseError, 'Not Found');
-    return req.callAsJson(getOneTimeTokenRequestSchema, requestOptions);
+    req.query('page', mapped.page);
+    req.query('per_page', mapped.perPage);
+    req.query('customer_id', mapped.customerId);
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(
+      array(listPaymentProfilesResponseSchema),
+      requestOptions
+    );
+  }
+
+  /**
+   * Submit the two small deposit amounts the customer received in their bank account in order to verify
+   * the bank account. (Stripe only)
+   *
+   * @param bankAccountId   Identifier of the bank account in the system.
+   * @param body
+   * @return Response from the API call
+   */
+  async verifyBankAccount(
+    bankAccountId: number,
+    body?: BankAccountVerificationRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<BankAccountResponse>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      bankAccountId: [bankAccountId, number()],
+      body: [body, optional(bankAccountVerificationRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/bank_accounts/${mapped.bankAccountId}/verification.json`;
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(bankAccountResponseSchema, requestOptions);
   }
 
   /**
@@ -758,6 +769,7 @@ export class PaymentProfilesController extends BaseController {
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/request_payment_profiles_update.json`;
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
 }

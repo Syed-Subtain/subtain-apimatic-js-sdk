@@ -888,7 +888,301 @@ export class SubscriptionsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
+  }
+
+  /**
+   * This API endpoint allows you to set certain subscription fields that are usually managed for you
+   * automatically. Some of the fields can be set via the normal Subscriptions Update API, but others can
+   * only be set using this endpoint.
+   *
+   * This endpoint is provided for cases where you need to “align” Chargify data with data that happened
+   * in your system, perhaps before you started using Chargify. For example, you may choose to import
+   * your historical subscription data, and would like the activation and cancellation dates in Chargify
+   * to match your existing historical dates. Chargify does not backfill historical events (i.e. from the
+   * Events API), but some static data can be changed via this API.
+   *
+   * Why are some fields only settable from this endpoint, and not the normal subscription create and
+   * update endpoints? Because we want users of this endpoint to be aware that these fields are usually
+   * managed by Chargify, and using this API means **you are stepping out on your own.**
+   *
+   * Changing these fields will not affect any other attributes. For example, adding an expiration date
+   * will not affect the next assessment date on the subscription.
+   *
+   * If you regularly need to override the current_period_starts_at for new subscriptions, this can also
+   * be accomplished by setting both `previous_billing_at` and `next_billing_at` at subscription creation.
+   * See the documentation on [Importing Subscriptions](./b3A6MTQxMDgzODg-create-
+   * subscription#subscriptions-import) for more information.
+   *
+   * ## Limitations
+   *
+   * When passing `current_period_starts_at` some validations are made:
+   *
+   * 1. The subscription needs to be unbilled (no statements or invoices).
+   * 2. The value passed must be a valid date/time. We recommend using the iso 8601 format.
+   * 3. The value passed must be before the current date/time.
+   *
+   * If unpermitted parameters are sent, a 400 HTTP response is sent along with a string giving the
+   * reason for the problem.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param body            Only these fields are available to be set.
+   * @return Response from the API call
+   */
+  async overrideSubscription(
+    subscriptionId: string,
+    body?: OverrideSubscriptionRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(overrideSubscriptionRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/override.json`;
+    req.throwOn(400, ApiError, 'Bad Request');
+    req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * Chargify offers the ability to activate awaiting signup and trialing subscriptions. This feature is
+   * only available on the Relationship Invoicing architecture. Subscriptions in a group may not be
+   * activated immediately.
+   *
+   * For details on how the activation works, and how to activate subscriptions through the application,
+   * see [activation](#).
+   *
+   * The `revert_on_failure` parameter controls the behavior upon activation failure.
+   * - If set to `true` and something goes wrong i.e. payment fails, then Chargify will not change the
+   * subscription's state. The subscription’s billing period will also remain the same.
+   * - If set to `false` and something goes wrong i.e. payment fails, then Chargify will continue through
+   * with the activation and enter an end of life state. For trialing subscriptions, that will either be
+   * trial ended (if the trial is no obligation), past due (if the trial has an obligation), or canceled
+   * (if the site has no dunning strategy, or has a strategy that says to cancel immediately). For
+   * awaiting signup subscriptions, that will always be canceled.
+   *
+   * The default activation failure behavior can be configured per activation attempt, or you may set a
+   * default value under Config > Settings > Subscription Activation Settings.
+   *
+   * ## Activation Scenarios
+   *
+   * ### Activate Awaiting Signup subscription
+   *
+   * - Given you have a product without trial
+   * - Given you have a site without dunning strategy
+   *
+   * ```mermaid
+   * flowchart LR
+   * AS[Awaiting Signup] --> A{Activate}
+   * A -->|Success| Active
+   * A -->|Failure| ROF{revert_on_failure}
+   * ROF -->|true| AS
+   * ROF -->|false| Canceled
+   * ```
+   *
+   * - Given you have a product with trial
+   * - Given you have a site with dunning strategy
+   *
+   * ```mermaid
+   * flowchart LR
+   * AS[Awaiting Signup] --> A{Activate}
+   * A -->|Success| Trialing
+   * A -->|Failure| ROF{revert_on_failure}
+   * ROF -->|true| AS
+   * ROF -->|false| PD[Past Due]
+   * ```
+   *
+   * ### Activate Trialing subscription
+   *
+   * You can read more about the behavior of trialing subscriptions [here](https://maxio-chargify.zendesk.
+   * com/hc/en-us/articles/5404494617357#trialing-subscriptions-0-0).
+   * When the `revert_on_failure` parameter is set to `true`, the subscription's state will remain as
+   * Trialing, we will void the invoice from activation and return any prepayments and credits applied to
+   * the invoice back to the subscription.
+   *
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param body
+   * @return Response from the API call
+   */
+  async activateSubscription(
+    subscriptionId: string,
+    body?: ActivateSubscriptionRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SubscriptionResponse>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(activateSubscriptionRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/activate.json`;
+    req.throwOn(400, NestedErrorResponseError, 'Bad Request');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(subscriptionResponseSchema, requestOptions);
+  }
+
+  /**
+   * For sites in test mode, you may purge individual subscriptions.
+   *
+   * Provide the subscription ID in the url.  To confirm, supply the customer ID in the query string
+   * `ack` parameter. You may also delete the customer record and/or payment profiles by passing
+   * `cascade` parameters. For example, to delete just the customer record, the query params would be: `?
+   * ack={customer_id}&cascade[]=customer`
+   *
+   * If you need to remove subscriptions from a live site, please contact support to discuss your use
+   * case.
+   *
+   * ### Delete customer and payment profile
+   *
+   * The query params will be: `?ack={customer_id}&cascade[]=customer&cascade[]=payment_profile`
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param ack             id of the customer.
+   * @param cascade         Options are "customer" or "payment_profile". Use in query:
+   *                                                   `cascade[]=customer&cascade[]=payment_profile`.
+   * @return Response from the API call
+   */
+  async purgeSubscription(
+    subscriptionId: string,
+    ack: number,
+    cascade?: SubscriptionPurgeType[],
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      ack: [ack, number()],
+      cascade: [cascade, optional(array(subscriptionPurgeTypeSchema))],
+    });
+    req.query('ack', mapped.ack);
+    req.query('cascade[]', mapped.cascade, plainPrefix);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/purge.json`;
+    req.throwOn(400, ApiError, 'Bad Request');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * Use this endpoint to find subscription details.
+   *
+   * ## Self-Service Page token
+   *
+   * Self-Service Page token for the subscription is not returned by default. If this information is
+   * desired, the include[]=self_service_page_token parameter must be provided with the request.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param include         Allows including additional data in the response. Use in query:
+   *                                                 `include[]=coupons&include[]=self_service_page_token`.
+   * @return Response from the API call
+   */
+  async readSubscription(
+    subscriptionId: string,
+    include?: SubscriptionInclude[],
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SubscriptionResponse>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      include: [include, optional(array(subscriptionIncludeSchema))],
+    });
+    req.query('include[]', mapped.include, plainPrefix);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(subscriptionResponseSchema, requestOptions);
+  }
+
+  /**
+   * The Chargify API allows you to preview a subscription by POSTing the same JSON or XML as for a
+   * subscription creation.
+   *
+   * The "Next Billing" amount and "Next Billing" date are represented in each Subscriber's Summary. For
+   * more information, please see our documentation [here](https://chargify.zendesk.com/hc/en-
+   * us/articles/4407884887835#next-billing).
+   *
+   * ## Side effects
+   *
+   * A subscription will not be created by sending a POST to this endpoint. It is meant to serve as a
+   * prediction.
+   *
+   * ## Taxable Subscriptions
+   *
+   * This endpoint will preview taxes applicable to a purchase. In order for taxes to be previewed, the
+   * following conditions must be met:
+   *
+   * + Taxes must be configured on the subscription
+   * + The preview must be for the purchase of a taxable product or component, or combination of the two.
+   * + The subscription payload must contain a full billing or shipping address in order to calculate
+   * tax
+   *
+   * For more information about creating taxable previews, please see our documentation guide on how to
+   * create [taxable subscriptions.](https://chargify.zendesk.com/hc/en-
+   * us/articles/4407904217755#creating-taxable-subscriptions)
+   *
+   * You do **not** need to include a card number to generate tax information when you are previewing a
+   * subscription. However, please note that when you actually want to create the subscription, you must
+   * include the credit card information if you want the billing address to be stored in Chargify. The
+   * billing address and the credit card information are stored together within the payment profile
+   * object. Also, you may not send a billing address to Chargify without payment profile information, as
+   * the address is stored on the card.
+   *
+   * You can pass shipping and billing addresses and still decide not to calculate taxes. To do that,
+   * pass `skip_billing_manifest_taxes: true` attribute.
+   *
+   * ## Non-taxable Subscriptions
+   *
+   * If you'd like to calculate subscriptions that do not include tax, please feel free to leave off the
+   * billing information.
+   *
+   * @param body
+   * @return Response from the API call
+   */
+  async previewSubscription(
+    body?: CreateSubscriptionRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SubscriptionPreviewResponse>> {
+    const req = this.createRequest('POST', '/subscriptions/preview.json');
+    const mapped = req.prepareArgs({
+      body: [body, optional(createSubscriptionRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(subscriptionPreviewResponseSchema, requestOptions);
+  }
+
+  /**
+   * Use this endpoint to remove a coupon from an existing subscription.
+   *
+   * For more information on the expected behaviour of removing a coupon from a subscription, please see
+   * our documentation [here.](https://chargify.zendesk.com/hc/en-us/articles/4407896488987#removing-a-
+   * coupon)
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param couponCode      The coupon code
+   * @return Response from the API call
+   */
+  async deleteCouponFromSubscription(
+    subscriptionId: string,
+    couponCode?: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<string>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      couponCode: [couponCode, optional(string())],
+    });
+    req.query('coupon_code', mapped.couponCode);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/remove_coupon.json`;
+    req.throwOn(422, SubscriptionRemoveCouponErrorsError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsText(requestOptions);
   }
 
   /**
@@ -1032,6 +1326,7 @@ export class SubscriptionsController extends BaseController {
     req.query(mapped.metadata);
     req.query('direction', mapped.direction);
     req.query('sort', mapped.sort);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(subscriptionResponseSchema), requestOptions);
   }
 
@@ -1124,91 +1419,8 @@ export class SubscriptionsController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
-  }
-
-  /**
-   * Use this endpoint to find subscription details.
-   *
-   * ## Self-Service Page token
-   *
-   * Self-Service Page token for the subscription is not returned by default. If this information is
-   * desired, the include[]=self_service_page_token parameter must be provided with the request.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param include         Allows including additional data in the response. Use in query:
-   *                                                 `include[]=coupons&include[]=self_service_page_token`.
-   * @return Response from the API call
-   */
-  async readSubscription(
-    subscriptionId: string,
-    include?: SubscriptionInclude[],
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionResponse>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      include: [include, optional(array(subscriptionIncludeSchema))],
-    });
-    req.query('include[]', mapped.include, plainPrefix);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}.json`;
-    return req.callAsJson(subscriptionResponseSchema, requestOptions);
-  }
-
-  /**
-   * This API endpoint allows you to set certain subscription fields that are usually managed for you
-   * automatically. Some of the fields can be set via the normal Subscriptions Update API, but others can
-   * only be set using this endpoint.
-   *
-   * This endpoint is provided for cases where you need to “align” Chargify data with data that happened
-   * in your system, perhaps before you started using Chargify. For example, you may choose to import
-   * your historical subscription data, and would like the activation and cancellation dates in Chargify
-   * to match your existing historical dates. Chargify does not backfill historical events (i.e. from the
-   * Events API), but some static data can be changed via this API.
-   *
-   * Why are some fields only settable from this endpoint, and not the normal subscription create and
-   * update endpoints? Because we want users of this endpoint to be aware that these fields are usually
-   * managed by Chargify, and using this API means **you are stepping out on your own.**
-   *
-   * Changing these fields will not affect any other attributes. For example, adding an expiration date
-   * will not affect the next assessment date on the subscription.
-   *
-   * If you regularly need to override the current_period_starts_at for new subscriptions, this can also
-   * be accomplished by setting both `previous_billing_at` and `next_billing_at` at subscription creation.
-   * See the documentation on [Importing Subscriptions](./b3A6MTQxMDgzODg-create-
-   * subscription#subscriptions-import) for more information.
-   *
-   * ## Limitations
-   *
-   * When passing `current_period_starts_at` some validations are made:
-   *
-   * 1. The subscription needs to be unbilled (no statements or invoices).
-   * 2. The value passed must be a valid date/time. We recommend using the iso 8601 format.
-   * 3. The value passed must be before the current date/time.
-   *
-   * If unpermitted parameters are sent, a 400 HTTP response is sent along with a string giving the
-   * reason for the problem.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body            Only these fields are available to be set.
-   * @return Response from the API call
-   */
-  async overrideSubscription(
-    subscriptionId: string,
-    body?: OverrideSubscriptionRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(overrideSubscriptionRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/override.json`;
-    req.throwOn(400, ApiError, 'Bad Request');
-    req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
   }
 
   /**
@@ -1226,47 +1438,8 @@ export class SubscriptionsController extends BaseController {
       reference: [reference, optional(string())],
     });
     req.query('reference', mapped.reference);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
-  }
-
-  /**
-   * For sites in test mode, you may purge individual subscriptions.
-   *
-   * Provide the subscription ID in the url.  To confirm, supply the customer ID in the query string
-   * `ack` parameter. You may also delete the customer record and/or payment profiles by passing
-   * `cascade` parameters. For example, to delete just the customer record, the query params would be: `?
-   * ack={customer_id}&cascade[]=customer`
-   *
-   * If you need to remove subscriptions from a live site, please contact support to discuss your use
-   * case.
-   *
-   * ### Delete customer and payment profile
-   *
-   * The query params will be: `?ack={customer_id}&cascade[]=customer&cascade[]=payment_profile`
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param ack             id of the customer.
-   * @param cascade         Options are "customer" or "payment_profile". Use in query:
-   *                                                   `cascade[]=customer&cascade[]=payment_profile`.
-   * @return Response from the API call
-   */
-  async purgeSubscription(
-    subscriptionId: string,
-    ack: number,
-    cascade?: SubscriptionPurgeType[],
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      ack: [ack, number()],
-      cascade: [cascade, optional(array(subscriptionPurgeTypeSchema))],
-    });
-    req.query('ack', mapped.ack);
-    req.query('cascade[]', mapped.cascade, plainPrefix);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/purge.json`;
-    req.throwOn(400, ApiError, 'Bad Request');
-    return req.call(requestOptions);
   }
 
   /**
@@ -1289,65 +1462,8 @@ export class SubscriptionsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/prepaid_configurations.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(prepaidConfigurationResponseSchema, requestOptions);
-  }
-
-  /**
-   * The Chargify API allows you to preview a subscription by POSTing the same JSON or XML as for a
-   * subscription creation.
-   *
-   * The "Next Billing" amount and "Next Billing" date are represented in each Subscriber's Summary. For
-   * more information, please see our documentation [here](https://chargify.zendesk.com/hc/en-
-   * us/articles/4407884887835#next-billing).
-   *
-   * ## Side effects
-   *
-   * A subscription will not be created by sending a POST to this endpoint. It is meant to serve as a
-   * prediction.
-   *
-   * ## Taxable Subscriptions
-   *
-   * This endpoint will preview taxes applicable to a purchase. In order for taxes to be previewed, the
-   * following conditions must be met:
-   *
-   * + Taxes must be configured on the subscription
-   * + The preview must be for the purchase of a taxable product or component, or combination of the two.
-   * + The subscription payload must contain a full billing or shipping address in order to calculate
-   * tax
-   *
-   * For more information about creating taxable previews, please see our documentation guide on how to
-   * create [taxable subscriptions.](https://chargify.zendesk.com/hc/en-
-   * us/articles/4407904217755#creating-taxable-subscriptions)
-   *
-   * You do **not** need to include a card number to generate tax information when you are previewing a
-   * subscription. However, please note that when you actually want to create the subscription, you must
-   * include the credit card information if you want the billing address to be stored in Chargify. The
-   * billing address and the credit card information are stored together within the payment profile
-   * object. Also, you may not send a billing address to Chargify without payment profile information, as
-   * the address is stored on the card.
-   *
-   * You can pass shipping and billing addresses and still decide not to calculate taxes. To do that,
-   * pass `skip_billing_manifest_taxes: true` attribute.
-   *
-   * ## Non-taxable Subscriptions
-   *
-   * If you'd like to calculate subscriptions that do not include tax, please feel free to leave off the
-   * billing information.
-   *
-   * @param body
-   * @return Response from the API call
-   */
-  async previewSubscription(
-    body?: CreateSubscriptionRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionPreviewResponse>> {
-    const req = this.createRequest('POST', '/subscriptions/preview.json');
-    const mapped = req.prepareArgs({
-      body: [body, optional(createSubscriptionRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    return req.callAsJson(subscriptionPreviewResponseSchema, requestOptions);
   }
 
   /**
@@ -1387,111 +1503,7 @@ export class SubscriptionsController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/add_coupon.json`;
     req.throwOn(422, SubscriptionAddCouponError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(subscriptionResponseSchema, requestOptions);
-  }
-
-  /**
-   * Use this endpoint to remove a coupon from an existing subscription.
-   *
-   * For more information on the expected behaviour of removing a coupon from a subscription, please see
-   * our documentation [here.](https://chargify.zendesk.com/hc/en-us/articles/4407896488987#removing-a-
-   * coupon)
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param couponCode      The coupon code
-   * @return Response from the API call
-   */
-  async deleteCouponFromSubscription(
-    subscriptionId: string,
-    couponCode?: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<string>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      couponCode: [couponCode, optional(string())],
-    });
-    req.query('coupon_code', mapped.couponCode);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/remove_coupon.json`;
-    req.throwOn(422, SubscriptionRemoveCouponErrorsError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsText(requestOptions);
-  }
-
-  /**
-   * Chargify offers the ability to activate awaiting signup and trialing subscriptions. This feature is
-   * only available on the Relationship Invoicing architecture. Subscriptions in a group may not be
-   * activated immediately.
-   *
-   * For details on how the activation works, and how to activate subscriptions through the application,
-   * see [activation](#).
-   *
-   * The `revert_on_failure` parameter controls the behavior upon activation failure.
-   * - If set to `true` and something goes wrong i.e. payment fails, then Chargify will not change the
-   * subscription's state. The subscription’s billing period will also remain the same.
-   * - If set to `false` and something goes wrong i.e. payment fails, then Chargify will continue through
-   * with the activation and enter an end of life state. For trialing subscriptions, that will either be
-   * trial ended (if the trial is no obligation), past due (if the trial has an obligation), or canceled
-   * (if the site has no dunning strategy, or has a strategy that says to cancel immediately). For
-   * awaiting signup subscriptions, that will always be canceled.
-   *
-   * The default activation failure behavior can be configured per activation attempt, or you may set a
-   * default value under Config > Settings > Subscription Activation Settings.
-   *
-   * ## Activation Scenarios
-   *
-   * ### Activate Awaiting Signup subscription
-   *
-   * - Given you have a product without trial
-   * - Given you have a site without dunning strategy
-   *
-   * ```mermaid
-   * flowchart LR
-   * AS[Awaiting Signup] --> A{Activate}
-   * A -->|Success| Active
-   * A -->|Failure| ROF{revert_on_failure}
-   * ROF -->|true| AS
-   * ROF -->|false| Canceled
-   * ```
-   *
-   * - Given you have a product with trial
-   * - Given you have a site with dunning strategy
-   *
-   * ```mermaid
-   * flowchart LR
-   * AS[Awaiting Signup] --> A{Activate}
-   * A -->|Success| Trialing
-   * A -->|Failure| ROF{revert_on_failure}
-   * ROF -->|true| AS
-   * ROF -->|false| PD[Past Due]
-   * ```
-   *
-   * ### Activate Trialing subscription
-   *
-   * You can read more about the behavior of trialing subscriptions [here](https://maxio-chargify.zendesk.
-   * com/hc/en-us/articles/5404494617357#trialing-subscriptions-0-0).
-   * When the `revert_on_failure` parameter is set to `true`, the subscription's state will remain as
-   * Trialing, we will void the invoice from activation and return any prepayments and credits applied to
-   * the invoice back to the subscription.
-   *
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body
-   * @return Response from the API call
-   */
-  async activateSubscription(
-    subscriptionId: string,
-    body?: ActivateSubscriptionRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionResponse>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(activateSubscriptionRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/activate.json`;
-    req.throwOn(400, NestedErrorResponseError, 'Bad Request');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
   }
 }

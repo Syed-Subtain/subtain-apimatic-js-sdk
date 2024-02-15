@@ -11,11 +11,11 @@ const eventsBasedBillingSegmentsController = new EventsBasedBillingSegmentsContr
 ## Methods
 
 * [Create Segment](../../doc/controllers/events-based-billing-segments.md#create-segment)
-* [List Segments for Price Point](../../doc/controllers/events-based-billing-segments.md#list-segments-for-price-point)
+* [Update Segments](../../doc/controllers/events-based-billing-segments.md#update-segments)
 * [Update Segment](../../doc/controllers/events-based-billing-segments.md#update-segment)
 * [Delete Segment](../../doc/controllers/events-based-billing-segments.md#delete-segment)
 * [Create Segments](../../doc/controllers/events-based-billing-segments.md#create-segments)
-* [Update Segments](../../doc/controllers/events-based-billing-segments.md#update-segments)
+* [List Segments for Price Point](../../doc/controllers/events-based-billing-segments.md#list-segments-for-price-point)
 
 
 # Create Segment
@@ -102,24 +102,19 @@ try {
 | 422 | Unprocessable Entity (WebDAV) | [`EventBasedBillingSegmentErrorsError`](../../doc/models/event-based-billing-segment-errors-error.md) |
 
 
-# List Segments for Price Point
+# Update Segments
 
-This endpoint allows you to fetch Segments created for a given Price Point. They will be returned in the order of creation.
+This endpoint allows you to update multiple segments in one request. The array of segments can contain up to `1000` records.
 
-You can pass `page` and `per_page` parameters in order to access all of the segments. By default it will return `30` records. You can set `per_page` to `200` at most.
+If any of the records contain an error the whole request would fail and none of the requested segments get updated. The error response contains a message for only the one segment that failed validation, with the corresponding index in the array.
 
 You may specify component and/or price point by using either the numeric ID or the `handle:gold` syntax.
 
 ```ts
-async listSegmentsForPricePoint(
+async updateSegments(
   componentId: string,
   pricePointId: string,
-  page?: number,
-  perPage?: number,
-  filterSegmentProperty1Value?: string,
-  filterSegmentProperty2Value?: string,
-  filterSegmentProperty3Value?: string,
-  filterSegmentProperty4Value?: string,
+  body?: BulkUpdateSegments,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<ListSegmentsResponse>>
 ```
@@ -130,12 +125,7 @@ async listSegmentsForPricePoint(
 |  --- | --- | --- | --- |
 | `componentId` | `string` | Template, Required | ID or Handle for the Component |
 | `pricePointId` | `string` | Template, Required | ID or Handle for the Price Point belonging to the Component |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `30`<br>**Constraints**: `<= 200` |
-| `filterSegmentProperty1Value` | `string \| undefined` | Query, Optional | The value passed here would be used to filter segments. Pass a value related to `segment_property_1` on attached Metric. If empty string is passed, this filter would be rejected. Use in query `filter[segment_property_1_value]=EU`. |
-| `filterSegmentProperty2Value` | `string \| undefined` | Query, Optional | The value passed here would be used to filter segments. Pass a value related to `segment_property_2` on attached Metric. If empty string is passed, this filter would be rejected. |
-| `filterSegmentProperty3Value` | `string \| undefined` | Query, Optional | The value passed here would be used to filter segments. Pass a value related to `segment_property_3` on attached Metric. If empty string is passed, this filter would be rejected. |
-| `filterSegmentProperty4Value` | `string \| undefined` | Query, Optional | The value passed here would be used to filter segments. Pass a value related to `segment_property_4` on attached Metric. If empty string is passed, this filter would be rejected. |
+| `body` | [`BulkUpdateSegments \| undefined`](../../doc/models/bulk-update-segments.md) | Body, Optional | - |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -145,16 +135,17 @@ async listSegmentsForPricePoint(
 ## Example Usage
 
 ```ts
-const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid error: Value cannot be null. (Parameter 'key')Liquid error: Value cannot be null. (Parameter 'key')Liquid error: Value cannot be null. (Parameter 'key')
-  componentId: 'component_id8',
-  pricePointId: 'price_point_id8',
-  page: 2,
-  perPage: 50
-}
+const componentId = 'component_id8';
+
+const pricePointId = 'price_point_id8';
+
 try {
   // @ts-expect-error: unused variables
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { result, ...httpResponse } = await eventsBasedBillingSegmentsController.listSegmentsForPricePoint(collect);
+  const { result, ...httpResponse } = await eventsBasedBillingSegmentsController.updateSegments(
+  componentId,
+  pricePointId
+);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
@@ -174,7 +165,7 @@ try {
 | 401 | Unauthorized | `ApiError` |
 | 403 | Forbidden | `ApiError` |
 | 404 | Not Found | `ApiError` |
-| 422 | Unprocessable Entity (WebDAV) | [`EventBasedBillingListSegmentsErrorsError`](../../doc/models/event-based-billing-list-segments-errors-error.md) |
+| 422 | Unprocessable Entity (WebDAV) | [`EventBasedBillingSegmentError`](../../doc/models/event-based-billing-segment-error-1.md) |
 
 
 # Update Segment
@@ -379,19 +370,24 @@ try {
 | 422 | Unprocessable Entity (WebDAV) | [`EventBasedBillingSegmentError`](../../doc/models/event-based-billing-segment-error-1.md) |
 
 
-# Update Segments
+# List Segments for Price Point
 
-This endpoint allows you to update multiple segments in one request. The array of segments can contain up to `1000` records.
+This endpoint allows you to fetch Segments created for a given Price Point. They will be returned in the order of creation.
 
-If any of the records contain an error the whole request would fail and none of the requested segments get updated. The error response contains a message for only the one segment that failed validation, with the corresponding index in the array.
+You can pass `page` and `per_page` parameters in order to access all of the segments. By default it will return `30` records. You can set `per_page` to `200` at most.
 
 You may specify component and/or price point by using either the numeric ID or the `handle:gold` syntax.
 
 ```ts
-async updateSegments(
+async listSegmentsForPricePoint(
   componentId: string,
   pricePointId: string,
-  body?: BulkUpdateSegments,
+  page?: number,
+  perPage?: number,
+  filterSegmentProperty1Value?: string,
+  filterSegmentProperty2Value?: string,
+  filterSegmentProperty3Value?: string,
+  filterSegmentProperty4Value?: string,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<ListSegmentsResponse>>
 ```
@@ -402,7 +398,12 @@ async updateSegments(
 |  --- | --- | --- | --- |
 | `componentId` | `string` | Template, Required | ID or Handle for the Component |
 | `pricePointId` | `string` | Template, Required | ID or Handle for the Price Point belonging to the Component |
-| `body` | [`BulkUpdateSegments \| undefined`](../../doc/models/bulk-update-segments.md) | Body, Optional | - |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `filterSegmentProperty1Value` | `string \| undefined` | Query, Optional | The value passed here would be used to filter segments. Pass a value related to `segment_property_1` on attached Metric. If empty string is passed, this filter would be rejected. Use in query `filter[segment_property_1_value]=EU`. |
+| `filterSegmentProperty2Value` | `string \| undefined` | Query, Optional | The value passed here would be used to filter segments. Pass a value related to `segment_property_2` on attached Metric. If empty string is passed, this filter would be rejected. |
+| `filterSegmentProperty3Value` | `string \| undefined` | Query, Optional | The value passed here would be used to filter segments. Pass a value related to `segment_property_3` on attached Metric. If empty string is passed, this filter would be rejected. |
+| `filterSegmentProperty4Value` | `string \| undefined` | Query, Optional | The value passed here would be used to filter segments. Pass a value related to `segment_property_4` on attached Metric. If empty string is passed, this filter would be rejected. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -412,17 +413,16 @@ async updateSegments(
 ## Example Usage
 
 ```ts
-const componentId = 'component_id8';
-
-const pricePointId = 'price_point_id8';
-
+const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid error: Value cannot be null. (Parameter 'key')Liquid error: Value cannot be null. (Parameter 'key')Liquid error: Value cannot be null. (Parameter 'key')
+  componentId: 'component_id8',
+  pricePointId: 'price_point_id8',
+  page: 2,
+  perPage: 50
+}
 try {
   // @ts-expect-error: unused variables
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { result, ...httpResponse } = await eventsBasedBillingSegmentsController.updateSegments(
-  componentId,
-  pricePointId
-);
+  const { result, ...httpResponse } = await eventsBasedBillingSegmentsController.listSegmentsForPricePoint(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
@@ -442,5 +442,5 @@ try {
 | 401 | Unauthorized | `ApiError` |
 | 403 | Forbidden | `ApiError` |
 | 404 | Not Found | `ApiError` |
-| 422 | Unprocessable Entity (WebDAV) | [`EventBasedBillingSegmentError`](../../doc/models/event-based-billing-segment-error-1.md) |
+| 422 | Unprocessable Entity (WebDAV) | [`EventBasedBillingListSegmentsErrorsError`](../../doc/models/event-based-billing-list-segments-errors-error.md) |
 

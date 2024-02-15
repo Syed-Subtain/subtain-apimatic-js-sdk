@@ -75,7 +75,156 @@ export class EventsBasedBillingSegmentsController extends BaseController {
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, EventBasedBillingSegmentErrorsError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(segmentResponseSchema, requestOptions);
+  }
+
+  /**
+   * This endpoint allows you to update multiple segments in one request. The array of segments can
+   * contain up to `1000` records.
+   *
+   * If any of the records contain an error the whole request would fail and none of the requested
+   * segments get updated. The error response contains a message for only the one segment that failed
+   * validation, with the corresponding index in the array.
+   *
+   * You may specify component and/or price point by using either the numeric ID or the `handle:gold`
+   * syntax.
+   *
+   * @param componentId    ID or Handle for the Component
+   * @param pricePointId   ID or Handle for the Price Point belonging to the Component
+   * @param body
+   * @return Response from the API call
+   */
+  async updateSegments(
+    componentId: string,
+    pricePointId: string,
+    body?: BulkUpdateSegments,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ListSegmentsResponse>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, string()],
+      pricePointId: [pricePointId, string()],
+      body: [body, optional(bulkUpdateSegmentsSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments/bulk.json`;
+    req.throwOn(401, ApiError, 'Unauthorized');
+    req.throwOn(403, ApiError, 'Forbidden');
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, EventBasedBillingSegmentError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(listSegmentsResponseSchema, requestOptions);
+  }
+
+  /**
+   * This endpoint updates a single Segment for a Component with a segmented Metric. It allows you to
+   * update the pricing for the segment.
+   *
+   * You may specify component and/or price point by using either the numeric ID or the `handle:gold`
+   * syntax.
+   *
+   * @param componentId    ID or Handle of the Component
+   * @param pricePointId   ID or Handle of the Price Point belonging to the Component
+   * @param id             The ID of the Segment
+   * @param body
+   * @return Response from the API call
+   */
+  async updateSegment(
+    componentId: string,
+    pricePointId: string,
+    id: number,
+    body?: UpdateSegmentRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SegmentResponse>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, string()],
+      pricePointId: [pricePointId, string()],
+      id: [id, number()],
+      body: [body, optional(updateSegmentRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments/${mapped.id}.json`;
+    req.throwOn(401, ApiError, 'Unauthorized');
+    req.throwOn(403, ApiError, 'Forbidden');
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, EventBasedBillingSegmentErrorsError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(segmentResponseSchema, requestOptions);
+  }
+
+  /**
+   * This endpoint allows you to delete a Segment with specified ID.
+   *
+   * You may specify component and/or price point by using either the numeric ID or the `handle:gold`
+   * syntax.
+   *
+   * @param componentId    ID or Handle of the Component
+   * @param pricePointId   ID or Handle of the Price Point belonging to the Component
+   * @param id             The ID of the Segment
+   * @return Response from the API call
+   */
+  async deleteSegment(
+    componentId: string,
+    pricePointId: string,
+    id: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, string()],
+      pricePointId: [pricePointId, string()],
+      id: [id, number()],
+    });
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments/${mapped.id}.json`;
+    req.throwOn(401, ApiError, 'Unauthorized');
+    req.throwOn(403, ApiError, 'Forbidden');
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * This endpoint allows you to create multiple segments in one request. The array of segments can
+   * contain up to `2000` records.
+   *
+   * If any of the records contain an error the whole request would fail and none of the requested
+   * segments get created. The error response contains a message for only the one segment that failed
+   * validation, with the corresponding index in the array.
+   *
+   * You may specify component and/or price point by using either the numeric ID or the `handle:gold`
+   * syntax.
+   *
+   * @param componentId    ID or Handle for the Component
+   * @param pricePointId   ID or Handle for the Price Point belonging to the Component
+   * @param body
+   * @return Response from the API call
+   */
+  async createSegments(
+    componentId: string,
+    pricePointId: string,
+    body?: BulkCreateSegments,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ListSegmentsResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      componentId: [componentId, string()],
+      pricePointId: [pricePointId, string()],
+      body: [body, optional(bulkCreateSegmentsSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments/bulk.json`;
+    req.throwOn(401, ApiError, 'Unauthorized');
+    req.throwOn(403, ApiError, 'Forbidden');
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, EventBasedBillingSegmentError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(listSegmentsResponseSchema, requestOptions);
   }
 
   /**
@@ -171,150 +320,7 @@ export class EventsBasedBillingSegmentsController extends BaseController {
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, EventBasedBillingListSegmentsErrorsError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(listSegmentsResponseSchema, requestOptions);
-  }
-
-  /**
-   * This endpoint updates a single Segment for a Component with a segmented Metric. It allows you to
-   * update the pricing for the segment.
-   *
-   * You may specify component and/or price point by using either the numeric ID or the `handle:gold`
-   * syntax.
-   *
-   * @param componentId    ID or Handle of the Component
-   * @param pricePointId   ID or Handle of the Price Point belonging to the Component
-   * @param id             The ID of the Segment
-   * @param body
-   * @return Response from the API call
-   */
-  async updateSegment(
-    componentId: string,
-    pricePointId: string,
-    id: number,
-    body?: UpdateSegmentRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SegmentResponse>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      componentId: [componentId, string()],
-      pricePointId: [pricePointId, string()],
-      id: [id, number()],
-      body: [body, optional(updateSegmentRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments/${mapped.id}.json`;
-    req.throwOn(401, ApiError, 'Unauthorized');
-    req.throwOn(403, ApiError, 'Forbidden');
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, EventBasedBillingSegmentErrorsError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(segmentResponseSchema, requestOptions);
-  }
-
-  /**
-   * This endpoint allows you to delete a Segment with specified ID.
-   *
-   * You may specify component and/or price point by using either the numeric ID or the `handle:gold`
-   * syntax.
-   *
-   * @param componentId    ID or Handle of the Component
-   * @param pricePointId   ID or Handle of the Price Point belonging to the Component
-   * @param id             The ID of the Segment
-   * @return Response from the API call
-   */
-  async deleteSegment(
-    componentId: string,
-    pricePointId: string,
-    id: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      componentId: [componentId, string()],
-      pricePointId: [pricePointId, string()],
-      id: [id, number()],
-    });
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments/${mapped.id}.json`;
-    req.throwOn(401, ApiError, 'Unauthorized');
-    req.throwOn(403, ApiError, 'Forbidden');
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
-  }
-
-  /**
-   * This endpoint allows you to create multiple segments in one request. The array of segments can
-   * contain up to `2000` records.
-   *
-   * If any of the records contain an error the whole request would fail and none of the requested
-   * segments get created. The error response contains a message for only the one segment that failed
-   * validation, with the corresponding index in the array.
-   *
-   * You may specify component and/or price point by using either the numeric ID or the `handle:gold`
-   * syntax.
-   *
-   * @param componentId    ID or Handle for the Component
-   * @param pricePointId   ID or Handle for the Price Point belonging to the Component
-   * @param body
-   * @return Response from the API call
-   */
-  async createSegments(
-    componentId: string,
-    pricePointId: string,
-    body?: BulkCreateSegments,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ListSegmentsResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      componentId: [componentId, string()],
-      pricePointId: [pricePointId, string()],
-      body: [body, optional(bulkCreateSegmentsSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments/bulk.json`;
-    req.throwOn(401, ApiError, 'Unauthorized');
-    req.throwOn(403, ApiError, 'Forbidden');
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, EventBasedBillingSegmentError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(listSegmentsResponseSchema, requestOptions);
-  }
-
-  /**
-   * This endpoint allows you to update multiple segments in one request. The array of segments can
-   * contain up to `1000` records.
-   *
-   * If any of the records contain an error the whole request would fail and none of the requested
-   * segments get updated. The error response contains a message for only the one segment that failed
-   * validation, with the corresponding index in the array.
-   *
-   * You may specify component and/or price point by using either the numeric ID or the `handle:gold`
-   * syntax.
-   *
-   * @param componentId    ID or Handle for the Component
-   * @param pricePointId   ID or Handle for the Price Point belonging to the Component
-   * @param body
-   * @return Response from the API call
-   */
-  async updateSegments(
-    componentId: string,
-    pricePointId: string,
-    body?: BulkUpdateSegments,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ListSegmentsResponse>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({
-      componentId: [componentId, string()],
-      pricePointId: [pricePointId, string()],
-      body: [body, optional(bulkUpdateSegmentsSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments/bulk.json`;
-    req.throwOn(401, ApiError, 'Unauthorized');
-    req.throwOn(403, ApiError, 'Forbidden');
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, EventBasedBillingSegmentError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listSegmentsResponseSchema, requestOptions);
   }
 }

@@ -57,42 +57,6 @@ import { BaseController } from './baseController';
 
 export class SubscriptionGroupsController extends BaseController {
   /**
-   * Create multiple subscriptions at once under the same customer and consolidate them into a
-   * subscription group.
-   *
-   * You must provide one and only one of the `payer_id`/`payer_reference`/`payer_attributes` for the
-   * customer attached to the group.
-   *
-   * You must provide one and only one of the
-   * `payment_profile_id`/`credit_card_attributes`/`bank_account_attributes` for the payment profile
-   * attached to the group.
-   *
-   * Only one of the `subscriptions` can have `"primary": true` attribute set.
-   *
-   * When passing product to a subscription you can use either `product_id` or `product_handle` or
-   * `offer_id`. You can also use `custom_price` instead.
-   *
-   * @param body
-   * @return Response from the API call
-   */
-  async signupWithSubscriptionGroup(
-    body?: SubscriptionGroupSignupRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionGroupSignupResponse>> {
-    const req = this.createRequest('POST', '/subscription_groups/signup.json');
-    const mapped = req.prepareArgs({
-      body: [body, optional(subscriptionGroupSignupRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.throwOn(422, SubscriptionGroupSignupErrorResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(
-      subscriptionGroupSignupResponseSchema,
-      requestOptions
-    );
-  }
-
-  /**
    * Creates a subscription group with given members.
    *
    * @param body
@@ -109,52 +73,8 @@ export class SubscriptionGroupsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.throwOn(422, SingleStringErrorResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionGroupResponseSchema, requestOptions);
-  }
-
-  /**
-   * Returns an array of subscription groups for the site. The response is paginated and will return a
-   * `meta` key with pagination information.
-   *
-   * #### Account Balance Information
-   *
-   * Account balance information for the subscription groups is not returned by default. If this
-   * information is desired, the `include[]=account_balances` parameter must be provided with the request.
-   *
-   * @param page     Result records are organized in pages. By default, the first page of results is
-   *                           displayed. The page parameter specifies a page number of results to fetch. You can start
-   *                           navigating through the pages to consume the results. You do this by passing in a page
-   *                           parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no
-   *                           results to return, then an empty result set will be returned. Use in query `page=1`.
-   * @param perPage  This parameter indicates how many records to fetch in each request. Default value is 20.
-   *                           The maximum allowed values is 200; any per_page value over 200 will be changed to 200.
-   *                           Use in query `per_page=200`.
-   * @param include  A list of additional information to include in the response. The following values are
-   *                           supported:  - `account_balances`: Account balance information for the subscription
-   *                           groups. Use in query: `include[]=account_balances`
-   * @return Response from the API call
-   */
-  async listSubscriptionGroups({
-    page,
-    perPage,
-    include,
-  }: {
-    page?: number,
-    perPage?: number,
-    include?: string,
-  },
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ListSubscriptionGroupsResponse>> {
-    const req = this.createRequest('GET', '/subscription_groups.json');
-    const mapped = req.prepareArgs({
-      page: [page, optional(number())],
-      perPage: [perPage, optional(number())],
-      include: [include, optional(string())],
-    });
-    req.query('page', mapped.page);
-    req.query('per_page', mapped.perPage);
-    req.query('include', mapped.include);
-    return req.callAsJson(listSubscriptionGroupsResponseSchema, requestOptions);
   }
 
   /**
@@ -175,34 +95,32 @@ export class SubscriptionGroupsController extends BaseController {
     const req = this.createRequest('GET');
     const mapped = req.prepareArgs({ uid: [uid, string()] });
     req.appendTemplatePath`/subscription_groups/${mapped.uid}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(fullSubscriptionGroupResponseSchema, requestOptions);
   }
 
   /**
-   * Use this endpoint to update subscription group members.
-   * `"member_ids": []` should contain an array of both subscription IDs to set as group members and
-   * subscription IDs already present in the groups. Not including them will result in removing them from
-   * subscription group. To clean up members, just leave the array empty.
+   * For sites making use of the [Relationship Billing](https://chargify.zendesk.com/hc/en-
+   * us/articles/4407737494171) and [Customer Hierarchy](https://chargify.zendesk.com/hc/en-
+   * us/articles/4407746683291) features, it is possible to remove existing subscription from
+   * subscription group.
    *
-   * @param uid          The uid of the subscription group
-   * @param body
+   * @param subscriptionId  The Chargify id of the subscription
    * @return Response from the API call
    */
-  async updateSubscriptionGroupMembers(
-    uid: string,
-    body?: UpdateSubscriptionGroupRequest,
+  async removeSubscriptionFromGroup(
+    subscriptionId: string,
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionGroupResponse>> {
-    const req = this.createRequest('PUT');
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('DELETE');
     const mapped = req.prepareArgs({
-      uid: [uid, string()],
-      body: [body, optional(updateSubscriptionGroupRequestSchema)],
+      subscriptionId: [subscriptionId, string()],
     });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscription_groups/${mapped.uid}.json`;
-    req.throwOn(422, SubscriptionGroupUpdateErrorResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(subscriptionGroupResponseSchema, requestOptions);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/group.json`;
+    req.throwOn(404, ApiError, 'Not Found');
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
   }
 
   /**
@@ -220,6 +138,7 @@ export class SubscriptionGroupsController extends BaseController {
     const mapped = req.prepareArgs({ uid: [uid, string()] });
     req.appendTemplatePath`/subscription_groups/${mapped.uid}.json`;
     req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       deleteSubscriptionGroupResponseSchema,
       requestOptions
@@ -244,6 +163,7 @@ export class SubscriptionGroupsController extends BaseController {
     });
     req.query('subscription_id', mapped.subscriptionId);
     req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(fullSubscriptionGroupResponseSchema, requestOptions);
   }
 
@@ -293,29 +213,118 @@ export class SubscriptionGroupsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/group.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionGroupResponseSchema, requestOptions);
   }
 
   /**
-   * For sites making use of the [Relationship Billing](https://chargify.zendesk.com/hc/en-
-   * us/articles/4407737494171) and [Customer Hierarchy](https://chargify.zendesk.com/hc/en-
-   * us/articles/4407746683291) features, it is possible to remove existing subscription from
+   * Create multiple subscriptions at once under the same customer and consolidate them into a
    * subscription group.
    *
-   * @param subscriptionId  The Chargify id of the subscription
+   * You must provide one and only one of the `payer_id`/`payer_reference`/`payer_attributes` for the
+   * customer attached to the group.
+   *
+   * You must provide one and only one of the
+   * `payment_profile_id`/`credit_card_attributes`/`bank_account_attributes` for the payment profile
+   * attached to the group.
+   *
+   * Only one of the `subscriptions` can have `"primary": true` attribute set.
+   *
+   * When passing product to a subscription you can use either `product_id` or `product_handle` or
+   * `offer_id`. You can also use `custom_price` instead.
+   *
+   * @param body
    * @return Response from the API call
    */
-  async removeSubscriptionFromGroup(
-    subscriptionId: string,
+  async signupWithSubscriptionGroup(
+    body?: SubscriptionGroupSignupRequest,
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('DELETE');
+  ): Promise<ApiResponse<SubscriptionGroupSignupResponse>> {
+    const req = this.createRequest('POST', '/subscription_groups/signup.json');
     const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(subscriptionGroupSignupRequestSchema)],
     });
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/group.json`;
-    req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.throwOn(422, SubscriptionGroupSignupErrorResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(
+      subscriptionGroupSignupResponseSchema,
+      requestOptions
+    );
+  }
+
+  /**
+   * Returns an array of subscription groups for the site. The response is paginated and will return a
+   * `meta` key with pagination information.
+   *
+   * #### Account Balance Information
+   *
+   * Account balance information for the subscription groups is not returned by default. If this
+   * information is desired, the `include[]=account_balances` parameter must be provided with the request.
+   *
+   * @param page     Result records are organized in pages. By default, the first page of results is
+   *                           displayed. The page parameter specifies a page number of results to fetch. You can start
+   *                           navigating through the pages to consume the results. You do this by passing in a page
+   *                           parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no
+   *                           results to return, then an empty result set will be returned. Use in query `page=1`.
+   * @param perPage  This parameter indicates how many records to fetch in each request. Default value is 20.
+   *                           The maximum allowed values is 200; any per_page value over 200 will be changed to 200.
+   *                           Use in query `per_page=200`.
+   * @param include  A list of additional information to include in the response. The following values are
+   *                           supported:  - `account_balances`: Account balance information for the subscription
+   *                           groups. Use in query: `include[]=account_balances`
+   * @return Response from the API call
+   */
+  async listSubscriptionGroups({
+    page,
+    perPage,
+    include,
+  }: {
+    page?: number,
+    perPage?: number,
+    include?: string,
+  },
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ListSubscriptionGroupsResponse>> {
+    const req = this.createRequest('GET', '/subscription_groups.json');
+    const mapped = req.prepareArgs({
+      page: [page, optional(number())],
+      perPage: [perPage, optional(number())],
+      include: [include, optional(string())],
+    });
+    req.query('page', mapped.page);
+    req.query('per_page', mapped.perPage);
+    req.query('include', mapped.include);
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(listSubscriptionGroupsResponseSchema, requestOptions);
+  }
+
+  /**
+   * Use this endpoint to update subscription group members.
+   * `"member_ids": []` should contain an array of both subscription IDs to set as group members and
+   * subscription IDs already present in the groups. Not including them will result in removing them from
+   * subscription group. To clean up members, just leave the array empty.
+   *
+   * @param uid          The uid of the subscription group
+   * @param body
+   * @return Response from the API call
+   */
+  async updateSubscriptionGroupMembers(
+    uid: string,
+    body?: UpdateSubscriptionGroupRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SubscriptionGroupResponse>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({
+      uid: [uid, string()],
+      body: [body, optional(updateSubscriptionGroupRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscription_groups/${mapped.uid}.json`;
+    req.throwOn(422, SubscriptionGroupUpdateErrorResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(subscriptionGroupResponseSchema, requestOptions);
   }
 }

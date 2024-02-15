@@ -59,30 +59,6 @@ import { BaseController } from './baseController';
 
 export class ProductPricePointsController extends BaseController {
   /**
-   * [Product Price Point Documentation](https://chargify.zendesk.com/hc/en-us/articles/4407755824155)
-   *
-   * @param productId    The id or handle of the product. When using the
-   *                                                              handle, it must be prefixed with `handle:`
-   * @param body
-   * @return Response from the API call
-   */
-  async createProductPricePoint(
-    productId: number,
-    body?: CreateProductPricePointRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ProductPricePointResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      productId: [productId, number()],
-      body: [body, optional(createProductPricePointRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/products/${mapped.productId}/price_points.json`;
-    return req.callAsJson(productPricePointResponseSchema, requestOptions);
-  }
-
-  /**
    * Use this endpoint to retrieve a list of product price points.
    *
    * @param productId       The id or handle of the product. When using the handle, it must be
@@ -135,7 +111,33 @@ export class ProductPricePointsController extends BaseController {
     req.query('currency_prices', mapped.currencyPrices);
     req.query('filter[type]', mapped.filterType, commaPrefix);
     req.appendTemplatePath`/products/${mapped.productId}/price_points.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listProductPricePointsResponseSchema, requestOptions);
+  }
+
+  /**
+   * [Product Price Point Documentation](https://chargify.zendesk.com/hc/en-us/articles/4407755824155)
+   *
+   * @param productId    The id or handle of the product. When using the
+   *                                                              handle, it must be prefixed with `handle:`
+   * @param body
+   * @return Response from the API call
+   */
+  async createProductPricePoint(
+    productId: number,
+    body?: CreateProductPricePointRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ProductPricePointResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      productId: [productId, number()],
+      body: [body, optional(createProductPricePointRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/products/${mapped.productId}/price_points.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(productPricePointResponseSchema, requestOptions);
   }
 
   /**
@@ -165,61 +167,7 @@ export class ProductPricePointsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/products/${mapped.productId}/price_points/${mapped.pricePointId}.json`;
-    return req.callAsJson(productPricePointResponseSchema, requestOptions);
-  }
-
-  /**
-   * Use this endpoint to retrieve details for a specific product price point.
-   *
-   * @param productId       The id or handle of the product. When using the handle, it must be prefixed
-   *                                   with `handle:`
-   * @param pricePointId    The id or handle of the price point. When using the handle, it must be prefixed
-   *                                   with `handle:`
-   * @param currencyPrices  When fetching a product's price points, if you have defined multiple currencies
-   *                                   at the site level, you can optionally pass the ?currency_prices=true query param
-   *                                   to include an array of currency price data in the response. If the product price
-   *                                   point is set to use_site_exchange_rate: true, it will return pricing based on
-   *                                   the current exchange rate. If the flag is set to false, it will return all of
-   *                                   the defined prices for each currency.
-   * @return Response from the API call
-   */
-  async readProductPricePoint(
-    productId: number,
-    pricePointId: number,
-    currencyPrices?: boolean,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ProductPricePointResponse>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({
-      productId: [productId, number()],
-      pricePointId: [pricePointId, number()],
-      currencyPrices: [currencyPrices, optional(boolean())],
-    });
-    req.query('currency_prices', mapped.currencyPrices);
-    req.appendTemplatePath`/products/${mapped.productId}/price_points/${mapped.pricePointId}.json`;
-    return req.callAsJson(productPricePointResponseSchema, requestOptions);
-  }
-
-  /**
-   * Use this endpoint to archive a product price point.
-   *
-   * @param productId      The id or handle of the product. When using the handle, it must be prefixed with
-   *                                 `handle:`
-   * @param pricePointId   The id or handle of the price point. When using the handle, it must be prefixed
-   *                                 with `handle:`
-   * @return Response from the API call
-   */
-  async archiveProductPricePoint(
-    productId: number,
-    pricePointId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ProductPricePointResponse>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      productId: [productId, number()],
-      pricePointId: [pricePointId, number()],
-    });
-    req.appendTemplatePath`/products/${mapped.productId}/price_points/${mapped.pricePointId}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(productPricePointResponseSchema, requestOptions);
   }
 
@@ -241,29 +189,7 @@ export class ProductPricePointsController extends BaseController {
       pricePointId: [pricePointId, number()],
     });
     req.appendTemplatePath`/products/${mapped.productId}/price_points/${mapped.pricePointId}/unarchive.json`;
-    return req.callAsJson(productPricePointResponseSchema, requestOptions);
-  }
-
-  /**
-   * Use this endpoint to make a product price point the default for the product.
-   *
-   * Note: Custom product price points are not able to be set as the default for a product.
-   *
-   * @param productId      The Chargify id of the product to which the price point belongs
-   * @param pricePointId   The Chargify id of the product price point
-   * @return Response from the API call
-   */
-  async setDefaultPricePointForProduct(
-    productId: number,
-    pricePointId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ProductPricePointResponse>> {
-    const req = this.createRequest('PATCH');
-    const mapped = req.prepareArgs({
-      productId: [productId, number()],
-      pricePointId: [pricePointId, number()],
-    });
-    req.appendTemplatePath`/products/${mapped.productId}/price_points/${mapped.pricePointId}/default.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(productPricePointResponseSchema, requestOptions);
   }
 
@@ -288,6 +214,7 @@ export class ProductPricePointsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/products/${mapped.productId}/price_points/bulk.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       bulkCreateProductPricePointsResponseSchema,
       requestOptions
@@ -323,7 +250,56 @@ export class ProductPricePointsController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/product_price_points/${mapped.productPricePointId}/currency_prices.json`;
     req.throwOn(422, ErrorMapResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(productPricePointCurrencyPriceSchema, requestOptions);
+  }
+
+  /**
+   * Use this endpoint to archive a product price point.
+   *
+   * @param productId      The id or handle of the product. When using the handle, it must be prefixed with
+   *                                 `handle:`
+   * @param pricePointId   The id or handle of the price point. When using the handle, it must be prefixed
+   *                                 with `handle:`
+   * @return Response from the API call
+   */
+  async archiveProductPricePoint(
+    productId: number,
+    pricePointId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ProductPricePointResponse>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({
+      productId: [productId, number()],
+      pricePointId: [pricePointId, number()],
+    });
+    req.appendTemplatePath`/products/${mapped.productId}/price_points/${mapped.pricePointId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(productPricePointResponseSchema, requestOptions);
+  }
+
+  /**
+   * Use this endpoint to make a product price point the default for the product.
+   *
+   * Note: Custom product price points are not able to be set as the default for a product.
+   *
+   * @param productId      The Chargify id of the product to which the price point belongs
+   * @param pricePointId   The Chargify id of the product price point
+   * @return Response from the API call
+   */
+  async setDefaultPricePointForProduct(
+    productId: number,
+    pricePointId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ProductPricePointResponse>> {
+    const req = this.createRequest('PATCH');
+    const mapped = req.prepareArgs({
+      productId: [productId, number()],
+      pricePointId: [pricePointId, number()],
+    });
+    req.appendTemplatePath`/products/${mapped.productId}/price_points/${mapped.pricePointId}/default.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(productPricePointResponseSchema, requestOptions);
   }
 
   /**
@@ -353,6 +329,7 @@ export class ProductPricePointsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/product_price_points/${mapped.productPricePointId}/currency_prices.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       array(productPricePointCurrencyPriceSchema),
       requestOptions
@@ -485,6 +462,40 @@ export class ProductPricePointsController extends BaseController {
     req.query('page', mapped.page);
     req.query('per_page', mapped.perPage);
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listProductPricePointsResponseSchema, requestOptions);
+  }
+
+  /**
+   * Use this endpoint to retrieve details for a specific product price point.
+   *
+   * @param productId       The id or handle of the product. When using the handle, it must be prefixed
+   *                                   with `handle:`
+   * @param pricePointId    The id or handle of the price point. When using the handle, it must be prefixed
+   *                                   with `handle:`
+   * @param currencyPrices  When fetching a product's price points, if you have defined multiple currencies
+   *                                   at the site level, you can optionally pass the ?currency_prices=true query param
+   *                                   to include an array of currency price data in the response. If the product price
+   *                                   point is set to use_site_exchange_rate: true, it will return pricing based on
+   *                                   the current exchange rate. If the flag is set to false, it will return all of
+   *                                   the defined prices for each currency.
+   * @return Response from the API call
+   */
+  async readProductPricePoint(
+    productId: number,
+    pricePointId: number,
+    currencyPrices?: boolean,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ProductPricePointResponse>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      productId: [productId, number()],
+      pricePointId: [pricePointId, number()],
+      currencyPrices: [currencyPrices, optional(boolean())],
+    });
+    req.query('currency_prices', mapped.currencyPrices);
+    req.appendTemplatePath`/products/${mapped.productId}/price_points/${mapped.pricePointId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(productPricePointResponseSchema, requestOptions);
   }
 }

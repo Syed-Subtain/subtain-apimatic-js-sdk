@@ -52,6 +52,31 @@ import { BaseController } from './baseController';
 
 export class SubscriptionInvoiceAccountController extends BaseController {
   /**
+   * Credit will be added to the subscription in the amount specified in the request body. The credit is
+   * subsequently applied to the next generated invoice.
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param body
+   * @return Response from the API call
+   */
+  async issueServiceCredit(
+    subscriptionId: string,
+    body?: IssueServiceCreditRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ServiceCredit>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(issueServiceCreditRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/service_credits.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(serviceCreditSchema, requestOptions);
+  }
+
+  /**
    * Returns the `balance_in_cents` of the Subscription's Pending Discount, Service Credit, and
    * Prepayment accounts, as well as the sum of the Subscription's open, payable invoices.
    *
@@ -67,40 +92,8 @@ export class SubscriptionInvoiceAccountController extends BaseController {
       subscriptionId: [subscriptionId, string()],
     });
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/account_balances.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(accountBalancesSchema, requestOptions);
-  }
-
-  /**
-   * ## Create Prepayment
-   *
-   * In order to specify a prepayment made against a subscription, specify the `amount, memo, details,
-   * method`.
-   *
-   * When the `method` specified is `"credit_card_on_file"`, the prepayment amount will be collected
-   * using the default credit card payment profile and applied to the prepayment account balance.  This
-   * is especially useful for manual replenishment of prepaid subscriptions.
-   *
-   * Please note that you **can't** pass `amount_in_cents`.
-   *
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body
-   * @return Response from the API call
-   */
-  async createPrepayment(
-    subscriptionId: string,
-    body?: CreatePrepaymentRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<CreatePrepaymentResponse>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(createPrepaymentRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/prepayments.json`;
-    return req.callAsJson(createPrepaymentResponseSchema, requestOptions);
   }
 
   /**
@@ -166,31 +159,8 @@ export class SubscriptionInvoiceAccountController extends BaseController {
     req.throwOn(401, ApiError, 'Unauthorized');
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(prepaymentsResponseSchema, requestOptions);
-  }
-
-  /**
-   * Credit will be added to the subscription in the amount specified in the request body. The credit is
-   * subsequently applied to the next generated invoice.
-   *
-   * @param subscriptionId  The Chargify id of the subscription
-   * @param body
-   * @return Response from the API call
-   */
-  async issueServiceCredit(
-    subscriptionId: string,
-    body?: IssueServiceCreditRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ServiceCredit>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      subscriptionId: [subscriptionId, string()],
-      body: [body, optional(issueServiceCreditRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/service_credits.json`;
-    return req.callAsJson(serviceCreditSchema, requestOptions);
   }
 
   /**
@@ -215,7 +185,42 @@ export class SubscriptionInvoiceAccountController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/service_credit_deductions.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
+  }
+
+  /**
+   * ## Create Prepayment
+   *
+   * In order to specify a prepayment made against a subscription, specify the `amount, memo, details,
+   * method`.
+   *
+   * When the `method` specified is `"credit_card_on_file"`, the prepayment amount will be collected
+   * using the default credit card payment profile and applied to the prepayment account balance.  This
+   * is especially useful for manual replenishment of prepaid subscriptions.
+   *
+   * Please note that you **can't** pass `amount_in_cents`.
+   *
+   *
+   * @param subscriptionId  The Chargify id of the subscription
+   * @param body
+   * @return Response from the API call
+   */
+  async createPrepayment(
+    subscriptionId: string,
+    body?: CreatePrepaymentRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<CreatePrepaymentResponse>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      subscriptionId: [subscriptionId, string()],
+      body: [body, optional(createPrepaymentRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/prepayments.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(createPrepaymentResponseSchema, requestOptions);
   }
 
   /**
@@ -249,6 +254,7 @@ export class SubscriptionInvoiceAccountController extends BaseController {
     req.throwOn(400, RefundPrepaymentBaseErrorsResponseError, 'Bad Request');
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, RefundPrepaymentAggregatedErrorsResponseError, 'Unprocessable Entity');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(prepaymentResponseSchema, requestOptions);
   }
 }

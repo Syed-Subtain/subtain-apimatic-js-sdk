@@ -19,34 +19,29 @@ import { BaseController } from './baseController';
 
 export class SubscriptionNotesController extends BaseController {
   /**
-   * Use the following method to create a note for a subscription.
-   *
-   * ## How to Use Subscription Notes
-   *
-   * Notes allow you to record information about a particular Subscription in a free text format.
-   *
-   * If you have structured data such as birth date, color, etc., consider using Metadata instead.
-   *
-   * Full documentation on how to use Notes in the Chargify UI can be located [here](https://maxio-
-   * chargify.zendesk.com/hc/en-us/articles/5404434903181-Subscription-Summary#notes).
+   * Use the following method to update a note for a Subscription.
    *
    * @param subscriptionId  The Chargify id of the subscription
+   * @param noteId          The Chargify id of the note
    * @param body
    * @return Response from the API call
    */
-  async createSubscriptionNote(
+  async updateSubscriptionNote(
     subscriptionId: string,
+    noteId: string,
     body?: UpdateSubscriptionNoteRequest,
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<SubscriptionNoteResponse>> {
-    const req = this.createRequest('POST');
+    const req = this.createRequest('PUT');
     const mapped = req.prepareArgs({
       subscriptionId: [subscriptionId, string()],
+      noteId: [noteId, string()],
       body: [body, optional(updateSubscriptionNoteRequestSchema)],
     });
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/notes.json`;
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/notes/${mapped.noteId}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionNoteResponseSchema, requestOptions);
   }
 
@@ -66,6 +61,7 @@ export class SubscriptionNotesController extends BaseController {
     });
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/notes.json`;
     req.throwOn(422, ApiError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
 
@@ -105,6 +101,7 @@ export class SubscriptionNotesController extends BaseController {
     req.query('page', mapped.page);
     req.query('per_page', mapped.perPage);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/notes.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       array(subscriptionNoteResponseSchema),
       requestOptions
@@ -130,32 +127,40 @@ export class SubscriptionNotesController extends BaseController {
       noteId: [noteId, string()],
     });
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/notes/${mapped.noteId}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionNoteResponseSchema, requestOptions);
   }
 
   /**
-   * Use the following method to update a note for a Subscription.
+   * Use the following method to create a note for a subscription.
+   *
+   * ## How to Use Subscription Notes
+   *
+   * Notes allow you to record information about a particular Subscription in a free text format.
+   *
+   * If you have structured data such as birth date, color, etc., consider using Metadata instead.
+   *
+   * Full documentation on how to use Notes in the Chargify UI can be located [here](https://maxio-
+   * chargify.zendesk.com/hc/en-us/articles/5404434903181-Subscription-Summary#notes).
    *
    * @param subscriptionId  The Chargify id of the subscription
-   * @param noteId          The Chargify id of the note
    * @param body
    * @return Response from the API call
    */
-  async updateSubscriptionNote(
+  async createSubscriptionNote(
     subscriptionId: string,
-    noteId: string,
     body?: UpdateSubscriptionNoteRequest,
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<SubscriptionNoteResponse>> {
-    const req = this.createRequest('PUT');
+    const req = this.createRequest('POST');
     const mapped = req.prepareArgs({
       subscriptionId: [subscriptionId, string()],
-      noteId: [noteId, string()],
       body: [body, optional(updateSubscriptionNoteRequestSchema)],
     });
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
-    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/notes/${mapped.noteId}.json`;
+    req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/notes.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionNoteResponseSchema, requestOptions);
   }
 }

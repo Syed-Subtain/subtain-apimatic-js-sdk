@@ -28,29 +28,6 @@ import { BaseController } from './baseController';
 
 export class InsightsController extends BaseController {
   /**
-   * The Stats API is a very basic view of some Site-level stats. This API call only answers with JSON
-   * responses. An XML version is not provided.
-   *
-   * ## Stats Documentation
-   *
-   * There currently is not a complimentary matching set of documentation that compliments this endpoint.
-   * However, each Site's dashboard will reflect the summary of information provided in the Stats
-   * reposnse.
-   *
-   * ```
-   * https://subdomain.chargify.com/dashboard
-   * ```
-   *
-   * @return Response from the API call
-   */
-  async readSiteStats(
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SiteSummary>> {
-    const req = this.createRequest('GET', '/stats.json');
-    return req.callAsJson(siteSummarySchema, requestOptions);
-  }
-
-  /**
    * This endpoint returns your site's current MRR, including plan and usage breakouts.
    *
    * @param atTime          submit a timestamp in ISO8601 format to request MRR for a historic time
@@ -71,7 +48,32 @@ export class InsightsController extends BaseController {
     req.query('at_time', mapped.atTime);
     req.query('subscription_id', mapped.subscriptionId);
     req.deprecated('InsightsController.readMrr');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(mRRResponseSchema, requestOptions);
+  }
+
+  /**
+   * The Stats API is a very basic view of some Site-level stats. This API call only answers with JSON
+   * responses. An XML version is not provided.
+   *
+   * ## Stats Documentation
+   *
+   * There currently is not a complimentary matching set of documentation that compliments this endpoint.
+   * However, each Site's dashboard will reflect the summary of information provided in the Stats
+   * reposnse.
+   *
+   * ```
+   * https://subdomain.chargify.com/dashboard
+   * ```
+   *
+   * @return Response from the API call
+   */
+  async readSiteStats(
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SiteSummary>> {
+    const req = this.createRequest('GET', '/stats.json');
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(siteSummarySchema, requestOptions);
   }
 
   /**
@@ -146,6 +148,7 @@ export class InsightsController extends BaseController {
     req.query('per_page', mapped.perPage);
     req.query('direction', mapped.direction);
     req.deprecated('InsightsController.readMrrMovements');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listMRRResponseSchema, requestOptions);
   }
 
@@ -203,6 +206,7 @@ export class InsightsController extends BaseController {
     req.query('direction', mapped.direction);
     req.deprecated('InsightsController.listMrrPerSubscription');
     req.throwOn(400, SubscriptionsMrrErrorResponseError, 'Bad Request');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionMRRResponseSchema, requestOptions);
   }
 }

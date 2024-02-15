@@ -25,6 +25,27 @@ import { BaseController } from './baseController';
 
 export class ProductsController extends BaseController {
   /**
+   * Sending a DELETE request to this endpoint will archive the product. All current subscribers will be
+   * unffected; their subscription/purchase will continue to be charged monthly.
+   *
+   * This will restrict the option to chose the product for purchase via the Billing Portal, as well as
+   * disable Public Signup Pages for the product.
+   *
+   * @param productId  The Chargify id of the product
+   * @return Response from the API call
+   */
+  async archiveProduct(
+    productId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ProductResponse>> {
+    const req = this.createRequest('DELETE');
+    const mapped = req.prepareArgs({ productId: [productId, number()] });
+    req.appendTemplatePath`/products/${mapped.productId}.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(productResponseSchema, requestOptions);
+  }
+
+  /**
    * Use this method to create a product within your Chargify site.
    *
    * + [Products Documentation](https://maxio-chargify.zendesk.com/hc/en-us/articles/5405561405709)
@@ -49,6 +70,7 @@ export class ProductsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/product_families/${mapped.productFamilyId}/products.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(productResponseSchema, requestOptions);
   }
 
@@ -65,6 +87,7 @@ export class ProductsController extends BaseController {
     const req = this.createRequest('GET');
     const mapped = req.prepareArgs({ productId: [productId, number()] });
     req.appendTemplatePath`/products/${mapped.productId}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(productResponseSchema, requestOptions);
   }
 
@@ -100,26 +123,7 @@ export class ProductsController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/products/${mapped.productId}.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.callAsJson(productResponseSchema, requestOptions);
-  }
-
-  /**
-   * Sending a DELETE request to this endpoint will archive the product. All current subscribers will be
-   * unffected; their subscription/purchase will continue to be charged monthly.
-   *
-   * This will restrict the option to chose the product for purchase via the Billing Portal, as well as
-   * disable Public Signup Pages for the product.
-   *
-   * @param productId  The Chargify id of the product
-   * @return Response from the API call
-   */
-  async archiveProduct(
-    productId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ProductResponse>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({ productId: [productId, number()] });
-    req.appendTemplatePath`/products/${mapped.productId}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(productResponseSchema, requestOptions);
   }
 
@@ -136,6 +140,7 @@ export class ProductsController extends BaseController {
     const req = this.createRequest('GET');
     const mapped = req.prepareArgs({ apiHandle: [apiHandle, string()] });
     req.appendTemplatePath`/products/handle/${mapped.apiHandle}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(productResponseSchema, requestOptions);
   }
 
@@ -310,6 +315,7 @@ export class ProductsController extends BaseController {
     req.query('include', mapped.include);
     req.query('filter[prepaid_product_price_point][product_price_point_id]', mapped.filterPrepaidProductPricePointProductPricePointId);
     req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(productResponseSchema), requestOptions);
   }
 }

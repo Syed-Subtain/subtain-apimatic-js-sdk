@@ -105,60 +105,84 @@ export class CustomFieldsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/${mapped.resourceType}/metafields.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(metafieldSchema), requestOptions);
   }
 
   /**
-   * This endpoint lists metafields associated with a site. The metafield description and usage is
-   * contained in the response.
+   * Use the following method to delete a metafield. This will remove the metafield from the Site.
+   *
+   * Additionally, this will remove the metafield and associated metadata with all Subscriptions on the
+   * Site.
    *
    * @param resourceType  the resource type to which the metafields belong
-   * @param name          filter by the name of the metafield
-   * @param page          Result records are organized in pages. By default, the first
-   *                                                      page of results is displayed. The page parameter specifies a
-   *                                                      page number of results to fetch. You can start navigating
-   *                                                      through the pages to consume the results. You do this by
-   *                                                      passing in a page parameter. Retrieve the next page by adding
-   *                                                      ?page=2 to the query string. If there are no results to
-   *                                                      return, then an empty result set will be returned. Use in
-   *                                                      query `page=1`.
-   * @param perPage       This parameter indicates how many records to fetch in each
-   *                                                      request. Default value is 20. The maximum allowed values is
-   *                                                      200; any per_page value over 200 will be changed to 200. Use
-   *                                                      in query `per_page=200`.
-   * @param direction     Controls the order in which results are returned. Use in
-   *                                                      query `direction=asc`.
+   * @param name          The name of the metafield to be deleted
    * @return Response from the API call
    */
-  async listMetafields({
-    resourceType,
-    name,
-    page,
-    perPage,
-    direction,
-  }: {
+  async deleteMetafield(
     resourceType: ResourceType,
     name?: string,
-    page?: number,
-    perPage?: number,
-    direction?: ListMetafieldsInputDirection,
-  },
     requestOptions?: RequestOptions
-  ): Promise<ApiResponse<ListMetafieldsResponse>> {
-    const req = this.createRequest('GET');
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('DELETE');
     const mapped = req.prepareArgs({
       resourceType: [resourceType, resourceTypeSchema],
       name: [name, optional(string())],
-      page: [page, optional(number())],
-      perPage: [perPage, optional(number())],
-      direction: [direction, optional(listMetafieldsInputDirectionSchema)],
     });
     req.query('name', mapped.name);
+    req.appendTemplatePath`/${mapped.resourceType}/metafields.json`;
+    req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * This request will list all of the metadata belonging to a particular resource (ie. subscription,
+   * customer) that is specified.
+   *
+   * ## Metadata Data
+   *
+   * This endpoint will also display the current stats of your metadata to use as a tool for pagination.
+   *
+   * @param resourceType  the resource type to which the metafields belong
+   * @param resourceId    The Chargify id of the customer or the subscription for which the metadata
+   *                                      applies
+   * @param page          Result records are organized in pages. By default, the first page of results
+   *                                      is displayed. The page parameter specifies a page number of results to fetch.
+   *                                      You can start navigating through the pages to consume the results. You do
+   *                                      this by passing in a page parameter. Retrieve the next page by adding ?page=2
+   *                                      to the query string. If there are no results to return, then an empty result
+   *                                      set will be returned. Use in query `page=1`.
+   * @param perPage       This parameter indicates how many records to fetch in each request. Default
+   *                                      value is 20. The maximum allowed values is 200; any per_page value over 200
+   *                                      will be changed to 200. Use in query `per_page=200`.
+   * @return Response from the API call
+   */
+  async readMetadata({
+    resourceType,
+    resourceId,
+    page,
+    perPage,
+  }: {
+    resourceType: ResourceType,
+    resourceId: string,
+    page?: number,
+    perPage?: number,
+  },
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<PaginatedMetadata>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      resourceType: [resourceType, resourceTypeSchema],
+      resourceId: [resourceId, string()],
+      page: [page, optional(number())],
+      perPage: [perPage, optional(number())],
+    });
     req.query('page', mapped.page);
     req.query('per_page', mapped.perPage);
-    req.query('direction', mapped.direction);
-    req.appendTemplatePath`/${mapped.resourceType}/metafields.json`;
-    return req.callAsJson(listMetafieldsResponseSchema, requestOptions);
+    req.appendTemplatePath`/${mapped.resourceType}/${mapped.resourceId}/metadata.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(paginatedMetadataSchema, requestOptions);
   }
 
   /**
@@ -192,33 +216,8 @@ export class CustomFieldsController extends BaseController {
     req.query('current_name', mapped.currentName);
     req.json(mapped.body);
     req.appendTemplatePath`/${mapped.resourceType}/metafields.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(metafieldSchema), requestOptions);
-  }
-
-  /**
-   * Use the following method to delete a metafield. This will remove the metafield from the Site.
-   *
-   * Additionally, this will remove the metafield and associated metadata with all Subscriptions on the
-   * Site.
-   *
-   * @param resourceType  the resource type to which the metafields belong
-   * @param name          The name of the metafield to be deleted
-   * @return Response from the API call
-   */
-  async deleteMetafield(
-    resourceType: ResourceType,
-    name?: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('DELETE');
-    const mapped = req.prepareArgs({
-      resourceType: [resourceType, resourceTypeSchema],
-      name: [name, optional(string())],
-    });
-    req.query('name', mapped.name);
-    req.appendTemplatePath`/${mapped.resourceType}/metafields.json`;
-    req.throwOn(404, ApiError, 'Not Found');
-    return req.call(requestOptions);
   }
 
   /**
@@ -280,55 +279,8 @@ export class CustomFieldsController extends BaseController {
     req.query('value', mapped.value);
     req.json(mapped.body);
     req.appendTemplatePath`/${mapped.resourceType}/${mapped.resourceId}/metadata.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(metadataSchema), requestOptions);
-  }
-
-  /**
-   * This request will list all of the metadata belonging to a particular resource (ie. subscription,
-   * customer) that is specified.
-   *
-   * ## Metadata Data
-   *
-   * This endpoint will also display the current stats of your metadata to use as a tool for pagination.
-   *
-   * @param resourceType  the resource type to which the metafields belong
-   * @param resourceId    The Chargify id of the customer or the subscription for which the metadata
-   *                                      applies
-   * @param page          Result records are organized in pages. By default, the first page of results
-   *                                      is displayed. The page parameter specifies a page number of results to fetch.
-   *                                      You can start navigating through the pages to consume the results. You do
-   *                                      this by passing in a page parameter. Retrieve the next page by adding ?page=2
-   *                                      to the query string. If there are no results to return, then an empty result
-   *                                      set will be returned. Use in query `page=1`.
-   * @param perPage       This parameter indicates how many records to fetch in each request. Default
-   *                                      value is 20. The maximum allowed values is 200; any per_page value over 200
-   *                                      will be changed to 200. Use in query `per_page=200`.
-   * @return Response from the API call
-   */
-  async readMetadata({
-    resourceType,
-    resourceId,
-    page,
-    perPage,
-  }: {
-    resourceType: ResourceType,
-    resourceId: string,
-    page?: number,
-    perPage?: number,
-  },
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<PaginatedMetadata>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({
-      resourceType: [resourceType, resourceTypeSchema],
-      resourceId: [resourceId, string()],
-      page: [page, optional(number())],
-      perPage: [perPage, optional(number())],
-    });
-    req.query('page', mapped.page);
-    req.query('per_page', mapped.perPage);
-    req.appendTemplatePath`/${mapped.resourceType}/${mapped.resourceId}/metadata.json`;
-    return req.callAsJson(paginatedMetadataSchema, requestOptions);
   }
 
   /**
@@ -359,6 +311,7 @@ export class CustomFieldsController extends BaseController {
     req.query('value', mapped.value);
     req.json(mapped.body);
     req.appendTemplatePath`/${mapped.resourceType}/${mapped.resourceId}/metadata.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(metadataSchema), requestOptions);
   }
 
@@ -414,6 +367,7 @@ export class CustomFieldsController extends BaseController {
     req.query('names[]', mapped.names, plainPrefix);
     req.appendTemplatePath`/${mapped.resourceType}/${mapped.resourceId}/metadata.json`;
     req.throwOn(404, ApiError, 'Not Found');
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
 
@@ -527,6 +481,61 @@ export class CustomFieldsController extends BaseController {
     req.query('resource_ids[]', mapped.resourceIds, plainPrefix);
     req.query('direction', mapped.direction);
     req.appendTemplatePath`/${mapped.resourceType}/metadata.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(paginatedMetadataSchema, requestOptions);
+  }
+
+  /**
+   * This endpoint lists metafields associated with a site. The metafield description and usage is
+   * contained in the response.
+   *
+   * @param resourceType  the resource type to which the metafields belong
+   * @param name          filter by the name of the metafield
+   * @param page          Result records are organized in pages. By default, the first
+   *                                                      page of results is displayed. The page parameter specifies a
+   *                                                      page number of results to fetch. You can start navigating
+   *                                                      through the pages to consume the results. You do this by
+   *                                                      passing in a page parameter. Retrieve the next page by adding
+   *                                                      ?page=2 to the query string. If there are no results to
+   *                                                      return, then an empty result set will be returned. Use in
+   *                                                      query `page=1`.
+   * @param perPage       This parameter indicates how many records to fetch in each
+   *                                                      request. Default value is 20. The maximum allowed values is
+   *                                                      200; any per_page value over 200 will be changed to 200. Use
+   *                                                      in query `per_page=200`.
+   * @param direction     Controls the order in which results are returned. Use in
+   *                                                      query `direction=asc`.
+   * @return Response from the API call
+   */
+  async listMetafields({
+    resourceType,
+    name,
+    page,
+    perPage,
+    direction,
+  }: {
+    resourceType: ResourceType,
+    name?: string,
+    page?: number,
+    perPage?: number,
+    direction?: ListMetafieldsInputDirection,
+  },
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<ListMetafieldsResponse>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({
+      resourceType: [resourceType, resourceTypeSchema],
+      name: [name, optional(string())],
+      page: [page, optional(number())],
+      perPage: [perPage, optional(number())],
+      direction: [direction, optional(listMetafieldsInputDirectionSchema)],
+    });
+    req.query('name', mapped.name);
+    req.query('page', mapped.page);
+    req.query('per_page', mapped.perPage);
+    req.query('direction', mapped.direction);
+    req.appendTemplatePath`/${mapped.resourceType}/metafields.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(listMetafieldsResponseSchema, requestOptions);
   }
 }

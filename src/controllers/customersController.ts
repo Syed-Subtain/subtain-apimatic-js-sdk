@@ -87,6 +87,7 @@ export class CustomersController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.throwOn(422, CustomerErrorResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(customerResponseSchema, requestOptions);
   }
 
@@ -192,7 +193,43 @@ export class CustomersController extends BaseController {
     req.query('start_datetime', mapped.startDatetime);
     req.query('end_datetime', mapped.endDatetime);
     req.query('q', mapped.q);
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(customerResponseSchema), requestOptions);
+  }
+
+  /**
+   * Use this method to return the customer object if you have the unique **Reference ID (Your App)**
+   * value handy. It will return a single match.
+   *
+   * @param reference Customer reference
+   * @return Response from the API call
+   */
+  async readCustomerByReference(
+    reference: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<CustomerResponse>> {
+    const req = this.createRequest('GET', '/customers/lookup.json');
+    const mapped = req.prepareArgs({ reference: [reference, string()] });
+    req.query('reference', mapped.reference);
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(customerResponseSchema, requestOptions);
+  }
+
+  /**
+   * This method lists all subscriptions that belong to a customer.
+   *
+   * @param customerId  The Chargify id of the customer
+   * @return Response from the API call
+   */
+  async listCustomerSubscriptions(
+    customerId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<SubscriptionResponse[]>> {
+    const req = this.createRequest('GET');
+    const mapped = req.prepareArgs({ customerId: [customerId, number()] });
+    req.appendTemplatePath`/customers/${mapped.customerId}/subscriptions.json`;
+    req.authenticate([{ basicAuth: true }]);
+    return req.callAsJson(array(subscriptionResponseSchema), requestOptions);
   }
 
   /**
@@ -208,6 +245,7 @@ export class CustomersController extends BaseController {
     const req = this.createRequest('GET');
     const mapped = req.prepareArgs({ id: [id, number()] });
     req.appendTemplatePath`/customers/${mapped.id}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(customerResponseSchema, requestOptions);
   }
 
@@ -233,6 +271,7 @@ export class CustomersController extends BaseController {
     req.appendTemplatePath`/customers/${mapped.id}.json`;
     req.throwOn(404, ApiError, 'Not Found');
     req.throwOn(422, CustomerErrorResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(customerResponseSchema, requestOptions);
   }
 
@@ -249,39 +288,7 @@ export class CustomersController extends BaseController {
     const req = this.createRequest('DELETE');
     const mapped = req.prepareArgs({ id: [id, number()] });
     req.appendTemplatePath`/customers/${mapped.id}.json`;
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
-  }
-
-  /**
-   * Use this method to return the customer object if you have the unique **Reference ID (Your App)**
-   * value handy. It will return a single match.
-   *
-   * @param reference Customer reference
-   * @return Response from the API call
-   */
-  async readCustomerByReference(
-    reference: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<CustomerResponse>> {
-    const req = this.createRequest('GET', '/customers/lookup.json');
-    const mapped = req.prepareArgs({ reference: [reference, string()] });
-    req.query('reference', mapped.reference);
-    return req.callAsJson(customerResponseSchema, requestOptions);
-  }
-
-  /**
-   * This method lists all subscriptions that belong to a customer.
-   *
-   * @param customerId  The Chargify id of the customer
-   * @return Response from the API call
-   */
-  async listCustomerSubscriptions(
-    customerId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<SubscriptionResponse[]>> {
-    const req = this.createRequest('GET');
-    const mapped = req.prepareArgs({ customerId: [customerId, number()] });
-    req.appendTemplatePath`/customers/${mapped.customerId}/subscriptions.json`;
-    return req.callAsJson(array(subscriptionResponseSchema), requestOptions);
   }
 }

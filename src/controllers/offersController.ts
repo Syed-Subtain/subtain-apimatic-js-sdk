@@ -53,6 +53,7 @@ export class OffersController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.throwOn(422, ErrorMapResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(offerResponseSchema, requestOptions);
   }
 
@@ -65,6 +66,7 @@ export class OffersController extends BaseController {
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListOffersResponse>> {
     const req = this.createRequest('GET', '/offers.json');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listOffersResponseSchema, requestOptions);
   }
 
@@ -83,24 +85,8 @@ export class OffersController extends BaseController {
     const mapped = req.prepareArgs({ offerId: [offerId, number()] });
     req.appendTemplatePath`/offers/${mapped.offerId}.json`;
     req.throwOn(401, ApiError, 'Unauthorized');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(offerResponseSchema, requestOptions);
-  }
-
-  /**
-   * Archive an existing offer. Please provide an `offer_id` in order to archive the correct item.
-   *
-   * @param offerId  The Chargify id of the offer
-   * @return Response from the API call
-   */
-  async archiveOffer(
-    offerId: number,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('PUT');
-    const mapped = req.prepareArgs({ offerId: [offerId, number()] });
-    req.appendTemplatePath`/offers/${mapped.offerId}/archive.json`;
-    req.throwOn(401, ApiError, 'Unauthorized');
-    return req.call(requestOptions);
   }
 
   /**
@@ -118,6 +104,25 @@ export class OffersController extends BaseController {
     const mapped = req.prepareArgs({ offerId: [offerId, number()] });
     req.appendTemplatePath`/offers/${mapped.offerId}/unarchive.json`;
     req.throwOn(401, ApiError, 'Unauthorized');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * Archive an existing offer. Please provide an `offer_id` in order to archive the correct item.
+   *
+   * @param offerId  The Chargify id of the offer
+   * @return Response from the API call
+   */
+  async archiveOffer(
+    offerId: number,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('PUT');
+    const mapped = req.prepareArgs({ offerId: [offerId, number()] });
+    req.appendTemplatePath`/offers/${mapped.offerId}/archive.json`;
+    req.throwOn(401, ApiError, 'Unauthorized');
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
 }

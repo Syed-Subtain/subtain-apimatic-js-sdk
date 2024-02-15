@@ -23,57 +23,6 @@ import { BaseController } from './baseController';
 
 export class SubscriptionGroupStatusController extends BaseController {
   /**
-   * This endpoint will immediately cancel all subscriptions within the specified group. The group is
-   * identified by it's `uid` passed in the URL. To successfully cancel the group, the primary
-   * subscription must be on automatic billing. The group members as well must be on automatic billing or
-   * they must be prepaid.
-   *
-   * In order to cancel a subscription group while also charging for any unbilled usage on metered or
-   * prepaid components, the `charge_unbilled_usage=true` parameter must be included in the request.
-   *
-   * @param uid          The uid of the subscription group
-   * @param body
-   * @return Response from the API call
-   */
-  async cancelSubscriptionsInGroup(
-    uid: string,
-    body?: CancelGroupedSubscriptionsRequest,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({
-      uid: [uid, string()],
-      body: [body, optional(cancelGroupedSubscriptionsRequestSchema)],
-    });
-    req.header('Content-Type', 'application/json');
-    req.json(mapped.body);
-    req.appendTemplatePath`/subscription_groups/${mapped.uid}/cancel.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
-  }
-
-  /**
-   * This endpoint will schedule all subscriptions within the specified group to be canceled at the end
-   * of their billing period. The group is identified by it's uid passed in the URL.
-   *
-   * All subscriptions in the group must be on automatic billing in order to successfully cancel them,
-   * and the group must not be in a "past_due" state.
-   *
-   * @param uid The uid of the subscription group
-   * @return Response from the API call
-   */
-  async initiateDelayedCancellationForGroup(
-    uid: string,
-    requestOptions?: RequestOptions
-  ): Promise<ApiResponse<void>> {
-    const req = this.createRequest('POST');
-    const mapped = req.prepareArgs({ uid: [uid, string()] });
-    req.appendTemplatePath`/subscription_groups/${mapped.uid}/delayed_cancel.json`;
-    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
-    return req.call(requestOptions);
-  }
-
-  /**
    * Removing the delayed cancellation on a subscription group will ensure that the subscriptions do not
    * get canceled at the end of the period. The request will reset the `cancel_at_end_of_period` flag to
    * false on each member in the group.
@@ -89,6 +38,7 @@ export class SubscriptionGroupStatusController extends BaseController {
     const mapped = req.prepareArgs({ uid: [uid, string()] });
     req.appendTemplatePath`/subscription_groups/${mapped.uid}/delayed_cancel.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
 
@@ -149,9 +99,63 @@ export class SubscriptionGroupStatusController extends BaseController {
     req.json(mapped.body);
     req.appendTemplatePath`/subscription_groups/${mapped.uid}/reactivate.json`;
     req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       reactivateSubscriptionGroupResponseSchema,
       requestOptions
     );
+  }
+
+  /**
+   * This endpoint will schedule all subscriptions within the specified group to be canceled at the end
+   * of their billing period. The group is identified by it's uid passed in the URL.
+   *
+   * All subscriptions in the group must be on automatic billing in order to successfully cancel them,
+   * and the group must not be in a "past_due" state.
+   *
+   * @param uid The uid of the subscription group
+   * @return Response from the API call
+   */
+  async initiateDelayedCancellationForGroup(
+    uid: string,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({ uid: [uid, string()] });
+    req.appendTemplatePath`/subscription_groups/${mapped.uid}/delayed_cancel.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
+  }
+
+  /**
+   * This endpoint will immediately cancel all subscriptions within the specified group. The group is
+   * identified by it's `uid` passed in the URL. To successfully cancel the group, the primary
+   * subscription must be on automatic billing. The group members as well must be on automatic billing or
+   * they must be prepaid.
+   *
+   * In order to cancel a subscription group while also charging for any unbilled usage on metered or
+   * prepaid components, the `charge_unbilled_usage=true` parameter must be included in the request.
+   *
+   * @param uid          The uid of the subscription group
+   * @param body
+   * @return Response from the API call
+   */
+  async cancelSubscriptionsInGroup(
+    uid: string,
+    body?: CancelGroupedSubscriptionsRequest,
+    requestOptions?: RequestOptions
+  ): Promise<ApiResponse<void>> {
+    const req = this.createRequest('POST');
+    const mapped = req.prepareArgs({
+      uid: [uid, string()],
+      body: [body, optional(cancelGroupedSubscriptionsRequestSchema)],
+    });
+    req.header('Content-Type', 'application/json');
+    req.json(mapped.body);
+    req.appendTemplatePath`/subscription_groups/${mapped.uid}/cancel.json`;
+    req.throwOn(422, ErrorListResponseError, 'Unprocessable Entity (WebDAV)');
+    req.authenticate([{ basicAuth: true }]);
+    return req.call(requestOptions);
   }
 }

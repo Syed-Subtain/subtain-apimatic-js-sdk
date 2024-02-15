@@ -10,90 +10,15 @@ const subscriptionGroupsController = new SubscriptionGroupsController(client);
 
 ## Methods
 
-* [Signup With Subscription Group](../../doc/controllers/subscription-groups.md#signup-with-subscription-group)
 * [Create Subscription Group](../../doc/controllers/subscription-groups.md#create-subscription-group)
-* [List Subscription Groups](../../doc/controllers/subscription-groups.md#list-subscription-groups)
 * [Read Subscription Group](../../doc/controllers/subscription-groups.md#read-subscription-group)
-* [Update Subscription Group Members](../../doc/controllers/subscription-groups.md#update-subscription-group-members)
+* [Remove Subscription From Group](../../doc/controllers/subscription-groups.md#remove-subscription-from-group)
 * [Delete Subscription Group](../../doc/controllers/subscription-groups.md#delete-subscription-group)
 * [Read Subscription Group by Subscription Id](../../doc/controllers/subscription-groups.md#read-subscription-group-by-subscription-id)
 * [Create Subscription Group Hierarchy](../../doc/controllers/subscription-groups.md#create-subscription-group-hierarchy)
-* [Remove Subscription From Group](../../doc/controllers/subscription-groups.md#remove-subscription-from-group)
-
-
-# Signup With Subscription Group
-
-Create multiple subscriptions at once under the same customer and consolidate them into a subscription group.
-
-You must provide one and only one of the `payer_id`/`payer_reference`/`payer_attributes` for the customer attached to the group.
-
-You must provide one and only one of the `payment_profile_id`/`credit_card_attributes`/`bank_account_attributes` for the payment profile attached to the group.
-
-Only one of the `subscriptions` can have `"primary": true` attribute set.
-
-When passing product to a subscription you can use either `product_id` or `product_handle` or `offer_id`. You can also use `custom_price` instead.
-
-```ts
-async signupWithSubscriptionGroup(
-  body?: SubscriptionGroupSignupRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionGroupSignupResponse>>
-```
-
-## Parameters
-
-| Parameter | Type | Tags | Description |
-|  --- | --- | --- | --- |
-| `body` | [`SubscriptionGroupSignupRequest \| undefined`](../../doc/models/subscription-group-signup-request.md) | Body, Optional | - |
-| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
-
-## Response Type
-
-[`SubscriptionGroupSignupResponse`](../../doc/models/subscription-group-signup-response.md)
-
-## Example Usage
-
-```ts
-const body: SubscriptionGroupSignupRequest = {
-  subscriptionGroup: {
-    subscriptions: [
-      {
-        productId: 11,
-        primary: true,
-      },
-      {
-        productId: 12,
-      },
-      {
-        productId: 13,
-      }
-    ],
-    paymentProfileId: 123,
-    payerId: 123,
-  },
-};
-
-try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { result, ...httpResponse } = await subscriptionGroupsController.signupWithSubscriptionGroup(body);
-  // Get more response info...
-  // const { statusCode, headers } = httpResponse;
-} catch (error) {
-  if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const errors = error.result;
-    // const { statusCode, headers } = error;
-  }
-}
-```
-
-## Errors
-
-| HTTP Status Code | Error Description | Exception Class |
-|  --- | --- | --- |
-| 422 | Unprocessable Entity (WebDAV) | [`SubscriptionGroupSignupErrorResponseError`](../../doc/models/subscription-group-signup-error-response-error.md) |
+* [Signup With Subscription Group](../../doc/controllers/subscription-groups.md#signup-with-subscription-group)
+* [List Subscription Groups](../../doc/controllers/subscription-groups.md#list-subscription-groups)
+* [Update Subscription Group Members](../../doc/controllers/subscription-groups.md#update-subscription-group-members)
 
 
 # Create Subscription Group
@@ -175,98 +100,6 @@ try {
 | HTTP Status Code | Error Description | Exception Class |
 |  --- | --- | --- |
 | 422 | Unprocessable Entity (WebDAV) | [`SingleStringErrorResponseError`](../../doc/models/single-string-error-response-error.md) |
-
-
-# List Subscription Groups
-
-Returns an array of subscription groups for the site. The response is paginated and will return a `meta` key with pagination information.
-
-#### Account Balance Information
-
-Account balance information for the subscription groups is not returned by default. If this information is desired, the `include[]=account_balances` parameter must be provided with the request.
-
-```ts
-async listSubscriptionGroups(
-  page?: number,
-  perPage?: number,
-  include?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListSubscriptionGroupsResponse>>
-```
-
-## Parameters
-
-| Parameter | Type | Tags | Description |
-|  --- | --- | --- | --- |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
-| `include` | `string \| undefined` | Query, Optional | A list of additional information to include in the response. The following values are supported:<br><br>- `account_balances`: Account balance information for the subscription groups. Use in query: `include[]=account_balances` |
-| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
-
-## Response Type
-
-[`ListSubscriptionGroupsResponse`](../../doc/models/list-subscription-groups-response.md)
-
-## Example Usage
-
-```ts
-const collect = {
-  page: 2,
-  perPage: 50
-}
-try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { result, ...httpResponse } = await subscriptionGroupsController.listSubscriptionGroups(collect);
-  // Get more response info...
-  // const { statusCode, headers } = httpResponse;
-} catch (error) {
-  if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const errors = error.result;
-    // const { statusCode, headers } = error;
-  }
-}
-```
-
-## Example Response *(as JSON)*
-
-```json
-{
-  "subscription_groups": [
-    {
-      "uid": "grp_952mvqcnk53wq",
-      "scheme": 1,
-      "customer_id": 88498000,
-      "payment_profile_id": 93063018,
-      "subscription_ids": [
-        42768907,
-        82370782
-      ],
-      "primary_subscription_id": 69844395,
-      "next_assessment_at": "Sun, 09 Aug 2020 15:59:06 EDT -04:00",
-      "state": "active",
-      "cancel_at_end_of_period": false,
-      "account_balances": {
-        "prepayments": {
-          "balance_in_cents": 0
-        },
-        "service_credits": {
-          "balance_in_cents": 0
-        },
-        "pending_discounts": {
-          "balance_in_cents": 0
-        }
-      }
-    }
-  ],
-  "meta": {
-    "current_page": 1,
-    "total_count": 1
-  }
-}
-```
 
 
 # Read Subscription Group
@@ -359,53 +192,37 @@ try {
 ```
 
 
-# Update Subscription Group Members
+# Remove Subscription From Group
 
-Use this endpoint to update subscription group members.
-`"member_ids": []` should contain an array of both subscription IDs to set as group members and subscription IDs already present in the groups. Not including them will result in removing them from subscription group. To clean up members, just leave the array empty.
+For sites making use of the [Relationship Billing](https://chargify.zendesk.com/hc/en-us/articles/4407737494171) and [Customer Hierarchy](https://chargify.zendesk.com/hc/en-us/articles/4407746683291) features, it is possible to remove existing subscription from subscription group.
 
 ```ts
-async updateSubscriptionGroupMembers(
-  uid: string,
-  body?: UpdateSubscriptionGroupRequest,
+async removeSubscriptionFromGroup(
+  subscriptionId: string,
   requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionGroupResponse>>
+): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `uid` | `string` | Template, Required | The uid of the subscription group |
-| `body` | [`UpdateSubscriptionGroupRequest \| undefined`](../../doc/models/update-subscription-group-request.md) | Body, Optional | - |
+| `subscriptionId` | `string` | Template, Required | The Chargify id of the subscription |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
 
-[`SubscriptionGroupResponse`](../../doc/models/subscription-group-response.md)
+`void`
 
 ## Example Usage
 
 ```ts
-const uid = 'uid0';
-
-const body: UpdateSubscriptionGroupRequest = {
-  subscriptionGroup: {
-    memberIds: [
-      1,
-      2,
-      3
-    ],
-  },
-};
+const subscriptionId = 'subscription_id0';
 
 try {
   // @ts-expect-error: unused variables
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { result, ...httpResponse } = await subscriptionGroupsController.updateSubscriptionGroupMembers(
-  uid,
-  body
-);
+  const { result, ...httpResponse } = await subscriptionGroupsController.removeSubscriptionFromGroup(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
@@ -418,32 +235,12 @@ try {
 }
 ```
 
-## Example Response *(as JSON)*
-
-```json
-{
-  "subscription_group": {
-    "customer_id": 1,
-    "payment_profile": {
-      "id": 1,
-      "first_name": "t",
-      "last_name": "t",
-      "masked_card_number": "XXXX-XXXX-XXXX-1"
-    },
-    "payment_collection_method": "automatic",
-    "subscription_ids": [
-      1
-    ],
-    "created_at": "2021-01-21T05:47:38-05:00"
-  }
-}
-```
-
 ## Errors
 
 | HTTP Status Code | Error Description | Exception Class |
 |  --- | --- | --- |
-| 422 | Unprocessable Entity (WebDAV) | [`SubscriptionGroupUpdateErrorResponseError`](../../doc/models/subscription-group-update-error-response-error.md) |
+| 404 | Not Found | `ApiError` |
+| 422 | Unprocessable Entity (WebDAV) | [`ErrorListResponseError`](../../doc/models/error-list-response-error.md) |
 
 
 # Delete Subscription Group
@@ -697,37 +494,62 @@ try {
 ```
 
 
-# Remove Subscription From Group
+# Signup With Subscription Group
 
-For sites making use of the [Relationship Billing](https://chargify.zendesk.com/hc/en-us/articles/4407737494171) and [Customer Hierarchy](https://chargify.zendesk.com/hc/en-us/articles/4407746683291) features, it is possible to remove existing subscription from subscription group.
+Create multiple subscriptions at once under the same customer and consolidate them into a subscription group.
+
+You must provide one and only one of the `payer_id`/`payer_reference`/`payer_attributes` for the customer attached to the group.
+
+You must provide one and only one of the `payment_profile_id`/`credit_card_attributes`/`bank_account_attributes` for the payment profile attached to the group.
+
+Only one of the `subscriptions` can have `"primary": true` attribute set.
+
+When passing product to a subscription you can use either `product_id` or `product_handle` or `offer_id`. You can also use `custom_price` instead.
 
 ```ts
-async removeSubscriptionFromGroup(
-  subscriptionId: string,
+async signupWithSubscriptionGroup(
+  body?: SubscriptionGroupSignupRequest,
   requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+): Promise<ApiResponse<SubscriptionGroupSignupResponse>>
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `subscriptionId` | `string` | Template, Required | The Chargify id of the subscription |
+| `body` | [`SubscriptionGroupSignupRequest \| undefined`](../../doc/models/subscription-group-signup-request.md) | Body, Optional | - |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
 
-`void`
+[`SubscriptionGroupSignupResponse`](../../doc/models/subscription-group-signup-response.md)
 
 ## Example Usage
 
 ```ts
-const subscriptionId = 'subscription_id0';
+const body: SubscriptionGroupSignupRequest = {
+  subscriptionGroup: {
+    subscriptions: [
+      {
+        productId: 11,
+        primary: true,
+      },
+      {
+        productId: 12,
+      },
+      {
+        productId: 13,
+      }
+    ],
+    paymentProfileId: 123,
+    payerId: 123,
+  },
+};
 
 try {
   // @ts-expect-error: unused variables
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { result, ...httpResponse } = await subscriptionGroupsController.removeSubscriptionFromGroup(subscriptionId);
+  const { result, ...httpResponse } = await subscriptionGroupsController.signupWithSubscriptionGroup(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
@@ -744,6 +566,184 @@ try {
 
 | HTTP Status Code | Error Description | Exception Class |
 |  --- | --- | --- |
-| 404 | Not Found | `ApiError` |
-| 422 | Unprocessable Entity (WebDAV) | [`ErrorListResponseError`](../../doc/models/error-list-response-error.md) |
+| 422 | Unprocessable Entity (WebDAV) | [`SubscriptionGroupSignupErrorResponseError`](../../doc/models/subscription-group-signup-error-response-error.md) |
+
+
+# List Subscription Groups
+
+Returns an array of subscription groups for the site. The response is paginated and will return a `meta` key with pagination information.
+
+#### Account Balance Information
+
+Account balance information for the subscription groups is not returned by default. If this information is desired, the `include[]=account_balances` parameter must be provided with the request.
+
+```ts
+async listSubscriptionGroups(
+  page?: number,
+  perPage?: number,
+  include?: string,
+  requestOptions?: RequestOptions
+): Promise<ApiResponse<ListSubscriptionGroupsResponse>>
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `include` | `string \| undefined` | Query, Optional | A list of additional information to include in the response. The following values are supported:<br><br>- `account_balances`: Account balance information for the subscription groups. Use in query: `include[]=account_balances` |
+| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
+
+## Response Type
+
+[`ListSubscriptionGroupsResponse`](../../doc/models/list-subscription-groups-response.md)
+
+## Example Usage
+
+```ts
+const collect = {
+  page: 2,
+  perPage: 50
+}
+try {
+  // @ts-expect-error: unused variables
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { result, ...httpResponse } = await subscriptionGroupsController.listSubscriptionGroups(collect);
+  // Get more response info...
+  // const { statusCode, headers } = httpResponse;
+} catch (error) {
+  if (error instanceof ApiError) {
+    // @ts-expect-error: unused variables
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const errors = error.result;
+    // const { statusCode, headers } = error;
+  }
+}
+```
+
+## Example Response *(as JSON)*
+
+```json
+{
+  "subscription_groups": [
+    {
+      "uid": "grp_952mvqcnk53wq",
+      "scheme": 1,
+      "customer_id": 88498000,
+      "payment_profile_id": 93063018,
+      "subscription_ids": [
+        42768907,
+        82370782
+      ],
+      "primary_subscription_id": 69844395,
+      "next_assessment_at": "Sun, 09 Aug 2020 15:59:06 EDT -04:00",
+      "state": "active",
+      "cancel_at_end_of_period": false,
+      "account_balances": {
+        "prepayments": {
+          "balance_in_cents": 0
+        },
+        "service_credits": {
+          "balance_in_cents": 0
+        },
+        "pending_discounts": {
+          "balance_in_cents": 0
+        }
+      }
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "total_count": 1
+  }
+}
+```
+
+
+# Update Subscription Group Members
+
+Use this endpoint to update subscription group members.
+`"member_ids": []` should contain an array of both subscription IDs to set as group members and subscription IDs already present in the groups. Not including them will result in removing them from subscription group. To clean up members, just leave the array empty.
+
+```ts
+async updateSubscriptionGroupMembers(
+  uid: string,
+  body?: UpdateSubscriptionGroupRequest,
+  requestOptions?: RequestOptions
+): Promise<ApiResponse<SubscriptionGroupResponse>>
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `uid` | `string` | Template, Required | The uid of the subscription group |
+| `body` | [`UpdateSubscriptionGroupRequest \| undefined`](../../doc/models/update-subscription-group-request.md) | Body, Optional | - |
+| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
+
+## Response Type
+
+[`SubscriptionGroupResponse`](../../doc/models/subscription-group-response.md)
+
+## Example Usage
+
+```ts
+const uid = 'uid0';
+
+const body: UpdateSubscriptionGroupRequest = {
+  subscriptionGroup: {
+    memberIds: [
+      1,
+      2,
+      3
+    ],
+  },
+};
+
+try {
+  // @ts-expect-error: unused variables
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { result, ...httpResponse } = await subscriptionGroupsController.updateSubscriptionGroupMembers(
+  uid,
+  body
+);
+  // Get more response info...
+  // const { statusCode, headers } = httpResponse;
+} catch (error) {
+  if (error instanceof ApiError) {
+    // @ts-expect-error: unused variables
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const errors = error.result;
+    // const { statusCode, headers } = error;
+  }
+}
+```
+
+## Example Response *(as JSON)*
+
+```json
+{
+  "subscription_group": {
+    "customer_id": 1,
+    "payment_profile": {
+      "id": 1,
+      "first_name": "t",
+      "last_name": "t",
+      "masked_card_number": "XXXX-XXXX-XXXX-1"
+    },
+    "payment_collection_method": "automatic",
+    "subscription_ids": [
+      1
+    ],
+    "created_at": "2021-01-21T05:47:38-05:00"
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 422 | Unprocessable Entity (WebDAV) | [`SubscriptionGroupUpdateErrorResponseError`](../../doc/models/subscription-group-update-error-response-error.md) |
 
