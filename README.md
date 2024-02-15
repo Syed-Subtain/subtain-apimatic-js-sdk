@@ -271,14 +271,14 @@ It is up to API consumers to parse the string into a decimal number representati
 Run the following command from your project directory to install the package from npm:
 
 ```ts
-npm install subtain-apimatic-sdk@2.2.89
+npm install subtain-apimatic-sdk@2.2.80
 ```
 
-For additional package details, see the [Npm page for the subtain-apimatic-sdk@2.2.89 npm](https://www.npmjs.com/package/subtain-apimatic-sdk/v/2.2.89).
+For additional package details, see the [Npm page for the subtain-apimatic-sdk@2.2.80 npm](https://www.npmjs.com/package/subtain-apimatic-sdk/v/2.2.80).
 
 ## Initialize the API Client
 
-**_Note:_** Documentation for the client can be found [here.](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/client.md)
+**_Note:_** Documentation for the client can be found [here.](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/client.md)
 
 The following parameters are configurable for the API Client:
 
@@ -290,7 +290,7 @@ The following parameters are configurable for the API Client:
 | `timeout` | `number` | Timeout for API calls.<br>*Default*: `30000` |
 | `httpClientOptions` | `Partial<HttpClientOptions>` | Stable configurable http client options. |
 | `unstableHttpClientOptions` | `any` | Unstable configurable http client options. |
-| `basicAuthCredentials` | [`BasicAuthCredentials`](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/$a/https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/basic-authentication.md) | The credential object for basicAuth |
+| `basicAuthCredentials` | [`BasicAuthCredentials`](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/$a/https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/basic-authentication.md) | The credential object for basicAuth |
 
 ### HttpClientOptions
 
@@ -341,44 +341,44 @@ The SDK can be configured to use a different environment for making API calls. A
 
 This API uses the following authentication schemes.
 
-* [`BasicAuth (Basic Authentication)`](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/$a/https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/basic-authentication.md)
+* [`BasicAuth (Basic Authentication)`](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/$a/https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/basic-authentication.md)
 
 ## List of APIs
 
-* [API Exports](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/api-exports.md)
-* [Advance Invoice](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/advance-invoice.md)
-* [Billing Portal](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/billing-portal.md)
-* [Custom Fields](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/custom-fields.md)
-* [Events-Based Billing Segments](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/events-based-billing-segments.md)
-* [Payment Profiles](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/payment-profiles.md)
-* [Product Families](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/product-families.md)
-* [Product Price Points](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/product-price-points.md)
-* [Proforma Invoices](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/proforma-invoices.md)
-* [Reason Codes](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/reason-codes.md)
-* [Referral Codes](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/referral-codes.md)
-* [Sales Commissions](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/sales-commissions.md)
-* [Subscription Components](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscription-components.md)
-* [Subscription Groups](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscription-groups.md)
-* [Subscription Group Invoice Account](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscription-group-invoice-account.md)
-* [Subscription Group Status](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscription-group-status.md)
-* [Subscription Invoice Account](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscription-invoice-account.md)
-* [Subscription Notes](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscription-notes.md)
-* [Subscription Products](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscription-products.md)
-* [Subscription Status](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscription-status.md)
-* [Coupons](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/coupons.md)
-* [Components](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/components.md)
-* [Customers](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/customers.md)
-* [Events](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/events.md)
-* [Insights](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/insights.md)
-* [Invoices](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/invoices.md)
-* [Offers](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/offers.md)
-* [Products](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/products.md)
-* [Sites](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/sites.md)
-* [Subscriptions](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/subscriptions.md)
-* [Webhooks](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/controllers/webhooks.md)
+* [API Exports](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/api-exports.md)
+* [Advance Invoice](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/advance-invoice.md)
+* [Billing Portal](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/billing-portal.md)
+* [Custom Fields](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/custom-fields.md)
+* [Events-Based Billing Segments](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/events-based-billing-segments.md)
+* [Payment Profiles](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/payment-profiles.md)
+* [Product Families](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/product-families.md)
+* [Product Price Points](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/product-price-points.md)
+* [Proforma Invoices](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/proforma-invoices.md)
+* [Reason Codes](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/reason-codes.md)
+* [Referral Codes](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/referral-codes.md)
+* [Sales Commissions](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/sales-commissions.md)
+* [Subscription Components](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscription-components.md)
+* [Subscription Groups](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscription-groups.md)
+* [Subscription Group Invoice Account](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscription-group-invoice-account.md)
+* [Subscription Group Status](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscription-group-status.md)
+* [Subscription Invoice Account](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscription-invoice-account.md)
+* [Subscription Notes](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscription-notes.md)
+* [Subscription Products](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscription-products.md)
+* [Subscription Status](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscription-status.md)
+* [Coupons](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/coupons.md)
+* [Components](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/components.md)
+* [Customers](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/customers.md)
+* [Events](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/events.md)
+* [Insights](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/insights.md)
+* [Invoices](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/invoices.md)
+* [Offers](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/offers.md)
+* [Products](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/products.md)
+* [Sites](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/sites.md)
+* [Subscriptions](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/subscriptions.md)
+* [Webhooks](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/controllers/webhooks.md)
 
 ## Classes Documentation
 
-* [ApiResponse](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/api-response.md)
-* [ApiError](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.89/doc/api-error.md)
+* [ApiResponse](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/api-response.md)
+* [ApiError](https://www.github.com/Syed-Subtain/subtain-apimatic-js-sdk/tree/2.2.80/doc/api-error.md)
 
