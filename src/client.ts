@@ -59,7 +59,7 @@ export class Client implements ClientInterface {
     };
 
     this._userAgent = updateUserAgent(
-      'AB SDK TypeScript:11.1.7 on OS {os-info}'
+      'AB SDK TypeScript:11.1.1 on OS {os-info}'
     );
     this._requestBuilderFactory = createRequestHandlerFactory(
       (server) => getBaseUri(server, this._config),
