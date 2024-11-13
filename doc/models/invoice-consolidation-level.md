@@ -19,7 +19,7 @@ See also the [invoice consolidation documentation](https://chargify.zendesk.com/
 
 | Name |
 |  --- |
-| `none` |
-| `child` |
-| `parent` |
+| `None` |
+| `Child` |
+| `Parent` |
 

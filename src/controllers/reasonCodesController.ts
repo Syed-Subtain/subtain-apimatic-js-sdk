@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import {
   CreateReasonCodeRequest,
   createReasonCodeRequestSchema,
@@ -25,6 +23,8 @@ import {
 } from '../models/updateReasonCodeRequest';
 import { array, number, optional } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class ReasonCodesController extends BaseController {
   /**
@@ -79,13 +79,14 @@ export class ReasonCodesController extends BaseController {
    *                           Use in query `per_page=200`.
    * @return Response from the API call
    */
-  async listReasonCodes({
-    page,
-    perPage,
-  }: {
-    page?: number,
-    perPage?: number,
-  },
+  async listReasonCodes(
+    {
+      page,
+      perPage,
+    }: {
+      page?: number;
+      perPage?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ReasonCodeResponse[]>> {
     const req = this.createRequest('GET', '/reason_codes.json');

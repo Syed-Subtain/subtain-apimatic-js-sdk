@@ -23,11 +23,9 @@ That said, regeneration of the invoice may be forced with the params `force: tru
 We recommend using either the create or preview endpoints for proforma invoices to preview this advance invoice before using this endpoint to generate it.
 
 ```ts
-async issueAdvanceInvoice(
-  subscriptionId: string,
+async issueAdvanceInvoice(  subscriptionId: string,
   body?: IssueAdvanceInvoiceRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -52,8 +50,6 @@ const body: IssueAdvanceInvoiceRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await advanceInvoiceController.issueAdvanceInvoice(
   subscriptionId,
   body
@@ -62,8 +58,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -84,10 +78,8 @@ try {
 Once an advance invoice has been generated for a subscription's upcoming renewal, it can be viewed through this endpoint. There can only be one advance invoice per subscription per billing cycle.
 
 ```ts
-async readAdvanceInvoice(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+async readAdvanceInvoice(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -107,15 +99,11 @@ async readAdvanceInvoice(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await advanceInvoiceController.readAdvanceInvoice(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -136,11 +124,9 @@ Void a subscription's existing advance invoice. Once voided, it can later be reg
 A `reason` is required in order to void, and the invoice must have an open status. Voiding will cause any prepayments and credits that were applied to the invoice to be returned to the subscription. For a full overview of the impact of voiding, please [see our help docs](reference/Chargify-API.v1.yaml/components/schemas/Invoice).
 
 ```ts
-async voidAdvanceInvoice(
-  subscriptionId: string,
+async voidAdvanceInvoice(  subscriptionId: string,
   body?: VoidInvoiceRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -161,15 +147,11 @@ async voidAdvanceInvoice(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await advanceInvoiceController.voidAdvanceInvoice(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

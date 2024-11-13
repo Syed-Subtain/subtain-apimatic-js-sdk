@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import {
   BankAccountResponse,
   bankAccountResponseSchema,
@@ -49,6 +47,8 @@ import {
 } from '../models/updatePaymentProfileResponse';
 import { array, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class PaymentProfilesController extends BaseController {
   /**
@@ -685,15 +685,16 @@ export class PaymentProfilesController extends BaseController {
    * @param customerId  The ID of the customer for which you wish to list payment profiles
    * @return Response from the API call
    */
-  async listPaymentProfiles({
-    page,
-    perPage,
-    customerId,
-  }: {
-    page?: number,
-    perPage?: number,
-    customerId?: number,
-  },
+  async listPaymentProfiles(
+    {
+      page,
+      perPage,
+      customerId,
+    }: {
+      page?: number;
+      perPage?: number;
+      customerId?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListPaymentProfilesResponse[]>> {
     const req = this.createRequest('GET', '/payment_profiles.json');

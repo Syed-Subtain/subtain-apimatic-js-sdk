@@ -49,11 +49,9 @@ It is possible to create Metafields “on the fly” when you create your Metada
 If configuring metafields in the Admin UI or via the API, be careful sending updates to metafields with the scope attribute – **if a partial update is sent it will overwrite the current configuration**.
 
 ```ts
-async createMetafields(
-  resourceType: ResourceType,
+async createMetafields(  resourceType: ResourceType,
   body?: CreateMetafieldsRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Metafield[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Metafield[]>>
 ```
 
 ## Parameters
@@ -89,8 +87,6 @@ const body: CreateMetafieldsRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customFieldsController.createMetafields(
   resourceType,
   body
@@ -99,8 +95,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -148,11 +142,9 @@ Use the following method to delete a metafield. This will remove the metafield f
 Additionally, this will remove the metafield and associated metadata with all Subscriptions on the Site.
 
 ```ts
-async deleteMetafield(
-  resourceType: ResourceType,
+async deleteMetafield(  resourceType: ResourceType,
   name?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -173,15 +165,11 @@ async deleteMetafield(
 const resourceType = ResourceType.Subscriptions;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customFieldsController.deleteMetafield(resourceType);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -204,13 +192,11 @@ This request will list all of the metadata belonging to a particular resource (i
 This endpoint will also display the current stats of your metadata to use as a tool for pagination.
 
 ```ts
-async readMetadata(
-  resourceType: ResourceType,
+async readMetadata(  resourceType: ResourceType,
   resourceId: string,
   page?: number,
   perPage?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<PaginatedMetadata>>
+requestOptions?: RequestOptions): Promise<ApiResponse<PaginatedMetadata>>
 ```
 
 ## Parameters
@@ -219,8 +205,8 @@ async readMetadata(
 |  --- | --- | --- | --- |
 | `resourceType` | [`ResourceType`](../../doc/models/resource-type.md) | Template, Required | the resource type to which the metafields belong |
 | `resourceId` | `string` | Template, Required | The Chargify id of the customer or the subscription for which the metadata applies |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -236,16 +222,13 @@ const collect = {
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customFieldsController.readMetadata(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -258,13 +241,11 @@ try {
 Use the following method to update metafields for your Site. Metafields can be populated with metadata after the fact.
 
 ```ts
-async updateMetafield(
-  resourceType: ResourceType,
+async updateMetafield(  resourceType: ResourceType,
   name: string,
   currentName?: string,
   body?: UpdateMetafieldsRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Metafield[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Metafield[]>>
 ```
 
 ## Parameters
@@ -289,8 +270,6 @@ const resourceType = ResourceType.Subscriptions;
 const name = 'name0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customFieldsController.updateMetafield(
   resourceType,
   name
@@ -299,8 +278,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -334,13 +311,11 @@ This method will create a metafield for the site on the fly if it does not alrea
 Please pay special attention to the resource you use when creating metadata.
 
 ```ts
-async createMetadata(
-  resourceType: ResourceType,
+async createMetadata(  resourceType: ResourceType,
   resourceId: string,
   value?: string,
   body?: CreateMetadataRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Metadata[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Metadata[]>>
 ```
 
 ## Parameters
@@ -378,8 +353,6 @@ const body: CreateMetadataRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customFieldsController.createMetadata(
   resourceType,
   resourceId,
@@ -390,8 +363,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -404,13 +375,11 @@ try {
 This method allows you to update the existing metadata associated with a subscription or customer.
 
 ```ts
-async updateMetadata(
-  resourceType: ResourceType,
+async updateMetadata(  resourceType: ResourceType,
   resourceId: string,
   value?: string,
   body?: UpdateMetadataRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Metadata[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Metadata[]>>
 ```
 
 ## Parameters
@@ -435,8 +404,6 @@ const resourceType = ResourceType.Subscriptions;
 const resourceId = 'resource_id4';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customFieldsController.updateMetadata(
   resourceType,
   resourceId
@@ -445,8 +412,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -481,13 +446,11 @@ For a success, there will be a code `200` and the plain text response `true`.
 When a failed response is encountered, you will receive a `404` response and the plain text response of `true`.
 
 ```ts
-async deleteMetadata(
-  resourceType: ResourceType,
+async deleteMetadata(  resourceType: ResourceType,
   resourceId: string,
   name?: string,
   names?: string[],
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -512,8 +475,6 @@ const resourceType = ResourceType.Subscriptions;
 const resourceId = 'resource_id4';
 
 Liquid error: Value cannot be null. (Parameter 'key')try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = Liquid error: Value cannot be null. (Parameter 'key')await customFieldsController.deleteMetadata(
   resourceType,
   resourceId
@@ -522,8 +483,6 @@ Liquid error: Value cannot be null. (Parameter 'key')try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -554,8 +513,7 @@ This endpoint will also display the current stats of your metadata to use as a t
 This endpoint will list the number of pages of metadata information that are contained within a site.
 
 ```ts
-async listMetadata(
-  resourceType: ResourceType,
+async listMetadata(  resourceType: ResourceType,
   page?: number,
   perPage?: number,
   dateField?: BasicDateField,
@@ -566,8 +524,7 @@ async listMetadata(
   withDeleted?: boolean,
   resourceIds?: number[],
   direction?: ListMetadataInputDirection,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<PaginatedMetadata>>
+requestOptions?: RequestOptions): Promise<ApiResponse<PaginatedMetadata>>
 ```
 
 ## Parameters
@@ -575,15 +532,15 @@ async listMetadata(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `resourceType` | [`ResourceType`](../../doc/models/resource-type.md) | Template, Required | the resource type to which the metafields belong |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `dateField` | [`BasicDateField \| undefined`](../../doc/models/basic-date-field.md) | Query, Optional | The type of filter you would like to apply to your search. |
 | `startDate` | `string \| undefined` | Query, Optional | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns metadata with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | `endDate` | `string \| undefined` | Query, Optional | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns metadata with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
 | `startDatetime` | `string \| undefined` | Query, Optional | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns metadata with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. |
 | `endDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns metadata with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. |
 | `withDeleted` | `boolean \| undefined` | Query, Optional | Allow to fetch deleted metadata. |
-| `resourceIds` | `number[] \| undefined` | Query, Optional | Allow to fetch metadata for multiple records based on provided ids. Use in query: `resource_ids[]=122&resource_ids[]=123&resource_ids[]=124`. |
+| `resourceIds` | `number[] \| undefined` | Query, Optional | Allow to fetch metadata for multiple records based on provided ids. Use in query: `resource_ids[]=122&resource_ids[]=123&resource_ids[]=124`.<br>**Constraints**: *Maximum Items*: `50` |
 | `direction` | [`ListMetadataInputDirection \| undefined`](../../doc/models/containers/list-metadata-input-direction.md) | Query, Optional | This is a container for one-of cases. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
@@ -600,16 +557,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')
   perPage: 50,
   dateField: BasicDateField.UpdatedAt
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customFieldsController.listMetadata(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -622,14 +576,12 @@ try {
 This endpoint lists metafields associated with a site. The metafield description and usage is contained in the response.
 
 ```ts
-async listMetafields(
-  resourceType: ResourceType,
+async listMetafields(  resourceType: ResourceType,
   name?: string,
   page?: number,
   perPage?: number,
   direction?: ListMetafieldsInputDirection,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListMetafieldsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListMetafieldsResponse>>
 ```
 
 ## Parameters
@@ -638,8 +590,8 @@ async listMetafields(
 |  --- | --- | --- | --- |
 | `resourceType` | [`ResourceType`](../../doc/models/resource-type.md) | Template, Required | the resource type to which the metafields belong |
 | `name` | `string \| undefined` | Query, Optional | filter by the name of the metafield |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `direction` | [`ListMetafieldsInputDirection \| undefined`](../../doc/models/containers/list-metafields-input-direction.md) | Query, Optional | This is a container for one-of cases. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
@@ -655,16 +607,13 @@ const collect = {
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customFieldsController.listMetafields(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

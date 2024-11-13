@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -16,4 +16,6 @@ export enum ListComponentsPricePointsInclude {
 /**
  * Schema for ListComponentsPricePointsInclude
  */
-export const listComponentsPricePointsIncludeSchema: Schema<ListComponentsPricePointsInclude> = stringEnum(ListComponentsPricePointsInclude);
+export const listComponentsPricePointsIncludeSchema: Schema<ListComponentsPricePointsInclude> = stringEnum(
+  ListComponentsPricePointsInclude
+);

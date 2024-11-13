@@ -33,8 +33,7 @@ List coupons for a specific Product Family in a Site.
 If the coupon is set to `use_site_exchange_rate: true`, it will return pricing based on the current exchange rate. If the flag is set to false, it will return all of the defined prices for each currency.
 
 ```ts
-async listCouponsForProductFamily(
-  productFamilyId: number,
+async listCouponsForProductFamily(  productFamilyId: number,
   page?: number,
   perPage?: number,
   filterDateField?: BasicDateField,
@@ -46,8 +45,7 @@ async listCouponsForProductFamily(
   filterCodes?: string[],
   currencyPrices?: boolean,
   filterUseSiteExchangeRate?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponResponse[]>>
 ```
 
 ## Parameters
@@ -55,14 +53,14 @@ async listCouponsForProductFamily(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `productFamilyId` | `number` | Template, Required | The Chargify id of the product family to which the coupon belongs |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `30`<br>**Constraints**: `<= 200` |
 | `filterDateField` | [`BasicDateField \| undefined`](../../doc/models/basic-date-field.md) | Query, Optional | The type of filter you would like to apply to your search. Use in query `filter[date_field]=created_at`. |
 | `filterEndDate` | `string \| undefined` | Query, Optional | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns coupons with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. Use in query `filter[date_field]=2011-12-15`. |
 | `filterEndDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns coupons with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. Use in query `?filter[end_datetime]=2011-12-1T10:15:30+01:00`. |
 | `filterStartDate` | `string \| undefined` | Query, Optional | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns coupons with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. Use in query `filter[start_date]=2011-12-17`. |
 | `filterStartDatetime` | `string \| undefined` | Query, Optional | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns coupons with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. Use in query `filter[start_datetime]=2011-12-19T10:15:30+01:00`. |
-| `filterIds` | `number[] \| undefined` | Query, Optional | Allows fetching coupons with matching id based on provided values. Use in query `filter[ids]=1,2,3`. |
+| `filterIds` | `number[] \| undefined` | Query, Optional | Allows fetching coupons with matching id based on provided values. Use in query `filter[ids]=1,2,3`.<br>**Constraints**: *Minimum Items*: `1` |
 | `filterCodes` | `string[] \| undefined` | Query, Optional | Allows fetching coupons with matching codes based on provided values. Use in query `filter[codes]=free,free_trial`. |
 | `currencyPrices` | `boolean \| undefined` | Query, Optional | When fetching coupons, if you have defined multiple currencies at the site level, you can optionally pass the `?currency_prices=true` query param to include an array of currency price data in the response. Use in query `currency_prices=true`. |
 | `filterUseSiteExchangeRate` | `boolean \| undefined` | Query, Optional | Allows fetching coupons with matching use_site_exchange_rate based on provided value. Use in query `filter[use_site_exchange_rate]=true`. |
@@ -81,16 +79,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   perPage: 50,
   currencyPrices: true
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.listCouponsForProductFamily(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -198,11 +193,9 @@ You can search for a coupon via the API with the find method. By passing a code 
 If you have more than one product family and if the coupon you are trying to find does not belong to the default product family in your site, then you will need to specify (either in the url or as a query string param) the product family id.
 
 ```ts
-async readCouponByCode(
-  productFamilyId?: number,
+async readCouponByCode(  productFamilyId?: number,
   code?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponResponse>>
 ```
 
 ## Parameters
@@ -221,15 +214,11 @@ async readCouponByCode(
 
 ```ts
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.readCouponByCode();
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -242,12 +231,10 @@ try {
 This request allows you to request the subcodes that are attached to a coupon.
 
 ```ts
-async listCouponSubcodes(
-  couponId: number,
+async listCouponSubcodes(  couponId: number,
   page?: number,
   perPage?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponSubcodes>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponSubcodes>>
 ```
 
 ## Parameters
@@ -255,8 +242,8 @@ async listCouponSubcodes(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `couponId` | `number` | Template, Required | The Chargify id of the coupon |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -271,16 +258,13 @@ const collect = {
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.listCouponSubcodes(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -332,11 +316,9 @@ The response will contain:
 + Any subcodes not created because they are invalid.
 
 ```ts
-async updateCouponSubcodes(
-  couponId: number,
+async updateCouponSubcodes(  couponId: number,
   body?: CouponSubcodes,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponSubcodesResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponSubcodesResponse>>
 ```
 
 ## Parameters
@@ -365,8 +347,6 @@ const body: CouponSubcodes = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.updateCouponSubcodes(
   couponId,
   body
@@ -375,8 +355,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -409,11 +387,9 @@ https://<subdomain>.chargify.com/coupons/validate.<format>?code=<coupon_code>&pr
 ```
 
 ```ts
-async validateCoupon(
-  code: string,
+async validateCoupon(  code: string,
   productFamilyId?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponResponse>>
 ```
 
 ## Parameters
@@ -434,15 +410,11 @@ async validateCoupon(
 const code = 'code8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.validateCoupon(code);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -496,12 +468,10 @@ You can restrict a coupon to only apply to specific products / components by opt
 `{ "<product/component_id>": boolean_value }`
 
 ```ts
-async updateCoupon(
-  productFamilyId: number,
+async updateCoupon(  productFamilyId: number,
   couponId: number,
   body?: UpdateCouponBody,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponResponse>>
 ```
 
 ## Parameters
@@ -547,8 +517,6 @@ const body: UpdateCouponBody = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.updateCoupon(
   productFamilyId,
   couponId,
@@ -558,8 +526,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -604,8 +570,7 @@ You can retrieve a list of coupons.
 If the coupon is set to `use_site_exchange_rate: true`, it will return pricing based on the current exchange rate. If the flag is set to false, it will return all of the defined prices for each currency.
 
 ```ts
-async listCoupons(
-  page?: number,
+async listCoupons(  page?: number,
   perPage?: number,
   dateField?: BasicDateField,
   startDate?: string,
@@ -621,23 +586,22 @@ async listCoupons(
   filterStartDatetime?: string,
   filterDateField?: BasicDateField,
   filterUseSiteExchangeRate?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponResponse[]>>
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `30`<br>**Constraints**: `<= 200` |
 | `dateField` | [`BasicDateField \| undefined`](../../doc/models/basic-date-field.md) | Query, Optional | The field was deprecated: on January 20, 2022. We recommend using filter[date_field] instead to achieve the same result. The type of filter you would like to apply to your search. |
 | `startDate` | `string \| undefined` | Query, Optional | The field was deprecated: on January 20, 2022. We recommend using filter[start_date] instead to achieve the same result. The start date (format YYYY-MM-DD) with which to filter the date_field. Returns coupons with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | `endDate` | `string \| undefined` | Query, Optional | The field was deprecated: on January 20, 2022. We recommend using filter[end_date] instead to achieve the same result. The end date (format YYYY-MM-DD) with which to filter the date_field. Returns coupons with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
 | `startDatetime` | `string \| undefined` | Query, Optional | The field was deprecated: on January 20, 2022. We recommend using filter[start_datetime] instead to achieve the same result. The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns coupons with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. |
 | `endDatetime` | `string \| undefined` | Query, Optional | The field was deprecated: on January 20, 2022. We recommend using filter[end_datetime] instead to achieve the same result. The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns coupons with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. |
-| `filterIds` | `number[] \| undefined` | Query, Optional | Allows fetching coupons with matching id based on provided values. Use in query `filter[ids]=1,2,3`. |
-| `filterCodes` | `string[] \| undefined` | Query, Optional | Allows fetching coupons with matching code based on provided values. Use in query `filter[ids]=1,2,3`. |
+| `filterIds` | `number[] \| undefined` | Query, Optional | Allows fetching coupons with matching id based on provided values. Use in query `filter[ids]=1,2,3`.<br>**Constraints**: *Minimum Items*: `1` |
+| `filterCodes` | `string[] \| undefined` | Query, Optional | Allows fetching coupons with matching code based on provided values. Use in query `filter[ids]=1,2,3`.<br>**Constraints**: *Minimum Items*: `1` |
 | `currencyPrices` | `boolean \| undefined` | Query, Optional | When fetching coupons, if you have defined multiple currencies at the site level, you can optionally pass the `?currency_prices=true` query param to include an array of currency price data in the response. Use in query `currency_prices=true`. |
 | `filterEndDate` | `string \| undefined` | Query, Optional | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns coupons with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. Use in query `filter[end_date]=2011-12-17`. |
 | `filterEndDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns coupons with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. Use in query `filter[end_datetime]=2011-12-19T10:15:30+01:00`. |
@@ -660,16 +624,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   dateField: BasicDateField.UpdatedAt,
   currencyPrices: true
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.listCoupons(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -732,11 +693,9 @@ This endpoint allows you to create and/or update currency prices for an existing
 Currency pricing for coupons must mirror the setup of the primary coupon pricing - if the primary coupon is percentage based, you will not be able to define pricing in non-primary currencies.
 
 ```ts
-async updateCouponCurrencyPrices(
-  couponId: number,
+async updateCouponCurrencyPrices(  couponId: number,
   body?: CouponCurrencyRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponCurrency[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponCurrency[]>>
 ```
 
 ## Parameters
@@ -770,8 +729,6 @@ const body: CouponCurrencyRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.updateCouponCurrencyPrices(
   couponId,
   body
@@ -780,8 +737,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -833,11 +788,9 @@ This request allows you to create specific subcodes underneath an existing coupo
 So, if the coupon subcode is `20%OFF`, the URL to delete this coupon subcode would be: `https://<subdomain>.chargify.com/coupons/567/codes/20%25OFF.<format>`
 
 ```ts
-async createCouponSubcodes(
-  couponId: number,
+async createCouponSubcodes(  couponId: number,
   body?: CouponSubcodes,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponSubcodesResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponSubcodesResponse>>
 ```
 
 ## Parameters
@@ -866,8 +819,6 @@ const body: CouponSubcodes = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.createCouponSubcodes(
   couponId,
   body
@@ -876,8 +827,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -925,11 +874,9 @@ Note: If you are using any of the allowed special characters (“%”, “@”, 
 Or if the coupon subcode is 20%OFF, the URL to delete this coupon subcode would be: @https://<subdomain>.chargify.com/coupons/567/codes/20%25OFF.<format>
 
 ```ts
-async deleteCouponSubcode(
-  couponId: number,
+async deleteCouponSubcode(  couponId: number,
   subcode: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -952,8 +899,6 @@ const couponId = 162;
 const subcode = 'subcode4';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.deleteCouponSubcode(
   couponId,
   subcode
@@ -962,8 +907,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -995,11 +938,9 @@ You can restrict a coupon to only apply to specific products / components by opt
 `{ "<product/component_id>": boolean_value }`
 
 ```ts
-async createCoupon(
-  productFamilyId: number,
+async createCoupon(  productFamilyId: number,
   body?: CreateCouponBody,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponResponse>>
 ```
 
 ## Parameters
@@ -1044,8 +985,6 @@ const body: CreateCouponBody = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.createCoupon(
   productFamilyId,
   body
@@ -1054,8 +993,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1079,11 +1016,9 @@ When fetching a coupon, if you have defined multiple currencies at the site leve
 If the coupon is set to `use_site_exchange_rate: true`, it will return pricing based on the current exchange rate. If the flag is set to false, it will return all of the defined prices for each currency.
 
 ```ts
-async readCoupon(
-  productFamilyId: number,
+async readCoupon(  productFamilyId: number,
   couponId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponResponse>>
 ```
 
 ## Parameters
@@ -1106,8 +1041,6 @@ const productFamilyId = 140;
 const couponId = 162;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.readCoupon(
   productFamilyId,
   couponId
@@ -1116,8 +1049,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1162,11 +1093,9 @@ Archiving makes that Coupon unavailable for future use, but allows it to remain 
 The `archived_at` date and time will be assigned.
 
 ```ts
-async archiveCoupon(
-  productFamilyId: number,
+async archiveCoupon(  productFamilyId: number,
   couponId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponResponse>>
 ```
 
 ## Parameters
@@ -1189,8 +1118,6 @@ const productFamilyId = 140;
 const couponId = 162;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.archiveCoupon(
   productFamilyId,
   couponId
@@ -1199,8 +1126,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1243,11 +1168,9 @@ try {
 This request will provide details about the coupon usage as an array of data hashes, one per product.
 
 ```ts
-async readCouponUsage(
-  productFamilyId: number,
+async readCouponUsage(  productFamilyId: number,
   couponId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CouponUsage[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CouponUsage[]>>
 ```
 
 ## Parameters
@@ -1270,8 +1193,6 @@ const productFamilyId = 140;
 const couponId = 162;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await couponsController.readCouponUsage(
   productFamilyId,
   couponId
@@ -1280,8 +1201,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

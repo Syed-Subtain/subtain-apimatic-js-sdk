@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,4 +19,6 @@ export enum TaxConfigurationKind {
 /**
  * Schema for TaxConfigurationKind
  */
-export const taxConfigurationKindSchema: Schema<TaxConfigurationKind> = stringEnum(TaxConfigurationKind);
+export const taxConfigurationKindSchema: Schema<TaxConfigurationKind> = stringEnum(
+  TaxConfigurationKind
+);

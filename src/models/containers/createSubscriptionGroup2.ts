@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -16,20 +16,20 @@ export const createSubscriptionGroup2Schema: Schema<CreateSubscriptionGroup2> = 
 
 export namespace CreateSubscriptionGroup2 {
   /**
-  * Validation method to narrow down union type to GroupSettings type case.
-  *
-  * This is Group Settings case.
-  */
+   * Validation method to narrow down union type to GroupSettings type case.
+   *
+   * This is Group Settings case.
+   */
   export function isGroupSettings(value: unknown): value is GroupSettings {
     const validationResult = validateAndMap(value, groupSettingsSchema);
     return validationResult.errors === false;
   }
 
   /**
-  * Validation method to narrow down union type to boolean type case.
-  *
-  * This is Boolean case.
-  */
+   * Validation method to narrow down union type to boolean type case.
+   *
+   * This is Boolean case.
+   */
   export function isBoolean(value: unknown): value is boolean {
     return typeof value === 'boolean';
   }

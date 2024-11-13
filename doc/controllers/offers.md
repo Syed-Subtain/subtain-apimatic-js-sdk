@@ -34,10 +34,8 @@ Full documentation on how to use offers in the Chargify UI can be located [here]
 You can optionally pass in a `product_price_point_id` that corresponds with the `product_id` and the offer will use that price point. If a `product_price_point_id` is not passed in, the product's default price point will be used.
 
 ```ts
-async createOffer(
-  body?: CreateOfferRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<OfferResponse>>
+async createOffer(  body?: CreateOfferRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<OfferResponse>>
 ```
 
 ## Parameters
@@ -74,15 +72,11 @@ const body: CreateOfferRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await offersController.createOffer(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -143,9 +137,7 @@ try {
 This endpoint will list offers for a site.
 
 ```ts
-async listOffers(
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListOffersResponse>>
+async listOffers(requestOptions?: RequestOptions): Promise<ApiResponse<ListOffersResponse>>
 ```
 
 ## Parameters
@@ -162,15 +154,11 @@ async listOffers(
 
 ```ts
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await offersController.listOffers();
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -239,10 +227,8 @@ try {
 This method allows you to list a specific offer's attributes. This is different than list all offers for a site, as it requires an `offer_id`.
 
 ```ts
-async readOffers(
-  offerId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<OfferResponse>>
+async readOffers(  offerId: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<OfferResponse>>
 ```
 
 ## Parameters
@@ -262,15 +248,11 @@ async readOffers(
 const offerId = 130;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await offersController.readOffers(offerId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -289,10 +271,8 @@ try {
 Unarchive a previously archived offer. Please provide an `offer_id` in order to un-archive the correct item.
 
 ```ts
-async unarchiveOffer(
-  offerId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async unarchiveOffer(  offerId: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -312,15 +292,11 @@ async unarchiveOffer(
 const offerId = 130;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await offersController.unarchiveOffer(offerId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -339,10 +315,8 @@ try {
 Archive an existing offer. Please provide an `offer_id` in order to archive the correct item.
 
 ```ts
-async archiveOffer(
-  offerId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async archiveOffer(  offerId: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -362,15 +336,11 @@ async archiveOffer(
 const offerId = 130;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await offersController.archiveOffer(offerId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

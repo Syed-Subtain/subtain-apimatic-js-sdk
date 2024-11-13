@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorMapResponseError } from '../errors/errorMapResponseError';
 import {
   CreateOfferRequest,
   createOfferRequestSchema,
@@ -18,6 +16,8 @@ import {
 import { OfferResponse, offerResponseSchema } from '../models/offerResponse';
 import { number, optional } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorMapResponseError } from '../errors/errorMapResponseError';
 
 export class OffersController extends BaseController {
   /**

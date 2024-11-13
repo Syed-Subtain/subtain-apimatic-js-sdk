@@ -9,9 +9,9 @@
 
 | Name |
 |  --- |
-| `meteredComponents` |
-| `quantityBasedComponents` |
-| `onOffComponents` |
-| `prepaidUsageComponents` |
-| `eventBasedComponents` |
+| `MeteredComponents` |
+| `QuantityBasedComponents` |
+| `OnOffComponents` |
+| `PrepaidUsageComponents` |
+| `EventBasedComponents` |
 

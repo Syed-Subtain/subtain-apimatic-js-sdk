@@ -1,11 +1,15 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
-import { ApiResponse, plainPrefix, RequestOptions } from '../core';
+import {
+  ApiResponse,
+  commaPrefix,
+  RequestOptions,
+  unindexedPrefix,
+} from '../core';
 import { BasicDateField, basicDateFieldSchema } from '../models/basicDateField';
 import {
   ListMetadataInputDirection,
@@ -44,6 +48,7 @@ import {
 } from '../models/updateMetafieldsRequest';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
 
 export class CustomFieldsController extends BaseController {
   /**
@@ -158,17 +163,18 @@ export class CustomFieldsController extends BaseController {
    *                                      will be changed to 200. Use in query `per_page=200`.
    * @return Response from the API call
    */
-  async readMetadata({
-    resourceType,
-    resourceId,
-    page,
-    perPage,
-  }: {
-    resourceType: ResourceType,
-    resourceId: string,
-    page?: number,
-    perPage?: number,
-  },
+  async readMetadata(
+    {
+      resourceType,
+      resourceId,
+      page,
+      perPage,
+    }: {
+      resourceType: ResourceType;
+      resourceId: string;
+      page?: number;
+      perPage?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<PaginatedMetadata>> {
     const req = this.createRequest('GET');
@@ -364,7 +370,7 @@ export class CustomFieldsController extends BaseController {
       names: [names, optional(array(string()))],
     });
     req.query('name', mapped.name);
-    req.query('names[]', mapped.names, plainPrefix);
+    req.query('names[]', mapped.names, unindexedPrefix);
     req.appendTemplatePath`/${mapped.resourceType}/${mapped.resourceId}/metadata.json`;
     req.throwOn(404, ApiError, 'Not Found');
     req.authenticate([{ basicAuth: true }]);
@@ -429,31 +435,32 @@ export class CustomFieldsController extends BaseController {
    *                                                     query `direction=asc`.
    * @return Response from the API call
    */
-  async listMetadata({
-    resourceType,
-    page,
-    perPage,
-    dateField,
-    startDate,
-    endDate,
-    startDatetime,
-    endDatetime,
-    withDeleted,
-    resourceIds,
-    direction,
-  }: {
-    resourceType: ResourceType,
-    page?: number,
-    perPage?: number,
-    dateField?: BasicDateField,
-    startDate?: string,
-    endDate?: string,
-    startDatetime?: string,
-    endDatetime?: string,
-    withDeleted?: boolean,
-    resourceIds?: number[],
-    direction?: ListMetadataInputDirection,
-  },
+  async listMetadata(
+    {
+      resourceType,
+      page,
+      perPage,
+      dateField,
+      startDate,
+      endDate,
+      startDatetime,
+      endDatetime,
+      withDeleted,
+      resourceIds,
+      direction,
+    }: {
+      resourceType: ResourceType;
+      page?: number;
+      perPage?: number;
+      dateField?: BasicDateField;
+      startDate?: string;
+      endDate?: string;
+      startDatetime?: string;
+      endDatetime?: string;
+      withDeleted?: boolean;
+      resourceIds?: number[];
+      direction?: ListMetadataInputDirection;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<PaginatedMetadata>> {
     const req = this.createRequest('GET');
@@ -478,7 +485,7 @@ export class CustomFieldsController extends BaseController {
     req.query('start_datetime', mapped.startDatetime);
     req.query('end_datetime', mapped.endDatetime);
     req.query('with_deleted', mapped.withDeleted);
-    req.query('resource_ids[]', mapped.resourceIds, plainPrefix);
+    req.query('resource_ids[]', mapped.resourceIds, commaPrefix);
     req.query('direction', mapped.direction);
     req.appendTemplatePath`/${mapped.resourceType}/metadata.json`;
     req.authenticate([{ basicAuth: true }]);
@@ -507,19 +514,20 @@ export class CustomFieldsController extends BaseController {
    *                                                      query `direction=asc`.
    * @return Response from the API call
    */
-  async listMetafields({
-    resourceType,
-    name,
-    page,
-    perPage,
-    direction,
-  }: {
-    resourceType: ResourceType,
-    name?: string,
-    page?: number,
-    perPage?: number,
-    direction?: ListMetafieldsInputDirection,
-  },
+  async listMetafields(
+    {
+      resourceType,
+      name,
+      page,
+      perPage,
+      direction,
+    }: {
+      resourceType: ResourceType;
+      name?: string;
+      page?: number;
+      perPage?: number;
+      direction?: ListMetafieldsInputDirection;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListMetafieldsResponse>> {
     const req = this.createRequest('GET');

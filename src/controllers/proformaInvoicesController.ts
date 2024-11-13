@@ -1,16 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import { ErrorMapResponseError } from '../errors/errorMapResponseError';
-import {
-  ProformaBadRequestErrorResponseError,
-} from '../errors/proformaBadRequestErrorResponseError';
 import {
   CreateSubscriptionRequest,
   createSubscriptionRequestSchema,
@@ -35,6 +29,10 @@ import {
 } from '../models/voidInvoiceRequest';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { ErrorMapResponseError } from '../errors/errorMapResponseError';
+import { ProformaBadRequestErrorResponseError } from '../errors/proformaBadRequestErrorResponseError';
 
 export class ProformaInvoicesController extends BaseController {
   /**
@@ -73,7 +71,10 @@ export class ProformaInvoicesController extends BaseController {
       body: [body, optional(createSubscriptionRequestSchema)],
     });
     req.header('Content-Type', 'application/json');
-    req.query('include=next_proforma_invoice', mapped.includeNextProformaInvoice);
+    req.query(
+      'include=next_proforma_invoice',
+      mapped.includeNextProformaInvoice
+    );
     req.json(mapped.body);
     req.throwOn(400, ProformaBadRequestErrorResponseError, 'Bad Request');
     req.throwOn(403, ApiError, 'Forbidden');
@@ -140,35 +141,36 @@ export class ProformaInvoicesController extends BaseController {
    * @param customFields    Include custom fields data
    * @return Response from the API call
    */
-  async listProformaInvoices({
-    subscriptionId,
-    startDate,
-    endDate,
-    status,
-    page,
-    perPage,
-    direction,
-    lineItems,
-    discounts,
-    taxes,
-    credits,
-    payments,
-    customFields,
-  }: {
-    subscriptionId: string,
-    startDate?: string,
-    endDate?: string,
-    status?: Status,
-    page?: number,
-    perPage?: number,
-    direction?: Direction,
-    lineItems?: boolean,
-    discounts?: boolean,
-    taxes?: boolean,
-    credits?: boolean,
-    payments?: boolean,
-    customFields?: boolean,
-  },
+  async listProformaInvoices(
+    {
+      subscriptionId,
+      startDate,
+      endDate,
+      status,
+      page,
+      perPage,
+      direction,
+      lineItems,
+      discounts,
+      taxes,
+      credits,
+      payments,
+      customFields,
+    }: {
+      subscriptionId: string;
+      startDate?: string;
+      endDate?: string;
+      status?: Status;
+      page?: number;
+      perPage?: number;
+      direction?: Direction;
+      lineItems?: boolean;
+      discounts?: boolean;
+      taxes?: boolean;
+      credits?: boolean;
+      payments?: boolean;
+      customFields?: boolean;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ProformaInvoice[]>> {
     const req = this.createRequest('GET');

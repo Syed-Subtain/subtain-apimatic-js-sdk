@@ -1,18 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import {
-  RefundPrepaymentAggregatedErrorsResponseError,
-} from '../errors/refundPrepaymentAggregatedErrorsResponseError';
-import {
-  RefundPrepaymentBaseErrorsResponseError,
-} from '../errors/refundPrepaymentBaseErrorsResponseError';
 import {
   AccountBalances,
   accountBalancesSchema,
@@ -49,6 +41,10 @@ import {
 import { ServiceCredit, serviceCreditSchema } from '../models/serviceCredit';
 import { number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { RefundPrepaymentAggregatedErrorsResponseError } from '../errors/refundPrepaymentAggregatedErrorsResponseError';
+import { RefundPrepaymentBaseErrorsResponseError } from '../errors/refundPrepaymentBaseErrorsResponseError';
 
 export class SubscriptionInvoiceAccountController extends BaseController {
   /**
@@ -124,21 +120,22 @@ export class SubscriptionInvoiceAccountController extends BaseController {
    *                                             `filter[end_date]=2011-12-15`.
    * @return Response from the API call
    */
-  async listPrepayments({
-    subscriptionId,
-    page,
-    perPage,
-    filterDateField,
-    filterStartDate,
-    filterEndDate,
-  }: {
-    subscriptionId: string,
-    page?: number,
-    perPage?: number,
-    filterDateField?: BasicDateField,
-    filterStartDate?: string,
-    filterEndDate?: string,
-  },
+  async listPrepayments(
+    {
+      subscriptionId,
+      page,
+      perPage,
+      filterDateField,
+      filterStartDate,
+      filterEndDate,
+    }: {
+      subscriptionId: string;
+      page?: number;
+      perPage?: number;
+      filterDateField?: BasicDateField;
+      filterStartDate?: string;
+      filterEndDate?: string;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<PrepaymentsResponse>> {
     const req = this.createRequest('GET');
@@ -253,7 +250,11 @@ export class SubscriptionInvoiceAccountController extends BaseController {
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/prepayments/${mapped.prepaymentId}/refunds.json`;
     req.throwOn(400, RefundPrepaymentBaseErrorsResponseError, 'Bad Request');
     req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, RefundPrepaymentAggregatedErrorsResponseError, 'Unprocessable Entity');
+    req.throwOn(
+      422,
+      RefundPrepaymentAggregatedErrorsResponseError,
+      'Unprocessable Entity'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(prepaymentResponseSchema, requestOptions);
   }

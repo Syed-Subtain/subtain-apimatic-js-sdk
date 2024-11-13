@@ -1,11 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import {
   SubscriptionMigrationPreviewRequest,
   subscriptionMigrationPreviewRequestSchema,
@@ -24,6 +23,7 @@ import {
 } from '../models/subscriptionResponse';
 import { optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class SubscriptionProductsController extends BaseController {
   /**

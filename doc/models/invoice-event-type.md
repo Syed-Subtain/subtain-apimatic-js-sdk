@@ -11,15 +11,15 @@ Invoice Event Type
 
 | Name |
 |  --- |
-| `issueInvoice` |
-| `applyCreditNote` |
-| `applyPayment` |
-| `applyDebitNote` |
-| `refundInvoice` |
-| `voidInvoice` |
-| `voidRemainder` |
-| `backportInvoice` |
-| `changeInvoiceStatus` |
-| `changeInvoiceCollectionMethod` |
-| `removePayment` |
+| `IssueInvoice` |
+| `ApplyCreditNote` |
+| `ApplyPayment` |
+| `ApplyDebitNote` |
+| `RefundInvoice` |
+| `VoidInvoice` |
+| `VoidRemainder` |
+| `BackportInvoice` |
+| `ChangeInvoiceStatus` |
+| `ChangeInvoiceCollectionMethod` |
+| `RemovePayment` |
 

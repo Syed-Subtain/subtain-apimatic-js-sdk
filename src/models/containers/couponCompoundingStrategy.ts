@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,12 +19,17 @@ export const couponCompoundingStrategySchema: Schema<CouponCompoundingStrategy> 
 
 export namespace CouponCompoundingStrategy {
   /**
-  * Validation method to narrow down union type to CouponCompoundingStrategyCase0 type case.
-  *
-  * This is CouponCompoundingStrategyCase0 case.
-  */
-  export function isCouponCompoundingStrategyCase0(value: unknown): value is CouponCompoundingStrategyCase0 {
-    const validationResult = validateAndMap(value, couponCompoundingStrategyCase0Schema);
+   * Validation method to narrow down union type to CouponCompoundingStrategyCase0 type case.
+   *
+   * This is CouponCompoundingStrategyCase0 case.
+   */
+  export function isCouponCompoundingStrategyCase0(
+    value: unknown
+  ): value is CouponCompoundingStrategyCase0 {
+    const validationResult = validateAndMap(
+      value,
+      couponCompoundingStrategyCase0Schema
+    );
     return validationResult.errors === false;
   }
 }

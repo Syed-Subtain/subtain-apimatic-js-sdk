@@ -272,10 +272,8 @@ You may wish to redirect customers to different pages depending on whether their
 8. Optionally, you can use the applied "msg" param in the `redirect_url` to determine whether it was successful or not
 
 ```ts
-async createPaymentProfile(
-  body?: CreatePaymentProfileRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CreatePaymentProfileResponse>>
+async createPaymentProfile(  body?: CreatePaymentProfileRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<CreatePaymentProfileResponse>>
 ```
 
 ## Parameters
@@ -305,15 +303,11 @@ const body: CreatePaymentProfileRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.createPaymentProfile(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -361,10 +355,8 @@ Deletes an unused payment profile.
 If the payment profile is in use by one or more subscriptions or groups, a 422 and error message will be returned.
 
 ```ts
-async deleteUnusedPaymentProfile(
-  paymentProfileId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async deleteUnusedPaymentProfile(  paymentProfileId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -384,15 +376,11 @@ async deleteUnusedPaymentProfile(
 const paymentProfileId = 'payment_profile_id2';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.deleteUnusedPaymentProfile(paymentProfileId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -415,11 +403,9 @@ This will delete a payment profile belonging to the customer on the subscription
 + If you delete the default payment profile for a subscription, you will need to specify another payment profile to be the default through the api, or either prompt the user to enter a card in the billing portal or on the self-service page, or visit the Payment Details tab on the subscription in the Admin UI and use the “Add New Credit Card” or “Make Active Payment Method” link, (depending on whether there are other cards present).
 
 ```ts
-async deleteSubscriptionsPaymentProfile(
-  subscriptionId: string,
+async deleteSubscriptionsPaymentProfile(  subscriptionId: string,
   paymentProfileId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -442,8 +428,6 @@ const subscriptionId = 'subscription_id0';
 const paymentProfileId = 'payment_profile_id2';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.deleteSubscriptionsPaymentProfile(
   subscriptionId,
   paymentProfileId
@@ -452,8 +436,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -468,11 +450,9 @@ This will delete a Payment Profile belonging to a Subscription Group.
 **Note**: If the Payment Profile belongs to multiple Subscription Groups and/or Subscriptions, it will be removed from all of them.
 
 ```ts
-async deleteSubscriptionGroupPaymentProfile(
-  uid: string,
+async deleteSubscriptionGroupPaymentProfile(  uid: string,
   paymentProfileId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -495,8 +475,6 @@ const uid = 'uid0';
 const paymentProfileId = 'payment_profile_id2';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.deleteSubscriptionGroupPaymentProfile(
   uid,
   paymentProfileId
@@ -505,8 +483,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -523,10 +499,8 @@ You can use One Time Tokens while creating a subscription or payment profile ins
 To obtain a One Time Token you have to use [chargify.js](https://developers.chargify.com/docs/developer-docs/ZG9jOjE0NjAzNDI0-overview).
 
 ```ts
-async readOneTimeToken(
-  chargifyToken: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<GetOneTimeTokenRequest>>
+async readOneTimeToken(  chargifyToken: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<GetOneTimeTokenRequest>>
 ```
 
 ## Parameters
@@ -546,15 +520,11 @@ async readOneTimeToken(
 const chargifyToken = 'chargify_token8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.readOneTimeToken(chargifyToken);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -607,10 +577,8 @@ Example response for Bank Account:
 ```
 
 ```ts
-async readPaymentProfile(
-  paymentProfileId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReadPaymentProfileResponse>>
+async readPaymentProfile(  paymentProfileId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<ReadPaymentProfileResponse>>
 ```
 
 ## Parameters
@@ -630,15 +598,11 @@ async readPaymentProfile(
 const paymentProfileId = 'payment_profile_id2';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.readPaymentProfile(paymentProfileId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -713,11 +677,9 @@ The result will be that you have updated the billing information for the card, y
 - If you are using Authorize.net or Stripe, you may elect to manually trigger a retry for a past due subscription after a partial update.
 
 ```ts
-async updatePaymentProfile(
-  paymentProfileId: string,
+async updatePaymentProfile(  paymentProfileId: string,
   body?: UpdatePaymentProfileRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<UpdatePaymentProfileResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<UpdatePaymentProfileResponse>>
 ```
 
 ## Parameters
@@ -756,8 +718,6 @@ const body: UpdatePaymentProfileRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.updatePaymentProfile(
   paymentProfileId,
   body
@@ -766,8 +726,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -811,11 +769,9 @@ This will change the default payment profile on the subscription to the existing
 You must elect to change the existing payment profile to a new payment profile ID in order to receive a satisfactory response from this endpoint.
 
 ```ts
-async updateSubscriptionDefaultPaymentProfile(
-  subscriptionId: string,
+async updateSubscriptionDefaultPaymentProfile(  subscriptionId: string,
   paymentProfileId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<PaymentProfileResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<PaymentProfileResponse>>
 ```
 
 ## Parameters
@@ -838,8 +794,6 @@ const subscriptionId = 'subscription_id0';
 const paymentProfileId = 198;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.updateSubscriptionDefaultPaymentProfile(
   subscriptionId,
   paymentProfileId
@@ -848,8 +802,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -901,11 +853,9 @@ You must elect to change the existing payment profile to a new payment profile I
 The new payment profile must belong to the subscription group's customer, otherwise you will receive an error.
 
 ```ts
-async updateSubscriptionGroupDefaultPaymentProfile(
-  uid: string,
+async updateSubscriptionGroupDefaultPaymentProfile(  uid: string,
   paymentProfileId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<PaymentProfileResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<PaymentProfileResponse>>
 ```
 
 ## Parameters
@@ -928,8 +878,6 @@ const uid = 'uid0';
 const paymentProfileId = 'payment_profile_id2';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.updateSubscriptionGroupDefaultPaymentProfile(
   uid,
   paymentProfileId
@@ -938,8 +886,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -987,20 +933,18 @@ try {
 This method will return all of the active `payment_profiles` for a Site, or for one Customer within a site.  If no payment profiles are found, this endpoint will return an empty array, not a 404.
 
 ```ts
-async listPaymentProfiles(
-  page?: number,
+async listPaymentProfiles(  page?: number,
   perPage?: number,
   customerId?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListPaymentProfilesResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListPaymentProfilesResponse[]>>
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `customerId` | `number \| undefined` | Query, Optional | The ID of the customer for which you wish to list payment profiles |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
@@ -1015,16 +959,13 @@ const collect = {
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.listPaymentProfiles(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1094,11 +1035,9 @@ try {
 Submit the two small deposit amounts the customer received in their bank account in order to verify the bank account. (Stripe only)
 
 ```ts
-async verifyBankAccount(
-  bankAccountId: number,
+async verifyBankAccount(  bankAccountId: number,
   body?: BankAccountVerificationRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<BankAccountResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<BankAccountResponse>>
 ```
 
 ## Parameters
@@ -1126,8 +1065,6 @@ const body: BankAccountVerificationRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.verifyBankAccount(
   bankAccountId,
   body
@@ -1136,8 +1073,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1191,10 +1126,8 @@ Additionally, if you attempt to send a "request payment update" email for a subs
 These error responses are designed to prevent excessive or invalid requests, and to provide clear and helpful information to users who encounter errors during the request process.
 
 ```ts
-async sendRequestUpdatePaymentEmail(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async sendRequestUpdatePaymentEmail(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -1214,15 +1147,11 @@ async sendRequestUpdatePaymentEmail(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await paymentProfilesController.sendRequestUpdatePaymentEmail(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,11 +19,13 @@ export const productExpirationIntervalUnitCase0Schema: Schema<ProductExpirationI
 
 export namespace ProductExpirationIntervalUnitCase0 {
   /**
-  * Validation method to narrow down union type to ExtendedIntervalUnit type case.
-  *
-  * This is Extended Interval Unit case.
-  */
-  export function isExtendedIntervalUnit(value: unknown): value is ExtendedIntervalUnit {
+   * Validation method to narrow down union type to ExtendedIntervalUnit type case.
+   *
+   * This is Extended Interval Unit case.
+   */
+  export function isExtendedIntervalUnit(
+    value: unknown
+  ): value is ExtendedIntervalUnit {
     const validationResult = validateAndMap(value, extendedIntervalUnitSchema);
     return validationResult.errors === false;
   }

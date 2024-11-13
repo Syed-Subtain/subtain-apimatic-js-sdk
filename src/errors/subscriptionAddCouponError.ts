@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -15,4 +15,6 @@ interface SubscriptionAddCoupon {
   subscription?: string[];
 }
 
-export class SubscriptionAddCouponError extends ApiError<SubscriptionAddCoupon> {}
+export class SubscriptionAddCouponError extends ApiError<
+  SubscriptionAddCoupon
+> {}

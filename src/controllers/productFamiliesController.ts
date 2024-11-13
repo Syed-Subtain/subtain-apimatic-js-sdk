@@ -1,10 +1,9 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
 import { BasicDateField, basicDateFieldSchema } from '../models/basicDateField';
 import {
@@ -26,6 +25,7 @@ import {
 } from '../models/productResponse';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
 
 export class ProductFamiliesController extends BaseController {
   /**
@@ -143,33 +143,34 @@ export class ProductFamiliesController extends BaseController {
    *                                                                                           e_rate]=true`.
    * @return Response from the API call
    */
-  async listProductsForProductFamily({
-    productFamilyId,
-    page,
-    perPage,
-    dateField,
-    startDate,
-    endDate,
-    startDatetime,
-    endDatetime,
-    includeArchived,
-    include,
-    filterPrepaidProductPricePointProductPricePointId,
-    filterUseSiteExchangeRate,
-  }: {
-    productFamilyId: number,
-    page?: number,
-    perPage?: number,
-    dateField?: BasicDateField,
-    startDate?: string,
-    endDate?: string,
-    startDatetime?: string,
-    endDatetime?: string,
-    includeArchived?: boolean,
-    include?: ListProductsInclude,
-    filterPrepaidProductPricePointProductPricePointId?: IncludeNotNull,
-    filterUseSiteExchangeRate?: boolean,
-  },
+  async listProductsForProductFamily(
+    {
+      productFamilyId,
+      page,
+      perPage,
+      dateField,
+      startDate,
+      endDate,
+      startDatetime,
+      endDatetime,
+      includeArchived,
+      include,
+      filterPrepaidProductPricePointProductPricePointId,
+      filterUseSiteExchangeRate,
+    }: {
+      productFamilyId: number;
+      page?: number;
+      perPage?: number;
+      dateField?: BasicDateField;
+      startDate?: string;
+      endDate?: string;
+      startDatetime?: string;
+      endDatetime?: string;
+      includeArchived?: boolean;
+      include?: ListProductsInclude;
+      filterPrepaidProductPricePointProductPricePointId?: IncludeNotNull;
+      filterUseSiteExchangeRate?: boolean;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ProductResponse[]>> {
     const req = this.createRequest('GET');
@@ -202,8 +203,14 @@ export class ProductFamiliesController extends BaseController {
     req.query('end_datetime', mapped.endDatetime);
     req.query('include_archived', mapped.includeArchived);
     req.query('include', mapped.include);
-    req.query('filter[prepaid_product_price_point][product_price_point_id]', mapped.filterPrepaidProductPricePointProductPricePointId);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.query(
+      'filter[prepaid_product_price_point][product_price_point_id]',
+      mapped.filterPrepaidProductPricePointProductPricePointId
+    );
+    req.query(
+      'filter[use_site_exchange_rate]',
+      mapped.filterUseSiteExchangeRate
+    );
     req.appendTemplatePath`/product_families/${mapped.productFamilyId}/products.json`;
     req.throwOn(404, ApiError, 'Not Found');
     req.authenticate([{ basicAuth: true }]);
@@ -257,19 +264,20 @@ export class ProductFamiliesController extends BaseController {
    *                                         instead of end_date.
    * @return Response from the API call
    */
-  async listProductFamilies({
-    dateField,
-    startDate,
-    endDate,
-    startDatetime,
-    endDatetime,
-  }: {
-    dateField?: BasicDateField,
-    startDate?: string,
-    endDate?: string,
-    startDatetime?: string,
-    endDatetime?: string,
-  },
+  async listProductFamilies(
+    {
+      dateField,
+      startDate,
+      endDate,
+      startDatetime,
+      endDatetime,
+    }: {
+      dateField?: BasicDateField;
+      startDate?: string;
+      endDate?: string;
+      startDatetime?: string;
+      endDatetime?: string;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ProductFamilyResponse[]>> {
     const req = this.createRequest('GET', '/product_families.json');

@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import {
   EnableWebhooksRequest,
   enableWebhooksRequestSchema,
@@ -40,6 +38,8 @@ import {
 import { WebhookStatus, webhookStatusSchema } from '../models/webhookStatus';
 import { array, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class WebhooksController extends BaseController {
   /**
@@ -121,23 +121,24 @@ export class WebhooksController extends BaseController {
    * @param subscription The Chargify id of a subscription you'd like to filter for
    * @return Response from the API call
    */
-  async listWebhooks({
-    status,
-    sinceDate,
-    untilDate,
-    page,
-    perPage,
-    order,
-    subscription,
-  }: {
-    status?: WebhookStatus,
-    sinceDate?: string,
-    untilDate?: string,
-    page?: number,
-    perPage?: number,
-    order?: WebhookOrder,
-    subscription?: number,
-  },
+  async listWebhooks(
+    {
+      status,
+      sinceDate,
+      untilDate,
+      page,
+      perPage,
+      order,
+      subscription,
+    }: {
+      status?: WebhookStatus;
+      sinceDate?: string;
+      untilDate?: string;
+      page?: number;
+      perPage?: number;
+      order?: WebhookOrder;
+      subscription?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<WebhookResponse[]>> {
     const req = this.createRequest('GET', '/webhooks.json');

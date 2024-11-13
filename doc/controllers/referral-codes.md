@@ -22,10 +22,8 @@ Full documentation on how to use the referrals feature in the Chargify UI can be
 If the referral code is valid the status code will be `200` and the referral code will be returned. If the referral code is invalid, a `404` response will be returned.
 
 ```ts
-async validateReferralCode(
-  code: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReferralValidationResponse>>
+async validateReferralCode(  code: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<ReferralValidationResponse>>
 ```
 
 ## Parameters
@@ -45,15 +43,11 @@ async validateReferralCode(
 const code = 'code8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await referralCodesController.validateReferralCode(code);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

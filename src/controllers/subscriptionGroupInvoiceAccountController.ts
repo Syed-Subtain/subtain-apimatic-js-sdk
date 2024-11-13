@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import {
   DeductServiceCreditRequest,
   deductServiceCreditRequestSchema,
@@ -38,6 +36,8 @@ import {
 } from '../models/subscriptionGroupPrepaymentResponse';
 import { number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class SubscriptionGroupInvoiceAccountController extends BaseController {
   /**
@@ -107,21 +107,22 @@ export class SubscriptionGroupInvoiceAccountController extends BaseController {
    *                                                                       200. Use in query `per_page=200`.
    * @return Response from the API call
    */
-  async listPrepaymentsForSubscriptionGroup({
-    uid,
-    filterDateField,
-    filterEndDate,
-    filterStartDate,
-    page,
-    perPage,
-  }: {
-    uid: string,
-    filterDateField?: ListSubscriptionGroupPrepaymentDateField,
-    filterEndDate?: string,
-    filterStartDate?: string,
-    page?: number,
-    perPage?: number,
-  },
+  async listPrepaymentsForSubscriptionGroup(
+    {
+      uid,
+      filterDateField,
+      filterEndDate,
+      filterStartDate,
+      page,
+      perPage,
+    }: {
+      uid: string;
+      filterDateField?: ListSubscriptionGroupPrepaymentDateField;
+      filterEndDate?: string;
+      filterStartDate?: string;
+      page?: number;
+      perPage?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListSubscriptionGroupPrepaymentResponse>> {
     const req = this.createRequest('GET');

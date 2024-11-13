@@ -1,13 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import { ApiResponse, commaPrefix, RequestOptions } from '../core';
-import {
-  SubscriptionsMrrErrorResponseError,
-} from '../errors/subscriptionsMrrErrorResponseError';
 import {
   ReadMrrMovementsInputDirection,
   readMrrMovementsInputDirectionSchema,
@@ -25,6 +22,7 @@ import {
 } from '../models/subscriptionMRRResponse';
 import { array, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { SubscriptionsMrrErrorResponseError } from '../errors/subscriptionsMrrErrorResponseError';
 
 export class InsightsController extends BaseController {
   /**
@@ -123,17 +121,18 @@ export class InsightsController extends BaseController {
    * @return Response from the API call
    * @deprecated
    */
-  async readMrrMovements({
-    subscriptionId,
-    page,
-    perPage,
-    direction,
-  }: {
-    subscriptionId?: number,
-    page?: number,
-    perPage?: number,
-    direction?: ReadMrrMovementsInputDirection,
-  },
+  async readMrrMovements(
+    {
+      subscriptionId,
+      page,
+      perPage,
+      direction,
+    }: {
+      subscriptionId?: number;
+      page?: number;
+      perPage?: number;
+      direction?: ReadMrrMovementsInputDirection;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListMRRResponse>> {
     const req = this.createRequest('GET', '/mrr_movements.json');
@@ -176,19 +175,20 @@ export class InsightsController extends BaseController {
    * @return Response from the API call
    * @deprecated
    */
-  async listMrrPerSubscription({
-    filterSubscriptionIds,
-    atTime,
-    page,
-    perPage,
-    direction,
-  }: {
-    filterSubscriptionIds?: number[],
-    atTime?: string,
-    page?: number,
-    perPage?: number,
-    direction?: Direction,
-  },
+  async listMrrPerSubscription(
+    {
+      filterSubscriptionIds,
+      atTime,
+      page,
+      perPage,
+      direction,
+    }: {
+      filterSubscriptionIds?: number[];
+      atTime?: string;
+      page?: number;
+      perPage?: number;
+      direction?: Direction;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<SubscriptionMRRResponse>> {
     const req = this.createRequest('GET', '/subscriptions_mrr.json');
@@ -199,7 +199,11 @@ export class InsightsController extends BaseController {
       perPage: [perPage, optional(number())],
       direction: [direction, optional(directionSchema)],
     });
-    req.query('filter[subscription_ids]', mapped.filterSubscriptionIds, commaPrefix);
+    req.query(
+      'filter[subscription_ids]',
+      mapped.filterSubscriptionIds,
+      commaPrefix
+    );
     req.query('at_time', mapped.atTime);
     req.query('page', mapped.page);
     req.query('per_page', mapped.perPage);

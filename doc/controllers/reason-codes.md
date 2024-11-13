@@ -22,10 +22,8 @@ const reasonCodesController = new ReasonCodesController(client);
 This method gives a merchant the option to retrieve a list of a particular code for a given Site by providing the unique numerical ID of the code.
 
 ```ts
-async readReasonCode(
-  reasonCodeId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReasonCodeResponse>>
+async readReasonCode(  reasonCodeId: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<ReasonCodeResponse>>
 ```
 
 ## Parameters
@@ -45,15 +43,11 @@ async readReasonCode(
 const reasonCodeId = 32;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await reasonCodesController.readReasonCode(reasonCodeId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -72,10 +66,8 @@ try {
 This method gives a merchant the option to delete one reason code from the Churn Reason Codes. This code will be immediately removed. This action is not reversable.
 
 ```ts
-async deleteReasonCode(
-  reasonCodeId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReasonCodesJsonResponse>>
+async deleteReasonCode(  reasonCodeId: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<ReasonCodesJsonResponse>>
 ```
 
 ## Parameters
@@ -95,15 +87,11 @@ async deleteReasonCode(
 const reasonCodeId = 32;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await reasonCodesController.deleteReasonCode(reasonCodeId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -130,19 +118,17 @@ try {
 This method gives a merchant the option to retrieve a list of all of the current churn codes for a given site.
 
 ```ts
-async listReasonCodes(
-  page?: number,
+async listReasonCodes(  page?: number,
   perPage?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReasonCodeResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ReasonCodeResponse[]>>
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -156,16 +142,13 @@ const collect = {
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await reasonCodesController.listReasonCodes(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -218,11 +201,9 @@ try {
 This method gives a merchant the option to update an existing reason code for a given site.
 
 ```ts
-async updateReasonCode(
-  reasonCodeId: number,
+async updateReasonCode(  reasonCodeId: number,
   body?: UpdateReasonCodeRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReasonCodeResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ReasonCodeResponse>>
 ```
 
 ## Parameters
@@ -243,15 +224,11 @@ async updateReasonCode(
 const reasonCodeId = 32;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await reasonCodesController.updateReasonCode(reasonCodeId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -284,10 +261,8 @@ Full documentation on how Reason Codes operate within Chargify can be located un
 This method gives a merchant the option to create a reason codes for a given Site.
 
 ```ts
-async createReasonCode(
-  body?: CreateReasonCodeRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReasonCodeResponse>>
+async createReasonCode(  body?: CreateReasonCodeRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<ReasonCodeResponse>>
 ```
 
 ## Parameters
@@ -313,15 +288,11 @@ const body: CreateReasonCodeRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await reasonCodesController.createReasonCode(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

@@ -9,6 +9,6 @@
 
 | Name |
 |  --- |
-| `checking` |
-| `savings` |
+| `Checking` |
+| `Savings` |
 

@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -14,7 +14,10 @@ import {
   Schema,
   string,
 } from '../schema';
-import { AppliedCreditNote, appliedCreditNoteSchema } from './appliedCreditNote';
+import {
+  AppliedCreditNote,
+  appliedCreditNoteSchema,
+} from './appliedCreditNote';
 import {
   InvoiceEvent1PaymentMethod,
   invoiceEvent1PaymentMethodSchema,
@@ -108,10 +111,7 @@ export const invoiceEvent1Schema: Schema<InvoiceEvent1> = object({
   ],
   debitNoteNumber: ['debit_note_number', optional(string())],
   debitNoteUid: ['debit_note_uid', optional(string())],
-  paymentMethod: [
-    'payment_method',
-    optional(lazy(() => invoiceEvent1PaymentMethodSchema)),
-  ],
+  paymentMethod: ['payment_method', optional(invoiceEvent1PaymentMethodSchema)],
   transactionId: ['transaction_id', optional(number())],
   fromCollectionMethod: ['from_collection_method', optional(string())],
   toCollectionMethod: ['to_collection_method', optional(string())],

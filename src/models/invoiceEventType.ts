@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -26,4 +26,6 @@ export enum InvoiceEventType {
 /**
  * Schema for InvoiceEventType
  */
-export const invoiceEventTypeSchema: Schema<InvoiceEventType> = stringEnum(InvoiceEventType);
+export const invoiceEventTypeSchema: Schema<InvoiceEventType> = stringEnum(
+  InvoiceEventType
+);

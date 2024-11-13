@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -15,19 +15,19 @@ export const createInvoiceCouponProductFamilyIdSchema: Schema<CreateInvoiceCoupo
 
 export namespace CreateInvoiceCouponProductFamilyId {
   /**
-  * Validation method to narrow down union type to string type case.
-  *
-  * This is String case.
-  */
+   * Validation method to narrow down union type to string type case.
+   *
+   * This is String case.
+   */
   export function isString(value: unknown): value is string {
     return typeof value === 'string';
   }
 
   /**
-  * Validation method to narrow down union type to number type case.
-  *
-  * This is Number case.
-  */
+   * Validation method to narrow down union type to number type case.
+   *
+   * This is Number case.
+   */
   export function isNumber(value: unknown): value is number {
     return typeof value === 'number';
   }

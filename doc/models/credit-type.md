@@ -11,7 +11,7 @@ The type of charge to be applied when a component is upgraded. Valid values are:
 
 | Name |
 |  --- |
-| `full` |
-| `prorated` |
-| `none` |
+| `Full` |
+| `Prorated` |
+| `None` |
 

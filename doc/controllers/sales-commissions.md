@@ -28,14 +28,12 @@ Access to the Sales Commission API endpoints is available to users with financia
 > Note: The request is at seller level, it means `<<subdomain>>` variable will be replaced by `app`
 
 ```ts
-async listSalesReps(
-  sellerId: string,
+async listSalesReps(  sellerId: string,
   authorization?: string,
   liveMode?: boolean,
   page?: number,
   perPage?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListSaleRepItem[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListSaleRepItem[]>>
 ```
 
 ## Parameters
@@ -43,10 +41,10 @@ async listSalesReps(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `sellerId` | `string` | Template, Required | The Chargify id of your seller account |
-| `authorization` | `string \| undefined` | Header, Optional | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication). |
+| `authorization` | `string \| undefined` | Header, Optional | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication).<br>**Default**: `'Bearer <<apiKey>>'` |
 | `liveMode` | `boolean \| undefined` | Query, Optional | This parameter indicates if records should be fetched from live mode sites. Default value is true. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 100. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 100.<br>**Default**: `100` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -62,16 +60,13 @@ const collect = {
   page: 2,
   perPage: 100
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await salesCommissionsController.listSalesReps(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -175,15 +170,13 @@ Access to the Sales Commission API endpoints is available to users with financia
 > Note: The request is at seller level, it means `<<subdomain>>` variable will be replaced by `app`
 
 ```ts
-async readSalesRep(
-  sellerId: string,
+async readSalesRep(  sellerId: string,
   salesRepId: string,
   authorization?: string,
   liveMode?: boolean,
   page?: number,
   perPage?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SaleRep>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SaleRep>>
 ```
 
 ## Parameters
@@ -192,10 +185,10 @@ async readSalesRep(
 |  --- | --- | --- | --- |
 | `sellerId` | `string` | Template, Required | The Chargify id of your seller account |
 | `salesRepId` | `string` | Template, Required | The Chargify id of sales rep. |
-| `authorization` | `string \| undefined` | Header, Optional | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication). |
+| `authorization` | `string \| undefined` | Header, Optional | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication).<br>**Default**: `'Bearer <<apiKey>>'` |
 | `liveMode` | `boolean \| undefined` | Query, Optional | This parameter indicates if records should be fetched from live mode sites. Default value is true. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 100. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 100.<br>**Default**: `100` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -216,8 +209,6 @@ const page = 2;
 const perPage = 100;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await salesCommissionsController.readSalesRep(
   sellerId,
   salesRepId,
@@ -230,8 +221,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -289,14 +278,12 @@ Access to the Sales Commission API endpoints is available to users with financia
 > Note: The request is at seller level, it means `<<subdomain>>` variable will be replaced by `app`
 
 ```ts
-async listSalesCommissionSettings(
-  sellerId: string,
+async listSalesCommissionSettings(  sellerId: string,
   authorization?: string,
   liveMode?: boolean,
   page?: number,
   perPage?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SaleRepSettings[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SaleRepSettings[]>>
 ```
 
 ## Parameters
@@ -304,10 +291,10 @@ async listSalesCommissionSettings(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `sellerId` | `string` | Template, Required | The Chargify id of your seller account |
-| `authorization` | `string \| undefined` | Header, Optional | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication). |
+| `authorization` | `string \| undefined` | Header, Optional | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication).<br>**Default**: `'Bearer <<apiKey>>'` |
 | `liveMode` | `boolean \| undefined` | Query, Optional | This parameter indicates if records should be fetched from live mode sites. Default value is true. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 100. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 100.<br>**Default**: `100` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -323,16 +310,13 @@ const collect = {
   page: 2,
   perPage: 100
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await salesCommissionsController.listSalesCommissionSettings(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

@@ -35,10 +35,8 @@ The response will be `200 OK` with the updated Subscription.
 The response will be `422 "Unprocessable Entity`.
 
 ```ts
-async retrySubscription(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+async retrySubscription(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -58,15 +56,11 @@ async retrySubscription(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.retrySubscription(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -222,11 +216,9 @@ try {
 The DELETE action causes the cancellation of the Subscription. This means, the method sets the Subscription state to "canceled".
 
 ```ts
-async cancelSubscription(
-  subscriptionId: string,
+async cancelSubscription(  subscriptionId: string,
   body?: CancellationRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -247,15 +239,11 @@ async cancelSubscription(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.cancelSubscription(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -417,11 +405,9 @@ To update a subscription's resume date, use this method to change or update the 
 Alternately, you can change the `automatically_resume_at` to `null` if you would like the subscription to not have a resume date.
 
 ```ts
-async updateAutomaticSubscriptionResumption(
-  subscriptionId: string,
+async updateAutomaticSubscriptionResumption(  subscriptionId: string,
   body?: PauseRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -448,8 +434,6 @@ const body: PauseRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.updateAutomaticSubscriptionResumption(
   subscriptionId,
   body
@@ -458,8 +442,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -594,11 +576,9 @@ try {
 Resume a paused (on-hold) subscription. If the normal next renewal date has not passed, the subscription will return to active and will renew on that date.  Otherwise, it will behave like a reactivation, setting the billing date to 'now' and charging the subscriber.
 
 ```ts
-async resumeSubscription(
-  subscriptionId: string,
+async resumeSubscription(  subscriptionId: string,
   calendarBillingResumptionCharge?: ResumptionCharge,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -606,7 +586,7 @@ async resumeSubscription(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `subscriptionId` | `string` | Template, Required | The Chargify id of the subscription |
-| `calendarBillingResumptionCharge` | [`ResumptionCharge \| undefined`](../../doc/models/resumption-charge.md) | Query, Optional | (For calendar billing subscriptions only) The way that the resumed subscription's charge should be handled |
+| `calendarBillingResumptionCharge` | [`ResumptionCharge \| undefined`](../../doc/models/resumption-charge.md) | Query, Optional | (For calendar billing subscriptions only) The way that the resumed subscription's charge should be handled<br>**Default**: `ResumptionCharge.Prorated` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -619,15 +599,11 @@ async resumeSubscription(
 const subscriptionId = 'subscription_id0';
 
 Liquid error: Value cannot be null. (Parameter 'key')try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = Liquid error: Value cannot be null. (Parameter 'key')await subscriptionStatusController.resumeSubscription(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -753,11 +729,9 @@ This will place the subscription in the on_hold state and it will not renew.
 You may not place a subscription on hold if the `next_billing` date is within 24 hours.
 
 ```ts
-async pauseSubscription(
-  subscriptionId: string,
+async pauseSubscription(  subscriptionId: string,
   body?: PauseRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -784,8 +758,6 @@ const body: PauseRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.pauseSubscription(
   subscriptionId,
   body
@@ -794,8 +766,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1081,11 +1051,9 @@ PUT request sent to:
 + Any product-related charges should have been collected
 
 ```ts
-async reactivateSubscription(
-  subscriptionId: string,
+async reactivateSubscription(  subscriptionId: string,
   body?: ReactivateSubscriptionRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -1117,8 +1085,6 @@ const body: ReactivateSubscriptionRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.reactivateSubscription(
   subscriptionId,
   body
@@ -1127,8 +1093,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1257,10 +1221,8 @@ try {
 If a subscription is currently in dunning, the subscription will be set to active and the active Dunner will be resolved.
 
 ```ts
-async cancelDunning(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+async cancelDunning(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -1280,15 +1242,11 @@ async cancelDunning(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.cancelDunning(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1322,11 +1280,9 @@ Optionally, **you may provide your own custom quantities** for any component to 
 You can request a `POST` to obtain this data from the endpoint without any side effects. Plain and simple, this will preview data, not log any changes against a subscription.
 
 ```ts
-async previewRenewal(
-  subscriptionId: string,
+async previewRenewal(  subscriptionId: string,
   body?: RenewalPreviewRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<RenewalPreviewResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<RenewalPreviewResponse>>
 ```
 
 ## Parameters
@@ -1366,8 +1322,6 @@ const body: RenewalPreviewRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.previewRenewal(
   subscriptionId,
   body
@@ -1376,8 +1330,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1435,11 +1387,9 @@ Requesting to cancel the subscription at the end of the period sets the `cancel_
 Note that you cannot set `cancel_at_end_of_period` at subscription creation, or if the subscription is past due.
 
 ```ts
-async initiateDelayedCancellation(
-  subscriptionId: string,
+async initiateDelayedCancellation(  subscriptionId: string,
   body?: CancellationRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<DelayedCancellationResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<DelayedCancellationResponse>>
 ```
 
 ## Parameters
@@ -1460,15 +1410,11 @@ async initiateDelayedCancellation(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.initiateDelayedCancellation(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1489,10 +1435,8 @@ Removing the delayed cancellation on a subscription will ensure that it doesn't 
 This endpoint is idempotent. If the subscription was not set to cancel in the future, removing the delayed cancellation has no effect and the call will be successful.
 
 ```ts
-async stopDelayedCancellation(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<DelayedCancellationResponse>>
+async stopDelayedCancellation(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<DelayedCancellationResponse>>
 ```
 
 ## Parameters
@@ -1512,15 +1456,11 @@ async stopDelayedCancellation(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionStatusController.stopDelayedCancellation(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

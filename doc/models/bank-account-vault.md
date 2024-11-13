@@ -11,9 +11,9 @@ The vault that stores the payment profile with the provided vault_token.
 
 | Name |
 |  --- |
-| `bogus` |
-| `authorizenet` |
-| `stripeConnect` |
-| `braintreeBlue` |
-| `gocardless` |
+| `Bogus` |
+| `Authorizenet` |
+| `StripeConnect` |
+| `BraintreeBlue` |
+| `Gocardless` |
 

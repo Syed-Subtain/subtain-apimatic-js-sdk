@@ -1,21 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import {
-  SingleStringErrorResponseError,
-} from '../errors/singleStringErrorResponseError';
-import {
-  SubscriptionGroupSignupErrorResponseError,
-} from '../errors/subscriptionGroupSignupErrorResponseError';
-import {
-  SubscriptionGroupUpdateErrorResponseError,
-} from '../errors/subscriptionGroupUpdateErrorResponseError';
 import {
   AddSubscriptionToAGroup,
   addSubscriptionToAGroupSchema,
@@ -54,6 +43,11 @@ import {
 } from '../models/updateSubscriptionGroupRequest';
 import { number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { SingleStringErrorResponseError } from '../errors/singleStringErrorResponseError';
+import { SubscriptionGroupSignupErrorResponseError } from '../errors/subscriptionGroupSignupErrorResponseError';
+import { SubscriptionGroupUpdateErrorResponseError } from '../errors/subscriptionGroupUpdateErrorResponseError';
 
 export class SubscriptionGroupsController extends BaseController {
   /**
@@ -72,7 +66,11 @@ export class SubscriptionGroupsController extends BaseController {
     });
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
-    req.throwOn(422, SingleStringErrorResponseError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      SingleStringErrorResponseError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionGroupResponseSchema, requestOptions);
   }
@@ -246,7 +244,11 @@ export class SubscriptionGroupsController extends BaseController {
     });
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
-    req.throwOn(422, SubscriptionGroupSignupErrorResponseError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      SubscriptionGroupSignupErrorResponseError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       subscriptionGroupSignupResponseSchema,
@@ -276,15 +278,16 @@ export class SubscriptionGroupsController extends BaseController {
    *                           groups. Use in query: `include[]=account_balances`
    * @return Response from the API call
    */
-  async listSubscriptionGroups({
-    page,
-    perPage,
-    include,
-  }: {
-    page?: number,
-    perPage?: number,
-    include?: string,
-  },
+  async listSubscriptionGroups(
+    {
+      page,
+      perPage,
+      include,
+    }: {
+      page?: number;
+      perPage?: number;
+      include?: string;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListSubscriptionGroupsResponse>> {
     const req = this.createRequest('GET', '/subscription_groups.json');
@@ -323,7 +326,11 @@ export class SubscriptionGroupsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/subscription_groups/${mapped.uid}.json`;
-    req.throwOn(422, SubscriptionGroupUpdateErrorResponseError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      SubscriptionGroupUpdateErrorResponseError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionGroupResponseSchema, requestOptions);
   }

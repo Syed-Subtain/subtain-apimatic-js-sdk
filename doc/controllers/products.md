@@ -25,10 +25,8 @@ Sending a DELETE request to this endpoint will archive the product. All current 
 This will restrict the option to chose the product for purchase via the Billing Portal, as well as disable Public Signup Pages for the product.
 
 ```ts
-async archiveProduct(
-  productId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductResponse>>
+async archiveProduct(  productId: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductResponse>>
 ```
 
 ## Parameters
@@ -48,15 +46,11 @@ async archiveProduct(
 const productId = 202;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productsController.archiveProduct(productId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -116,11 +110,9 @@ Use this method to create a product within your Chargify site.
 + [Changing a Subscription's Product](https://maxio-chargify.zendesk.com/hc/en-us/articles/5404225334669-Product-Changes-Migrations)
 
 ```ts
-async createProduct(
-  productFamilyId: number,
+async createProduct(  productFamilyId: number,
   body?: CreateOrUpdateProductRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductResponse>>
 ```
 
 ## Parameters
@@ -156,8 +148,6 @@ const body: CreateOrUpdateProductRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productsController.createProduct(
   productFamilyId,
   body
@@ -166,8 +156,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -229,10 +217,8 @@ try {
 This endpoint allows you to read the current details of a product that you've created in Chargify.
 
 ```ts
-async readProduct(
-  productId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductResponse>>
+async readProduct(  productId: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductResponse>>
 ```
 
 ## Parameters
@@ -252,15 +238,11 @@ async readProduct(
 const productId = 202;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productsController.readProduct(productId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -325,11 +307,9 @@ Use this method to change aspects of an existing product.
 Updating a product using this endpoint will create a new price point and set it as the default price point for this product. If you should like to update an existing product price point, that must be done separately.
 
 ```ts
-async updateProduct(
-  productId: number,
+async updateProduct(  productId: number,
   body?: CreateOrUpdateProductRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductResponse>>
 ```
 
 ## Parameters
@@ -350,15 +330,11 @@ async updateProduct(
 const productId = 202;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productsController.updateProduct(productId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -425,10 +401,8 @@ try {
 This method allows to retrieve a Product object by its `api_handle`.
 
 ```ts
-async readProductByHandle(
-  apiHandle: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductResponse>>
+async readProductByHandle(  apiHandle: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductResponse>>
 ```
 
 ## Parameters
@@ -448,15 +422,11 @@ async readProductByHandle(
 const apiHandle = 'api_handle6';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productsController.readProductByHandle(apiHandle);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -537,8 +507,7 @@ try {
 This method allows to retrieve a list of Products belonging to a Site.
 
 ```ts
-async listProducts(
-  dateField?: BasicDateField,
+async listProducts(  dateField?: BasicDateField,
   endDate?: string,
   endDatetime?: string,
   startDate?: string,
@@ -549,8 +518,7 @@ async listProducts(
   include?: ListProductsInclude,
   filterPrepaidProductPricePointProductPricePointId?: IncludeNotNull,
   filterUseSiteExchangeRate?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductResponse[]>>
 ```
 
 ## Parameters
@@ -562,8 +530,8 @@ async listProducts(
 | `endDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns products with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site''s time zone will be used. If provided, this parameter will be used instead of end_date. |
 | `startDate` | `string \| undefined` | Query, Optional | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns products with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | `startDatetime` | `string \| undefined` | Query, Optional | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns products with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site''s time zone will be used. If provided, this parameter will be used instead of start_date. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `includeArchived` | `boolean \| undefined` | Query, Optional | Include archived products. Use in query: `include_archived=true`. |
 | `include` | [`ListProductsInclude \| undefined`](../../doc/models/list-products-include.md) | Query, Optional | Allows including additional data in the response. Use in query `include=prepaid_product_price_point`. |
 | `filterPrepaidProductPricePointProductPricePointId` | [`IncludeNotNull \| undefined`](../../doc/models/include-not-null.md) | Query, Optional | Allows fetching products only if a prepaid product price point is present or not. To use this filter you also have to include the following param in the request `include=prepaid_product_price_point`. Use in query `filter[prepaid_product_price_point][product_price_point_id]=not_null`. |
@@ -584,16 +552,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   includeArchived: true,
   include: ListProductsInclude.PrepaidProductPricePoint
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productsController.listProducts(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

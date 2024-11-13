@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,7 +19,10 @@ import {
   CouponCompoundingStrategy,
   couponCompoundingStrategySchema,
 } from './containers/couponCompoundingStrategy';
-import { CouponRestriction, couponRestrictionSchema } from './couponRestriction';
+import {
+  CouponRestriction,
+  couponRestrictionSchema,
+} from './couponRestriction';
 import { DiscountType, discountTypeSchema } from './discountType';
 import { RecurringScheme, recurringSchemeSchema } from './recurringScheme';
 

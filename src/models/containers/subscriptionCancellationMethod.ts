@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,11 +19,13 @@ export const subscriptionCancellationMethodSchema: Schema<SubscriptionCancellati
 
 export namespace SubscriptionCancellationMethod {
   /**
-  * Validation method to narrow down union type to CancellationMethod type case.
-  *
-  * This is Cancellation Method case.
-  */
-  export function isCancellationMethod(value: unknown): value is CancellationMethod {
+   * Validation method to narrow down union type to CancellationMethod type case.
+   *
+   * This is Cancellation Method case.
+   */
+  export function isCancellationMethod(
+    value: unknown
+  ): value is CancellationMethod {
     const validationResult = validateAndMap(value, cancellationMethodSchema);
     return validationResult.errors === false;
   }

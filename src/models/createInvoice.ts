@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -21,7 +21,10 @@ import {
   CreateInvoiceCoupon,
   createInvoiceCouponSchema,
 } from './createInvoiceCoupon';
-import { CreateInvoiceItem, createInvoiceItemSchema } from './createInvoiceItem';
+import {
+  CreateInvoiceItem,
+  createInvoiceItemSchema,
+} from './createInvoiceItem';
 import { Status1, status1Schema } from './status1';
 
 export interface CreateInvoice {

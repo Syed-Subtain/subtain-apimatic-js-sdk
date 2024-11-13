@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,12 +19,17 @@ export const createSubscriptionComponentsSchema: Schema<CreateSubscriptionCompon
 
 export namespace CreateSubscriptionComponents {
   /**
-  * Validation method to narrow down union type to CreateSubscriptionComponent type case.
-  *
-  * This is Create Subscription Component case.
-  */
-  export function isCreateSubscriptionComponent(value: unknown): value is CreateSubscriptionComponent {
-    const validationResult = validateAndMap(value, createSubscriptionComponentSchema);
+   * Validation method to narrow down union type to CreateSubscriptionComponent type case.
+   *
+   * This is Create Subscription Component case.
+   */
+  export function isCreateSubscriptionComponent(
+    value: unknown
+  ): value is CreateSubscriptionComponent {
+    const validationResult = validateAndMap(
+      value,
+      createSubscriptionComponentSchema
+    );
     return validationResult.errors === false;
   }
 }

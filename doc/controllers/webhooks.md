@@ -25,10 +25,8 @@ Posting to the replay endpoint does not immediately resend the webhooks. They ar
 You may submit an array of up to 1000 webhook IDs to replay in the request.
 
 ```ts
-async replayWebhooks(
-  body?: ReplayWebhooksRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReplayWebhooksResponse>>
+async replayWebhooks(  body?: ReplayWebhooksRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<ReplayWebhooksResponse>>
 ```
 
 ## Parameters
@@ -53,15 +51,11 @@ const body: ReplayWebhooksRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await webhooksController.replayWebhooks(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -82,9 +76,7 @@ try {
 This method returns created endpoints for site.
 
 ```ts
-async listEndpoints(
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Endpoint[]>>
+async listEndpoints(requestOptions?: RequestOptions): Promise<ApiResponse<Endpoint[]>>
 ```
 
 ## Parameters
@@ -101,15 +93,11 @@ async listEndpoints(
 
 ```ts
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await webhooksController.listEndpoints();
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -163,16 +151,14 @@ We recommend that you review Chargify's webhook documentation located in our hel
 This method allows you to fetch data about webhooks. You can pass query parameters if you want to filter webhooks.
 
 ```ts
-async listWebhooks(
-  status?: WebhookStatus,
+async listWebhooks(  status?: WebhookStatus,
   sinceDate?: string,
   untilDate?: string,
   page?: number,
   perPage?: number,
   order?: WebhookOrder,
   subscription?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<WebhookResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<WebhookResponse[]>>
 ```
 
 ## Parameters
@@ -182,8 +168,8 @@ async listWebhooks(
 | `status` | [`WebhookStatus \| undefined`](../../doc/models/webhook-status.md) | Query, Optional | Webhooks with matching status would be returned. |
 | `sinceDate` | `string \| undefined` | Query, Optional | Format YYYY-MM-DD. Returns Webhooks with the created_at date greater than or equal to the one specified. |
 | `untilDate` | `string \| undefined` | Query, Optional | Format YYYY-MM-DD. Returns Webhooks with the created_at date less than or equal to the one specified. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `order` | [`WebhookOrder \| undefined`](../../doc/models/webhook-order.md) | Query, Optional | The order in which the Webhooks are returned. |
 | `subscription` | `number \| undefined` | Query, Optional | The Chargify id of a subscription you'd like to filter for |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
@@ -199,16 +185,13 @@ const collect = {
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await webhooksController.listWebhooks(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -260,10 +243,8 @@ try {
 This method allows you to enable webhooks via API for your site
 
 ```ts
-async enableWebhooks(
-  body?: EnableWebhooksRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<EnableWebhooksResponse>>
+async enableWebhooks(  body?: EnableWebhooksRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<EnableWebhooksResponse>>
 ```
 
 ## Parameters
@@ -285,15 +266,11 @@ const body: EnableWebhooksRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await webhooksController.enableWebhooks(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -317,10 +294,8 @@ You can check available events here.
 [Event keys](https://maxio-chargify.zendesk.com/hc/en-us/articles/5405357509645-Webhooks-Reference#example-payloads)
 
 ```ts
-async createEndpoint(
-  body?: UpdateEndpointRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<EndpointResponse>>
+async createEndpoint(  body?: UpdateEndpointRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<EndpointResponse>>
 ```
 
 ## Parameters
@@ -348,15 +323,11 @@ const body: UpdateEndpointRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await webhooksController.createEndpoint(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -400,11 +371,9 @@ Sending an PUT request for existing endpoint with empty list of `webhook_subscri
 If you want unsubscribe from specific event, just send a list of `webhook_subscriptions` without the specific event key.
 
 ```ts
-async updateEndpoint(
-  endpointId: number,
+async updateEndpoint(  endpointId: number,
   body?: UpdateEndpointRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<EndpointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<EndpointResponse>>
 ```
 
 ## Parameters
@@ -436,8 +405,6 @@ const body: UpdateEndpointRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await webhooksController.updateEndpoint(
   endpointId,
   body
@@ -446,8 +413,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

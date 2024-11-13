@@ -11,17 +11,17 @@ The type of card used.
 
 | Name |
 |  --- |
-| `bogus` |
-| `visa` |
-| `master` |
-| `discover` |
-| `americanExpress` |
-| `dinersClub` |
-| `jcb` |
-| `switch` |
-| `solo` |
-| `dankort` |
-| `maestro` |
-| `laser` |
-| `forbrugsforeningen` |
+| `Bogus` |
+| `Visa` |
+| `Master` |
+| `Discover` |
+| `AmericanExpress` |
+| `DinersClub` |
+| `Jcb` |
+| `Switch` |
+| `Solo` |
+| `Dankort` |
+| `Maestro` |
+| `Laser` |
+| `Forbrugsforeningen` |
 

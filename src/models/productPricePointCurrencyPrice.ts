@@ -1,11 +1,14 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import { number, object, optional, Schema, string } from '../schema';
-import { CurrencyPriceRole, currencyPriceRoleSchema } from './currencyPriceRole';
+import {
+  CurrencyPriceRole,
+  currencyPriceRoleSchema,
+} from './currencyPriceRole';
 
 /** object Product Price Point Currency Price: */
 export interface ProductPricePointCurrencyPrice {

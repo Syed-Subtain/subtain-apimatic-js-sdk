@@ -35,10 +35,8 @@ const componentsController = new ComponentsController(client);
 This request will return information regarding a component having the handle you provide. You can identify your components with a handle so you don't have to save or reference the IDs we generate.
 
 ```ts
-async readComponentByHandle(
-  handle: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentResponse>>
+async readComponentByHandle(  handle: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentResponse>>
 ```
 
 ## Parameters
@@ -58,15 +56,11 @@ async readComponentByHandle(
 const handle = 'handle6';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.readComponentByHandle(handle);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -109,8 +103,7 @@ try {
 This request will return a list of components for a site.
 
 ```ts
-async listComponents(
-  dateField?: BasicDateField,
+async listComponents(  dateField?: BasicDateField,
   startDate?: string,
   endDate?: string,
   startDatetime?: string,
@@ -120,8 +113,7 @@ async listComponents(
   perPage?: number,
   filterIds?: string[],
   filterUseSiteExchangeRate?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentResponse[]>>
 ```
 
 ## Parameters
@@ -134,8 +126,8 @@ async listComponents(
 | `startDatetime` | `string \| undefined` | Query, Optional | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns components with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. |
 | `endDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns components with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date.  optional |
 | `includeArchived` | `boolean \| undefined` | Query, Optional | Include archived items |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `filterIds` | `string[] \| undefined` | Query, Optional | Allows fetching components with matching id based on provided value. Use in query `filter[ids]=1,2,3`. |
 | `filterUseSiteExchangeRate` | `boolean \| undefined` | Query, Optional | Allows fetching components with matching use_site_exchange_rate based on provided value (refers to default price point). Use in query `filter[use_site_exchange_rate]=true`. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
@@ -152,16 +144,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.listComponents(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -272,11 +261,9 @@ This request will return information regarding a component from a specific produ
 You may read the component by either the component's id or handle. When using the handle, it must be prefixed with `handle:`.
 
 ```ts
-async readComponentById(
-  productFamilyId: number,
+async readComponentById(  productFamilyId: number,
   componentId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentResponse>>
 ```
 
 ## Parameters
@@ -284,7 +271,7 @@ async readComponentById(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `productFamilyId` | `number` | Template, Required | The Chargify id of the product family to which the component belongs |
-| `componentId` | `string` | Template, Required | Either the Chargify id of the component or the handle for the component prefixed with `handle:` |
+| `componentId` | `string` | Template, Required | Either the Chargify id of the component or the handle for the component prefixed with `handle:`<br>**Constraints**: *Pattern*: `/\A(?:\d+\|handle:(?:uuid:\|[a-z])(?:\w\|-)+)\z/` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -299,8 +286,6 @@ const productFamilyId = 140;
 const componentId = 'component_id8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.readComponentById(
   productFamilyId,
   componentId
@@ -309,8 +294,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -355,12 +338,10 @@ This request will update a component from a specific product family.
 You may read the component by either the component's id or handle. When using the handle, it must be prefixed with `handle:`.
 
 ```ts
-async updateProductFamilyComponent(
-  productFamilyId: number,
+async updateProductFamilyComponent(  productFamilyId: number,
   componentId: string,
   body?: UpdateComponentRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentResponse>>
 ```
 
 ## Parameters
@@ -368,7 +349,7 @@ async updateProductFamilyComponent(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `productFamilyId` | `number` | Template, Required | The Chargify id of the product family to which the component belongs |
-| `componentId` | `string` | Template, Required | Either the Chargify id of the component or the handle for the component prefixed with `handle:` |
+| `componentId` | `string` | Template, Required | Either the Chargify id of the component or the handle for the component prefixed with `handle:`<br>**Constraints**: *Pattern*: `/\A(?:\d+\|handle:(?:uuid:\|[a-z])(?:\w\|-)+)\z/` |
 | `body` | [`UpdateComponentRequest \| undefined`](../../doc/models/update-component-request.md) | Body, Optional | - |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
@@ -390,8 +371,6 @@ const body: UpdateComponentRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.updateProductFamilyComponent(
   productFamilyId,
   componentId,
@@ -401,8 +380,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -466,12 +443,10 @@ For information on how to record component usage against a subscription, please 
 + [Recording component usage against a subscription](https://maxio-chargify.zendesk.com/hc/en-us/articles/5404606587917#recording-component-usage)
 
 ```ts
-async createComponent(
-  productFamilyId: number,
+async createComponent(  productFamilyId: number,
   componentKind: ComponentKindPath,
   body?: CreateComponentBody,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentResponse>>
 ```
 
 ## Parameters
@@ -510,8 +485,6 @@ const body: CreateComponentBody = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.createComponent(
   productFamilyId,
   componentKind,
@@ -521,8 +494,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -574,11 +545,9 @@ try {
 Sending a DELETE request to this endpoint will archive the component. All current subscribers will be unffected; their subscription/purchase will continue to be charged as usual.
 
 ```ts
-async archiveComponent(
-  productFamilyId: number,
+async archiveComponent(  productFamilyId: number,
   componentId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentResponse>>
 ```
 
 ## Parameters
@@ -586,7 +555,7 @@ async archiveComponent(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `productFamilyId` | `number` | Template, Required | The Chargify id of the product family to which the component belongs |
-| `componentId` | `string` | Template, Required | Either the Chargify id of the component or the handle for the component prefixed with `handle:` |
+| `componentId` | `string` | Template, Required | Either the Chargify id of the component or the handle for the component prefixed with `handle:`<br>**Constraints**: *Pattern*: `/\A(?:\d+\|handle:(?:uuid:\|[a-z])(?:\w\|-)+)\z/` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -601,8 +570,6 @@ const productFamilyId = 140;
 const componentId = 'component_id8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.archiveComponent(
   productFamilyId,
   componentId
@@ -611,8 +578,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -665,12 +630,10 @@ Including an `id` will update the corresponding price, and including the `_destr
 Note: Custom price points cannot be updated directly. They must be edited through the Subscription.
 
 ```ts
-async updateComponentPricePoint(
-  componentId: number,
+async updateComponentPricePoint(  componentId: number,
   pricePointId: number,
   body?: UpdateComponentPricePointRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentPricePointResponse>>
 ```
 
 ## Parameters
@@ -715,8 +678,6 @@ const body: UpdateComponentPricePointRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.updateComponentPricePoint(
   componentId,
   pricePointId,
@@ -726,8 +687,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -740,11 +699,9 @@ try {
 A price point can be archived at any time. Subscriptions using a price point that has been archived will continue using it until they're moved to another price point.
 
 ```ts
-async archiveComponentPricePoint(
-  componentId: number,
+async archiveComponentPricePoint(  componentId: number,
   pricePointId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentPricePointResponse>>
 ```
 
 ## Parameters
@@ -767,8 +724,6 @@ const componentId = 222;
 const pricePointId = 10;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.archiveComponentPricePoint(
   componentId,
   pricePointId
@@ -777,8 +732,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -825,11 +778,9 @@ try {
 This endpoint can be used to create a new price point for an existing component.
 
 ```ts
-async createComponentPricePoint(
-  componentId: number,
+async createComponentPricePoint(  componentId: number,
   body?: CreateComponentPricePointRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentPricePointResponse>>
 ```
 
 ## Parameters
@@ -869,8 +820,6 @@ const body: CreateComponentPricePointRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.createComponentPricePoint(
   componentId,
   body
@@ -879,8 +828,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -897,11 +844,9 @@ See [Price Points Documentation](https://chargify.zendesk.com/hc/en-us/articles/
 Note: Custom price points are not able to be set as the default for a component.
 
 ```ts
-async updateDefaultPricePointForComponent(
-  componentId: number,
+async updateDefaultPricePointForComponent(  componentId: number,
   pricePointId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -924,8 +869,6 @@ const componentId = 222;
 const pricePointId = 10;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.updateDefaultPricePointForComponent(
   componentId,
   pricePointId
@@ -934,8 +877,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -950,11 +891,9 @@ This request will update a component.
 You may read the component by either the component's id or handle. When using the handle, it must be prefixed with `handle:`.
 
 ```ts
-async updateComponent(
-  componentId: string,
+async updateComponent(  componentId: string,
   body?: UpdateComponentRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -981,8 +920,6 @@ const body: UpdateComponentRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.updateComponent(
   componentId,
   body
@@ -991,8 +928,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1011,14 +946,12 @@ When fetching a component's price points, if you have defined multiple currencie
 If the price point is set to `use_site_exchange_rate: true`, it will return pricing based on the current exchange rate. If the flag is set to false, it will return all of the defined prices for each currency.
 
 ```ts
-async listComponentPricePoints(
-  componentId: number,
+async listComponentPricePoints(  componentId: number,
   currencyPrices?: boolean,
   page?: number,
   perPage?: number,
   filterType?: PricePointType[],
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentPricePointsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentPricePointsResponse>>
 ```
 
 ## Parameters
@@ -1027,8 +960,8 @@ async listComponentPricePoints(
 |  --- | --- | --- | --- |
 | `componentId` | `number` | Template, Required | The Chargify id of the component |
 | `currencyPrices` | `boolean \| undefined` | Query, Optional | Include an array of currency price data |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `filterType` | [`PricePointType[] \| undefined`](../../doc/models/price-point-type.md) | Query, Optional | Use in query: `filter[type]=catalog,default`. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
@@ -1044,16 +977,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.listComponentPricePoints(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1115,8 +1045,7 @@ try {
 This method allows to retrieve a list of Components Price Points belonging to a Site.
 
 ```ts
-async listAllComponentPricePoints(
-  filterDateField?: BasicDateField,
+async listAllComponentPricePoints(  filterDateField?: BasicDateField,
   filterEndDate?: string,
   filterEndDatetime?: string,
   include?: ListComponentsPricePointsInclude,
@@ -1128,8 +1057,7 @@ async listAllComponentPricePoints(
   direction?: ListAllComponentPricePointsInputDirection,
   filterIds?: number[],
   filterArchivedAt?: IncludeNotNull,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListComponentsPricePointsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListComponentsPricePointsResponse>>
 ```
 
 ## Parameters
@@ -1140,8 +1068,8 @@ async listAllComponentPricePoints(
 | `filterEndDate` | `string \| undefined` | Query, Optional | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns price points with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
 | `filterEndDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns price points with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. |
 | `include` | [`ListComponentsPricePointsInclude \| undefined`](../../doc/models/list-components-price-points-include.md) | Query, Optional | Allows including additional data in the response. Use in query: `include=currency_prices`. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `filterStartDate` | `string \| undefined` | Query, Optional | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns price points with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | `filterStartDatetime` | `string \| undefined` | Query, Optional | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns price points with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. |
 | `filterType` | [`PricePointType \| undefined`](../../doc/models/price-point-type.md) | Query, Optional | Allows fetching price points with matching type. Use in query: `filter[type]=custom,catalog`. |
@@ -1162,16 +1090,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.listAllComponentPricePoints(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1223,8 +1148,7 @@ try {
 This request will return a list of components for a particular product family.
 
 ```ts
-async listComponentsForProductFamily(
-  productFamilyId: number,
+async listComponentsForProductFamily(  productFamilyId: number,
   includeArchived?: boolean,
   filterIds?: number[],
   page?: number,
@@ -1235,8 +1159,7 @@ async listComponentsForProductFamily(
   startDate?: string,
   startDatetime?: string,
   filterUseSiteExchangeRate?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentResponse[]>>
 ```
 
 ## Parameters
@@ -1246,8 +1169,8 @@ async listComponentsForProductFamily(
 | `productFamilyId` | `number` | Template, Required | The Chargify id of the product family |
 | `includeArchived` | `boolean \| undefined` | Query, Optional | Include archived items. |
 | `filterIds` | `number[] \| undefined` | Query, Optional | Allows fetching components with matching id based on provided value. Use in query `filter[ids]=1,2`. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `dateField` | [`BasicDateField \| undefined`](../../doc/models/basic-date-field.md) | Query, Optional | The type of filter you would like to apply to your search. Use in query `date_field=created_at`. |
 | `endDate` | `string \| undefined` | Query, Optional | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns components with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
 | `endDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns components with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. optional. |
@@ -1269,16 +1192,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   perPage: 50,
   dateField: BasicDateField.UpdatedAt
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.listComponentsForProductFamily(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1387,11 +1307,9 @@ try {
 Use this endpoint to create multiple component price points in one request.
 
 ```ts
-async createComponentPricePoints(
-  componentId: string,
+async createComponentPricePoints(  componentId: string,
   body?: CreateComponentPricePointsRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentPricePointsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentPricePointsResponse>>
 ```
 
 ## Parameters
@@ -1450,8 +1368,6 @@ const body: CreateComponentPricePointsRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.createComponentPricePoints(
   componentId,
   body
@@ -1460,8 +1376,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1523,11 +1437,9 @@ try {
 Use this endpoint to unarchive a component price point.
 
 ```ts
-async unarchiveComponentPricePoint(
-  componentId: number,
+async unarchiveComponentPricePoint(  componentId: number,
   pricePointId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ComponentPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ComponentPricePointResponse>>
 ```
 
 ## Parameters
@@ -1550,8 +1462,6 @@ const componentId = 222;
 const pricePointId = 10;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.unarchiveComponentPricePoint(
   componentId,
   pricePointId
@@ -1560,8 +1470,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1612,11 +1520,9 @@ When creating currency prices, they need to mirror the structure of your primary
 Note: Currency Prices are not able to be created for custom price points.
 
 ```ts
-async createCurrencyPrices(
-  pricePointId: number,
+async createCurrencyPrices(  pricePointId: number,
   body?: CreateCurrencyPricesRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CurrencyPrice[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CurrencyPrice[]>>
 ```
 
 ## Parameters
@@ -1652,8 +1558,6 @@ const body: CreateCurrencyPricesRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.createCurrencyPrices(
   pricePointId,
   body
@@ -1662,8 +1566,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1678,11 +1580,9 @@ This endpoint allows you to update currency prices for a given currency that has
 Note: Currency Prices are not able to be updated for custom price points.
 
 ```ts
-async updateCurrencyPrices(
-  pricePointId: number,
+async updateCurrencyPrices(  pricePointId: number,
   body?: UpdateCurrencyPricesRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CurrencyPrice[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CurrencyPrice[]>>
 ```
 
 ## Parameters
@@ -1716,8 +1616,6 @@ const body: UpdateCurrencyPricesRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await componentsController.updateCurrencyPrices(
   pricePointId,
   body
@@ -1726,8 +1624,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

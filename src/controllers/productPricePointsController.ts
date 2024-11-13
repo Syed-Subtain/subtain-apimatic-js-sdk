@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import { ApiResponse, commaPrefix, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import { ErrorMapResponseError } from '../errors/errorMapResponseError';
 import { BasicDateField, basicDateFieldSchema } from '../models/basicDateField';
 import {
   BulkCreateProductPricePointsRequest,
@@ -56,6 +54,8 @@ import {
 } from '../models/updateProductPricePointRequest';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { ErrorMapResponseError } from '../errors/errorMapResponseError';
 
 export class ProductPricePointsController extends BaseController {
   /**
@@ -83,19 +83,20 @@ export class ProductPricePointsController extends BaseController {
    * @param filterType      Use in query: `filter[type]=catalog,default`.
    * @return Response from the API call
    */
-  async listProductPricePoints({
-    productId,
-    page,
-    perPage,
-    currencyPrices,
-    filterType,
-  }: {
-    productId: number,
-    page?: number,
-    perPage?: number,
-    currencyPrices?: boolean,
-    filterType?: PricePointType[],
-  },
+  async listProductPricePoints(
+    {
+      productId,
+      page,
+      perPage,
+      currencyPrices,
+      filterType,
+    }: {
+      productId: number;
+      page?: number;
+      perPage?: number;
+      currencyPrices?: boolean;
+      filterType?: PricePointType[];
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListProductPricePointsResponse>> {
     const req = this.createRequest('GET');
@@ -402,33 +403,34 @@ export class ProductPricePointsController extends BaseController {
    *                                                                          `per_page=200`.
    * @return Response from the API call
    */
-  async listAllProductPricePoints({
-    direction,
-    filterArchivedAt,
-    filterDateField,
-    filterEndDate,
-    filterEndDatetime,
-    filterIds,
-    filterStartDate,
-    filterStartDatetime,
-    filterType,
-    include,
-    page,
-    perPage,
-  }: {
-    direction?: ListAllProductPricePointsInputDirection,
-    filterArchivedAt?: IncludeNotNull,
-    filterDateField?: BasicDateField,
-    filterEndDate?: string,
-    filterEndDatetime?: string,
-    filterIds?: number[],
-    filterStartDate?: string,
-    filterStartDatetime?: string,
-    filterType?: PricePointType,
-    include?: ListProductsPricePointsInclude,
-    page?: number,
-    perPage?: number,
-  },
+  async listAllProductPricePoints(
+    {
+      direction,
+      filterArchivedAt,
+      filterDateField,
+      filterEndDate,
+      filterEndDatetime,
+      filterIds,
+      filterStartDate,
+      filterStartDatetime,
+      filterType,
+      include,
+      page,
+      perPage,
+    }: {
+      direction?: ListAllProductPricePointsInputDirection;
+      filterArchivedAt?: IncludeNotNull;
+      filterDateField?: BasicDateField;
+      filterEndDate?: string;
+      filterEndDatetime?: string;
+      filterIds?: number[];
+      filterStartDate?: string;
+      filterStartDatetime?: string;
+      filterType?: PricePointType;
+      include?: ListProductsPricePointsInclude;
+      page?: number;
+      perPage?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListProductPricePointsResponse>> {
     const req = this.createRequest('GET', '/products_price_points.json');

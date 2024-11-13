@@ -11,8 +11,8 @@ The process used to cancel the subscription, if the subscription has been cancel
 
 | Name |
 |  --- |
-| `merchantUi` |
-| `merchantApi` |
-| `dunning` |
-| `billingPortal` |
+| `MerchantUi` |
+| `MerchantApi` |
+| `Dunning` |
+| `BillingPortal` |
 

@@ -11,10 +11,10 @@ The current status of the invoice. See [Invoice Statuses](https://chargify.zende
 
 | Name |
 |  --- |
-| `draft` |
-| `open` |
-| `paid` |
-| `pending` |
-| `voided` |
-| `canceled` |
+| `Draft` |
+| `Open` |
+| `Paid` |
+| `Pending` |
+| `Voided` |
+| `Canceled` |
 

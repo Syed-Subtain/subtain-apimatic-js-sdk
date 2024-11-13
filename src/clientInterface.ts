@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -20,4 +20,8 @@ export type SdkRequestBuilder = ReturnType<SdkRequestBuilderFactory>;
 
 export type Server = 'default';
 
-export type AuthParams = ReturnType<typeof createAuthProviderFromConfig> extends AuthenticatorInterface<infer X> ? X : never;
+export type AuthParams = ReturnType<
+  typeof createAuthProviderFromConfig
+> extends AuthenticatorInterface<infer X>
+  ? X
+  : never;

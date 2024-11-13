@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { SingleErrorResponseError } from '../errors/singleErrorResponseError';
 import {
   BatchJobResponse,
   batchJobResponseSchema,
@@ -19,6 +17,8 @@ import {
 import { Subscription, subscriptionSchema } from '../models/subscription';
 import { array, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { SingleErrorResponseError } from '../errors/singleErrorResponseError';
 
 export class APIExportsController extends BaseController {
   /**
@@ -54,15 +54,16 @@ export class APIExportsController extends BaseController {
    *                           results to return, then an empty result set will be returned. Use in query `page=1`.
    * @return Response from the API call
    */
-  async listExportedProformaInvoices({
-    batchId,
-    perPage,
-    page,
-  }: {
-    batchId: string,
-    perPage?: number,
-    page?: number,
-  },
+  async listExportedProformaInvoices(
+    {
+      batchId,
+      perPage,
+      page,
+    }: {
+      batchId: string;
+      perPage?: number;
+      page?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ProformaInvoice[]>> {
     const req = this.createRequest('GET');
@@ -133,15 +134,16 @@ export class APIExportsController extends BaseController {
    *                           results to return, then an empty result set will be returned. Use in query `page=1`.
    * @return Response from the API call
    */
-  async listExportedSubscriptions({
-    batchId,
-    perPage,
-    page,
-  }: {
-    batchId: string,
-    perPage?: number,
-    page?: number,
-  },
+  async listExportedSubscriptions(
+    {
+      batchId,
+      perPage,
+      page,
+    }: {
+      batchId: string;
+      perPage?: number;
+      page?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<Subscription[]>> {
     const req = this.createRequest('GET');
@@ -175,15 +177,16 @@ export class APIExportsController extends BaseController {
    *                           results to return, then an empty result set will be returned. Use in query `page=1`.
    * @return Response from the API call
    */
-  async listExportedInvoices({
-    batchId,
-    perPage,
-    page,
-  }: {
-    batchId: string,
-    perPage?: number,
-    page?: number,
-  },
+  async listExportedInvoices(
+    {
+      batchId,
+      perPage,
+      page,
+    }: {
+      batchId: string;
+      perPage?: number;
+      page?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<Invoice[]>> {
     const req = this.createRequest('GET');

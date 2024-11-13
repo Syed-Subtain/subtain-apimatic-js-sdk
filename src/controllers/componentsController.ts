@@ -1,11 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import { ApiResponse, commaPrefix, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import { BasicDateField, basicDateFieldSchema } from '../models/basicDateField';
 import {
   ComponentKindPath,
@@ -68,6 +67,7 @@ import {
 } from '../models/updateCurrencyPricesRequest';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class ComponentsController extends BaseController {
   /**
@@ -133,29 +133,30 @@ export class ComponentsController extends BaseController {
    *                                                         `filter[use_site_exchange_rate]=true`.
    * @return Response from the API call
    */
-  async listComponents({
-    dateField,
-    startDate,
-    endDate,
-    startDatetime,
-    endDatetime,
-    includeArchived,
-    page,
-    perPage,
-    filterIds,
-    filterUseSiteExchangeRate,
-  }: {
-    dateField?: BasicDateField,
-    startDate?: string,
-    endDate?: string,
-    startDatetime?: string,
-    endDatetime?: string,
-    includeArchived?: boolean,
-    page?: number,
-    perPage?: number,
-    filterIds?: string[],
-    filterUseSiteExchangeRate?: boolean,
-  },
+  async listComponents(
+    {
+      dateField,
+      startDate,
+      endDate,
+      startDatetime,
+      endDatetime,
+      includeArchived,
+      page,
+      perPage,
+      filterIds,
+      filterUseSiteExchangeRate,
+    }: {
+      dateField?: BasicDateField;
+      startDate?: string;
+      endDate?: string;
+      startDatetime?: string;
+      endDatetime?: string;
+      includeArchived?: boolean;
+      page?: number;
+      perPage?: number;
+      filterIds?: string[];
+      filterUseSiteExchangeRate?: boolean;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ComponentResponse[]>> {
     const req = this.createRequest('GET', '/components.json');
@@ -183,7 +184,10 @@ export class ComponentsController extends BaseController {
     req.query('page', mapped.page);
     req.query('per_page', mapped.perPage);
     req.query('filter[ids]', mapped.filterIds, commaPrefix);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.query(
+      'filter[use_site_exchange_rate]',
+      mapped.filterUseSiteExchangeRate
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(componentResponseSchema), requestOptions);
   }
@@ -490,19 +494,20 @@ export class ComponentsController extends BaseController {
    * @param filterType      Use in query: `filter[type]=catalog,default`.
    * @return Response from the API call
    */
-  async listComponentPricePoints({
-    componentId,
-    currencyPrices,
-    page,
-    perPage,
-    filterType,
-  }: {
-    componentId: number,
-    currencyPrices?: boolean,
-    page?: number,
-    perPage?: number,
-    filterType?: PricePointType[],
-  },
+  async listComponentPricePoints(
+    {
+      componentId,
+      currencyPrices,
+      page,
+      perPage,
+      filterType,
+    }: {
+      componentId: number;
+      currencyPrices?: boolean;
+      page?: number;
+      perPage?: number;
+      filterType?: PricePointType[];
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ComponentPricePointsResponse>> {
     const req = this.createRequest('GET');
@@ -592,33 +597,34 @@ export class ComponentsController extends BaseController {
    *                                                                            query: `filter[archived_at]=not_null`.
    * @return Response from the API call
    */
-  async listAllComponentPricePoints({
-    filterDateField,
-    filterEndDate,
-    filterEndDatetime,
-    include,
-    page,
-    perPage,
-    filterStartDate,
-    filterStartDatetime,
-    filterType,
-    direction,
-    filterIds,
-    filterArchivedAt,
-  }: {
-    filterDateField?: BasicDateField,
-    filterEndDate?: string,
-    filterEndDatetime?: string,
-    include?: ListComponentsPricePointsInclude,
-    page?: number,
-    perPage?: number,
-    filterStartDate?: string,
-    filterStartDatetime?: string,
-    filterType?: PricePointType,
-    direction?: ListAllComponentPricePointsInputDirection,
-    filterIds?: number[],
-    filterArchivedAt?: IncludeNotNull,
-  },
+  async listAllComponentPricePoints(
+    {
+      filterDateField,
+      filterEndDate,
+      filterEndDatetime,
+      include,
+      page,
+      perPage,
+      filterStartDate,
+      filterStartDatetime,
+      filterType,
+      direction,
+      filterIds,
+      filterArchivedAt,
+    }: {
+      filterDateField?: BasicDateField;
+      filterEndDate?: string;
+      filterEndDatetime?: string;
+      include?: ListComponentsPricePointsInclude;
+      page?: number;
+      perPage?: number;
+      filterStartDate?: string;
+      filterStartDatetime?: string;
+      filterType?: PricePointType;
+      direction?: ListAllComponentPricePointsInputDirection;
+      filterIds?: number[];
+      filterArchivedAt?: IncludeNotNull;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListComponentsPricePointsResponse>> {
     const req = this.createRequest('GET', '/components_price_points.json');
@@ -706,31 +712,32 @@ export class ComponentsController extends BaseController {
    *                                                         `filter[use_site_exchange_rate]=true`.
    * @return Response from the API call
    */
-  async listComponentsForProductFamily({
-    productFamilyId,
-    includeArchived,
-    filterIds,
-    page,
-    perPage,
-    dateField,
-    endDate,
-    endDatetime,
-    startDate,
-    startDatetime,
-    filterUseSiteExchangeRate,
-  }: {
-    productFamilyId: number,
-    includeArchived?: boolean,
-    filterIds?: number[],
-    page?: number,
-    perPage?: number,
-    dateField?: BasicDateField,
-    endDate?: string,
-    endDatetime?: string,
-    startDate?: string,
-    startDatetime?: string,
-    filterUseSiteExchangeRate?: boolean,
-  },
+  async listComponentsForProductFamily(
+    {
+      productFamilyId,
+      includeArchived,
+      filterIds,
+      page,
+      perPage,
+      dateField,
+      endDate,
+      endDatetime,
+      startDate,
+      startDatetime,
+      filterUseSiteExchangeRate,
+    }: {
+      productFamilyId: number;
+      includeArchived?: boolean;
+      filterIds?: number[];
+      page?: number;
+      perPage?: number;
+      dateField?: BasicDateField;
+      endDate?: string;
+      endDatetime?: string;
+      startDate?: string;
+      startDatetime?: string;
+      filterUseSiteExchangeRate?: boolean;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ComponentResponse[]>> {
     const req = this.createRequest('GET');
@@ -759,7 +766,10 @@ export class ComponentsController extends BaseController {
     req.query('end_datetime', mapped.endDatetime);
     req.query('start_date', mapped.startDate);
     req.query('start_datetime', mapped.startDatetime);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.query(
+      'filter[use_site_exchange_rate]',
+      mapped.filterUseSiteExchangeRate
+    );
     req.appendTemplatePath`/product_families/${mapped.productFamilyId}/components.json`;
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(componentResponseSchema), requestOptions);

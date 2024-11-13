@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -17,4 +17,6 @@ export enum IntervalUnit {
 /**
  * Schema for IntervalUnit
  */
-export const intervalUnitSchema: Schema<IntervalUnit> = stringEnum(IntervalUnit);
+export const intervalUnitSchema: Schema<IntervalUnit> = stringEnum(
+  IntervalUnit
+);

@@ -1,15 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import {
-  TooManyManagementLinkRequestsError,
-} from '../errors/tooManyManagementLinkRequestsError';
 import { AutoInvite, autoInviteSchema } from '../models/autoInvite';
 import {
   CustomerResponse,
@@ -29,6 +24,9 @@ import {
 } from '../models/revokedInvitation';
 import { number, optional } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { TooManyManagementLinkRequestsError } from '../errors/tooManyManagementLinkRequestsError';
 
 export class BillingPortalController extends BaseController {
   /**

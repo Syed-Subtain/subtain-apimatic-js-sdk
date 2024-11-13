@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,12 +19,17 @@ export const subscriptionGroup2Schema: Schema<SubscriptionGroup2> = oneOf([
 
 export namespace SubscriptionGroup2 {
   /**
-  * Validation method to narrow down union type to SubscriptionGroupInlined type case.
-  *
-  * This is Subscription Group Inlined case.
-  */
-  export function isSubscriptionGroupInlined(value: unknown): value is SubscriptionGroupInlined {
-    const validationResult = validateAndMap(value, subscriptionGroupInlinedSchema);
+   * Validation method to narrow down union type to SubscriptionGroupInlined type case.
+   *
+   * This is Subscription Group Inlined case.
+   */
+  export function isSubscriptionGroupInlined(
+    value: unknown
+  ): value is SubscriptionGroupInlined {
+    const validationResult = validateAndMap(
+      value,
+      subscriptionGroupInlinedSchema
+    );
     return validationResult.errors === false;
   }
 }

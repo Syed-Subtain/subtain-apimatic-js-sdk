@@ -47,10 +47,8 @@ Chargify allows you to attribute a language/region to your customer to deliver i
 For more: [Customer Locale](https://chargify.zendesk.com/hc/en-us/articles/4407870384283#customer-locale)
 
 ```ts
-async createCustomer(
-  body?: CreateCustomerRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CustomerResponse>>
+async createCustomer(  body?: CreateCustomerRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<CustomerResponse>>
 ```
 
 ## Parameters
@@ -87,15 +85,11 @@ const body: CreateCustomerRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customersController.createCustomer(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -163,8 +157,7 @@ Common use cases are:
 To retrieve a single, exact match by reference, please use the [lookup endpoint](https://developers.chargify.com/docs/api-docs/b710d8fbef104-read-customer-by-reference).
 
 ```ts
-async listCustomers(
-  direction?: ListCustomersInputDirection,
+async listCustomers(  direction?: ListCustomersInputDirection,
   page?: number,
   perPage?: number,
   dateField?: BasicDateField,
@@ -173,8 +166,7 @@ async listCustomers(
   startDatetime?: string,
   endDatetime?: string,
   q?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CustomerResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CustomerResponse[]>>
 ```
 
 ## Parameters
@@ -182,8 +174,8 @@ async listCustomers(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `direction` | [`ListCustomersInputDirection \| undefined`](../../doc/models/containers/list-customers-input-direction.md) | Query, Optional | This is a container for one-of cases. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 50. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 50. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `50`<br>**Constraints**: `<= 200` |
 | `dateField` | [`BasicDateField \| undefined`](../../doc/models/basic-date-field.md) | Query, Optional | The type of filter you would like to apply to your search.<br>Use in query: `date_field=created_at`. |
 | `startDate` | `string \| undefined` | Query, Optional | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns subscriptions with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | `endDate` | `string \| undefined` | Query, Optional | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns subscriptions with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
@@ -204,16 +196,13 @@ const collect = {
   perPage: 30,
   dateField: BasicDateField.UpdatedAt
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customersController.listCustomers(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -310,10 +299,8 @@ try {
 Use this method to return the customer object if you have the unique **Reference ID (Your App)** value handy. It will return a single match.
 
 ```ts
-async readCustomerByReference(
-  reference: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CustomerResponse>>
+async readCustomerByReference(  reference: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<CustomerResponse>>
 ```
 
 ## Parameters
@@ -333,15 +320,11 @@ async readCustomerByReference(
 const reference = 'reference4';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customersController.readCustomerByReference(reference);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -354,10 +337,8 @@ try {
 This method lists all subscriptions that belong to a customer.
 
 ```ts
-async listCustomerSubscriptions(
-  customerId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse[]>>
+async listCustomerSubscriptions(  customerId: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse[]>>
 ```
 
 ## Parameters
@@ -377,15 +358,11 @@ async listCustomerSubscriptions(
 const customerId = 150;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customersController.listCustomerSubscriptions(customerId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -398,10 +375,8 @@ try {
 This method allows to retrieve the Customer properties by Chargify-generated Customer ID.
 
 ```ts
-async readCustomer(
-  id: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CustomerResponse>>
+async readCustomer(  id: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<CustomerResponse>>
 ```
 
 ## Parameters
@@ -421,15 +396,11 @@ async readCustomer(
 const id = 112;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customersController.readCustomer(id);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -442,11 +413,9 @@ try {
 This method allows to update the Customer.
 
 ```ts
-async updateCustomer(
-  id: number,
+async updateCustomer(  id: number,
   body?: UpdateCustomerRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CustomerResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CustomerResponse>>
 ```
 
 ## Parameters
@@ -475,8 +444,6 @@ const body: UpdateCustomerRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customersController.updateCustomer(
   id,
   body
@@ -485,8 +452,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -537,10 +502,8 @@ try {
 This method allows you to delete the Customer.
 
 ```ts
-async deleteCustomer(
-  id: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async deleteCustomer(  id: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -560,15 +523,11 @@ async deleteCustomer(
 const id = 112;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await customersController.deleteCustomer(id);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

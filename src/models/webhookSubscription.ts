@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -50,4 +50,6 @@ export enum WebhookSubscription {
 /**
  * Schema for WebhookSubscription
  */
-export const webhookSubscriptionSchema: Schema<WebhookSubscription> = stringEnum(WebhookSubscription);
+export const webhookSubscriptionSchema: Schema<WebhookSubscription> = stringEnum(
+  WebhookSubscription
+);

@@ -9,6 +9,6 @@
 
 | Name |
 |  --- |
-| `personal` |
-| `business` |
+| `Personal` |
+| `Business` |
 

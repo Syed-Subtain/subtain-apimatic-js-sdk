@@ -9,7 +9,7 @@
 
 | Name |
 |  --- |
-| `subscription` |
+| `Subscription` |
 
 ## Example
 

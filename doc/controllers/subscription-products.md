@@ -23,11 +23,9 @@ It is also possible to preview the migration for a date in the future, as long a
 This will calculate the prorated adjustment, charge, payment and credit applied values assuming the migration is done at that date in the future as opposed to right now.
 
 ```ts
-async previewSubscriptionProductMigration(
-  subscriptionId: string,
+async previewSubscriptionProductMigration(  subscriptionId: string,
   body?: SubscriptionMigrationPreviewRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionMigrationPreviewResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionMigrationPreviewResponse>>
 ```
 
 ## Parameters
@@ -57,8 +55,6 @@ const body: SubscriptionMigrationPreviewRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionProductsController.previewSubscriptionProductMigration(
   subscriptionId,
   body
@@ -67,8 +63,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -155,11 +149,9 @@ You may wish to redirect customers to different pages depending on whether their
 8. Optionally, you can use the applied "msg" param in the `redirect_url` to determine whether it was successful or not.
 
 ```ts
-async migrateSubscriptionProduct(
-  subscriptionId: string,
+async migrateSubscriptionProduct(  subscriptionId: string,
   body?: SubscriptionProductMigrationRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -190,8 +182,6 @@ const body: SubscriptionProductMigrationRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionProductsController.migrateSubscriptionProduct(
   subscriptionId,
   body
@@ -200,8 +190,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

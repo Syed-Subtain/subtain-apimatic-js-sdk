@@ -26,10 +26,8 @@ const subscriptionGroupsController = new SubscriptionGroupsController(client);
 Creates a subscription group with given members.
 
 ```ts
-async createSubscriptionGroup(
-  body?: CreateSubscriptionGroupRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionGroupResponse>>
+async createSubscriptionGroup(  body?: CreateSubscriptionGroupRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionGroupResponse>>
 ```
 
 ## Parameters
@@ -58,15 +56,11 @@ const body: CreateSubscriptionGroupRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.createSubscriptionGroup(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -111,10 +105,8 @@ Use this endpoint to find subscription group details.
 Current billing amount for the subscription group is not returned by default. If this information is desired, the `include[]=current_billing_amount_in_cents` parameter must be provided with the request.
 
 ```ts
-async readSubscriptionGroup(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<FullSubscriptionGroupResponse>>
+async readSubscriptionGroup(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<FullSubscriptionGroupResponse>>
 ```
 
 ## Parameters
@@ -134,15 +126,11 @@ async readSubscriptionGroup(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.readSubscriptionGroup(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -197,10 +185,8 @@ try {
 For sites making use of the [Relationship Billing](https://chargify.zendesk.com/hc/en-us/articles/4407737494171) and [Customer Hierarchy](https://chargify.zendesk.com/hc/en-us/articles/4407746683291) features, it is possible to remove existing subscription from subscription group.
 
 ```ts
-async removeSubscriptionFromGroup(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async removeSubscriptionFromGroup(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -220,15 +206,11 @@ async removeSubscriptionFromGroup(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.removeSubscriptionFromGroup(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -249,10 +231,8 @@ Use this endpoint to delete subscription group.
 Only groups without members can be deleted
 
 ```ts
-async deleteSubscriptionGroup(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<DeleteSubscriptionGroupResponse>>
+async deleteSubscriptionGroup(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<DeleteSubscriptionGroupResponse>>
 ```
 
 ## Parameters
@@ -272,15 +252,11 @@ async deleteSubscriptionGroup(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.deleteSubscriptionGroup(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -310,10 +286,8 @@ Use this endpoint to find subscription group associated with subscription.
 If the subscription is not in a group endpoint will return 404 code.
 
 ```ts
-async readSubscriptionGroupBySubscriptionId(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<FullSubscriptionGroupResponse>>
+async readSubscriptionGroupBySubscriptionId(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<FullSubscriptionGroupResponse>>
 ```
 
 ## Parameters
@@ -333,15 +307,11 @@ async readSubscriptionGroupBySubscriptionId(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.readSubscriptionGroupBySubscriptionId(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -414,11 +384,9 @@ To create a new subscription into a subscription group, please reference the fol
 [Create Subscription in a Subscription Group](https://developers.chargify.com/docs/api-docs/d571659cf0f24-create-subscription#subscription-in-a-subscription-group)
 
 ```ts
-async createSubscriptionGroupHierarchy(
-  subscriptionId: string,
+async createSubscriptionGroupHierarchy(  subscriptionId: string,
   body?: AddSubscriptionToAGroup,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionGroupResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionGroupResponse>>
 ```
 
 ## Parameters
@@ -453,8 +421,6 @@ const body: AddSubscriptionToAGroup = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.createSubscriptionGroupHierarchy(
   subscriptionId,
   body
@@ -463,8 +429,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -507,10 +471,8 @@ Only one of the `subscriptions` can have `"primary": true` attribute set.
 When passing product to a subscription you can use either `product_id` or `product_handle` or `offer_id`. You can also use `custom_price` instead.
 
 ```ts
-async signupWithSubscriptionGroup(
-  body?: SubscriptionGroupSignupRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionGroupSignupResponse>>
+async signupWithSubscriptionGroup(  body?: SubscriptionGroupSignupRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionGroupSignupResponse>>
 ```
 
 ## Parameters
@@ -547,15 +509,11 @@ const body: SubscriptionGroupSignupRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.signupWithSubscriptionGroup(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -578,20 +536,18 @@ Returns an array of subscription groups for the site. The response is paginated 
 Account balance information for the subscription groups is not returned by default. If this information is desired, the `include[]=account_balances` parameter must be provided with the request.
 
 ```ts
-async listSubscriptionGroups(
-  page?: number,
+async listSubscriptionGroups(  page?: number,
   perPage?: number,
   include?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListSubscriptionGroupsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListSubscriptionGroupsResponse>>
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `include` | `string \| undefined` | Query, Optional | A list of additional information to include in the response. The following values are supported:<br><br>- `account_balances`: Account balance information for the subscription groups. Use in query: `include[]=account_balances` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
@@ -606,16 +562,13 @@ const collect = {
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.listSubscriptionGroups(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -667,11 +620,9 @@ Use this endpoint to update subscription group members.
 `"member_ids": []` should contain an array of both subscription IDs to set as group members and subscription IDs already present in the groups. Not including them will result in removing them from subscription group. To clean up members, just leave the array empty.
 
 ```ts
-async updateSubscriptionGroupMembers(
-  uid: string,
+async updateSubscriptionGroupMembers(  uid: string,
   body?: UpdateSubscriptionGroupRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionGroupResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionGroupResponse>>
 ```
 
 ## Parameters
@@ -702,8 +653,6 @@ const body: UpdateSubscriptionGroupRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupsController.updateSubscriptionGroupMembers(
   uid,
   body
@@ -712,8 +661,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

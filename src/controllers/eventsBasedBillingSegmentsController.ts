@@ -1,20 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import {
-  EventBasedBillingListSegmentsErrorsError,
-} from '../errors/eventBasedBillingListSegmentsErrorsError';
-import {
-  EventBasedBillingSegmentError,
-} from '../errors/eventBasedBillingSegmentError';
-import {
-  EventBasedBillingSegmentErrorsError,
-} from '../errors/eventBasedBillingSegmentErrorsError';
 import {
   BulkCreateSegments,
   bulkCreateSegmentsSchema,
@@ -41,6 +31,10 @@ import {
 } from '../models/updateSegmentRequest';
 import { number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { EventBasedBillingListSegmentsErrorsError } from '../errors/eventBasedBillingListSegmentsErrorsError';
+import { EventBasedBillingSegmentError } from '../errors/eventBasedBillingSegmentError';
+import { EventBasedBillingSegmentErrorsError } from '../errors/eventBasedBillingSegmentErrorsError';
 
 export class EventsBasedBillingSegmentsController extends BaseController {
   /**
@@ -74,7 +68,11 @@ export class EventsBasedBillingSegmentsController extends BaseController {
     req.throwOn(401, ApiError, 'Unauthorized');
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, EventBasedBillingSegmentErrorsError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      EventBasedBillingSegmentErrorsError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(segmentResponseSchema, requestOptions);
   }
@@ -113,7 +111,11 @@ export class EventsBasedBillingSegmentsController extends BaseController {
     req.throwOn(401, ApiError, 'Unauthorized');
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, EventBasedBillingSegmentError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      EventBasedBillingSegmentError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listSegmentsResponseSchema, requestOptions);
   }
@@ -151,7 +153,11 @@ export class EventsBasedBillingSegmentsController extends BaseController {
     req.throwOn(401, ApiError, 'Unauthorized');
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, EventBasedBillingSegmentErrorsError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      EventBasedBillingSegmentErrorsError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(segmentResponseSchema, requestOptions);
   }
@@ -222,7 +228,11 @@ export class EventsBasedBillingSegmentsController extends BaseController {
     req.throwOn(401, ApiError, 'Unauthorized');
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, EventBasedBillingSegmentError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      EventBasedBillingSegmentError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listSegmentsResponseSchema, requestOptions);
   }
@@ -265,25 +275,26 @@ export class EventsBasedBillingSegmentsController extends BaseController {
    *                                                   empty string is passed, this filter would be rejected.
    * @return Response from the API call
    */
-  async listSegmentsForPricePoint({
-    componentId,
-    pricePointId,
-    page,
-    perPage,
-    filterSegmentProperty1Value,
-    filterSegmentProperty2Value,
-    filterSegmentProperty3Value,
-    filterSegmentProperty4Value,
-  }: {
-    componentId: string,
-    pricePointId: string,
-    page?: number,
-    perPage?: number,
-    filterSegmentProperty1Value?: string,
-    filterSegmentProperty2Value?: string,
-    filterSegmentProperty3Value?: string,
-    filterSegmentProperty4Value?: string,
-  },
+  async listSegmentsForPricePoint(
+    {
+      componentId,
+      pricePointId,
+      page,
+      perPage,
+      filterSegmentProperty1Value,
+      filterSegmentProperty2Value,
+      filterSegmentProperty3Value,
+      filterSegmentProperty4Value,
+    }: {
+      componentId: string;
+      pricePointId: string;
+      page?: number;
+      perPage?: number;
+      filterSegmentProperty1Value?: string;
+      filterSegmentProperty2Value?: string;
+      filterSegmentProperty3Value?: string;
+      filterSegmentProperty4Value?: string;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListSegmentsResponse>> {
     const req = this.createRequest('GET');
@@ -311,15 +322,31 @@ export class EventsBasedBillingSegmentsController extends BaseController {
     });
     req.query('page', mapped.page);
     req.query('per_page', mapped.perPage);
-    req.query('filter[segment_property_1_value]', mapped.filterSegmentProperty1Value);
-    req.query('filter[segment_property_2_value]', mapped.filterSegmentProperty2Value);
-    req.query('filter[segment_property_3_value]', mapped.filterSegmentProperty3Value);
-    req.query('filter[segment_property_4_value]', mapped.filterSegmentProperty4Value);
+    req.query(
+      'filter[segment_property_1_value]',
+      mapped.filterSegmentProperty1Value
+    );
+    req.query(
+      'filter[segment_property_2_value]',
+      mapped.filterSegmentProperty2Value
+    );
+    req.query(
+      'filter[segment_property_3_value]',
+      mapped.filterSegmentProperty3Value
+    );
+    req.query(
+      'filter[segment_property_4_value]',
+      mapped.filterSegmentProperty4Value
+    );
     req.appendTemplatePath`/components/${mapped.componentId}/price_points/${mapped.pricePointId}/segments.json`;
     req.throwOn(401, ApiError, 'Unauthorized');
     req.throwOn(403, ApiError, 'Forbidden');
     req.throwOn(404, ApiError, 'Not Found');
-    req.throwOn(422, EventBasedBillingListSegmentsErrorsError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      EventBasedBillingListSegmentsErrorsError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(listSegmentsResponseSchema, requestOptions);
   }

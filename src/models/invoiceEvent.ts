@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -25,7 +25,7 @@ export interface InvoiceEvent {
 export const invoiceEventSchema: Schema<InvoiceEvent> = object({
   id: ['id', optional(number())],
   eventType: ['event_type', optional(invoiceEventTypeSchema)],
-  eventData: ['event_data', optional(lazy(() => invoiceEventEventDataSchema))],
+  eventData: ['event_data', optional(invoiceEventEventDataSchema)],
   timestamp: ['timestamp', optional(string())],
   invoice: ['invoice', optional(lazy(() => invoiceSchema))],
 });

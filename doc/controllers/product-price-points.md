@@ -28,14 +28,12 @@ const productPricePointsController = new ProductPricePointsController(client);
 Use this endpoint to retrieve a list of product price points.
 
 ```ts
-async listProductPricePoints(
-  productId: number,
+async listProductPricePoints(  productId: number,
   page?: number,
   perPage?: number,
   currencyPrices?: boolean,
   filterType?: PricePointType[],
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListProductPricePointsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListProductPricePointsResponse>>
 ```
 
 ## Parameters
@@ -43,8 +41,8 @@ async listProductPricePoints(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `productId` | `number` | Template, Required | The id or handle of the product. When using the handle, it must be prefixed with `handle:` |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 10. The maximum allowed values is 200; any per_page value over 200 will be changed to 200. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 10. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>**Default**: `10`<br>**Constraints**: `<= 200` |
 | `currencyPrices` | `boolean \| undefined` | Query, Optional | When fetching a product's price points, if you have defined multiple currencies at the site level, you can optionally pass the ?currency_prices=true query param to include an array of currency price data in the response. If the product price point is set to use_site_exchange_rate: true, it will return pricing based on the current exchange rate. If the flag is set to false, it will return all of the defined prices for each currency. |
 | `filterType` | [`PricePointType[] \| undefined`](../../doc/models/price-point-type.md) | Query, Optional | Use in query: `filter[type]=catalog,default`. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
@@ -61,16 +59,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')
   page: 2,
   perPage: 10
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.listProductPricePoints(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -112,11 +107,9 @@ try {
 [Product Price Point Documentation](https://chargify.zendesk.com/hc/en-us/articles/4407755824155)
 
 ```ts
-async createProductPricePoint(
-  productId: number,
+async createProductPricePoint(  productId: number,
   body?: CreateProductPricePointRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductPricePointResponse>>
 ```
 
 ## Parameters
@@ -155,8 +148,6 @@ const body: CreateProductPricePointRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.createProductPricePoint(
   productId,
   body
@@ -165,8 +156,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -208,12 +197,10 @@ Use this endpoint to update a product price point.
 Note: Custom product price points are not able to be updated.
 
 ```ts
-async updateProductPricePoint(
-  productId: number,
+async updateProductPricePoint(  productId: number,
   pricePointId: number,
   body?: UpdateProductPricePointRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductPricePointResponse>>
 ```
 
 ## Parameters
@@ -244,8 +231,6 @@ const body: UpdateProductPricePointRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.updateProductPricePoint(
   productId,
   pricePointId,
@@ -255,8 +240,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -296,11 +279,9 @@ try {
 Use this endpoint to unarchive an archived product price point.
 
 ```ts
-async unarchiveProductPricePoint(
-  productId: number,
+async unarchiveProductPricePoint(  productId: number,
   pricePointId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductPricePointResponse>>
 ```
 
 ## Parameters
@@ -323,8 +304,6 @@ const productId = 202;
 const pricePointId = 10;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.unarchiveProductPricePoint(
   productId,
   pricePointId
@@ -333,8 +312,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -374,11 +351,9 @@ try {
 Use this endpoint to create multiple product price points in one request.
 
 ```ts
-async createProductPricePoints(
-  productId: number,
+async createProductPricePoints(  productId: number,
   body?: BulkCreateProductPricePointsRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<BulkCreateProductPricePointsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<BulkCreateProductPricePointsResponse>>
 ```
 
 ## Parameters
@@ -434,8 +409,6 @@ const body: BulkCreateProductPricePointsRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.createProductPricePoints(
   productId,
   body
@@ -444,8 +417,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -491,11 +462,9 @@ When creating currency prices, they need to mirror the structure of your primary
 Note: Currency Prices are not able to be created for custom product price points.
 
 ```ts
-async createProductCurrencyPrices(
-  productPricePointId: number,
+async createProductCurrencyPrices(  productPricePointId: number,
   body?: CreateProductCurrencyPricesRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductPricePointCurrencyPrice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductPricePointCurrencyPrice>>
 ```
 
 ## Parameters
@@ -536,8 +505,6 @@ const body: CreateProductCurrencyPricesRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.createProductCurrencyPrices(
   productPricePointId,
   body
@@ -546,8 +513,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -566,11 +531,9 @@ try {
 Use this endpoint to archive a product price point.
 
 ```ts
-async archiveProductPricePoint(
-  productId: number,
+async archiveProductPricePoint(  productId: number,
   pricePointId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductPricePointResponse>>
 ```
 
 ## Parameters
@@ -593,8 +556,6 @@ const productId = 202;
 const pricePointId = 10;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.archiveProductPricePoint(
   productId,
   pricePointId
@@ -603,8 +564,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -646,11 +605,9 @@ Use this endpoint to make a product price point the default for the product.
 Note: Custom product price points are not able to be set as the default for a product.
 
 ```ts
-async setDefaultPricePointForProduct(
-  productId: number,
+async setDefaultPricePointForProduct(  productId: number,
   pricePointId: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductPricePointResponse>>
 ```
 
 ## Parameters
@@ -673,8 +630,6 @@ const productId = 202;
 const pricePointId = 10;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.setDefaultPricePointForProduct(
   productId,
   pricePointId
@@ -683,8 +638,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -728,11 +681,9 @@ When updating the pricing, it needs to mirror the structure of your primary pric
 Note: Currency Prices are not able to be updated for custom product price points.
 
 ```ts
-async updateProductCurrencyPrices(
-  productPricePointId: number,
+async updateProductCurrencyPrices(  productPricePointId: number,
   body?: UpdateCurrencyPricesRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductPricePointCurrencyPrice[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductPricePointCurrencyPrice[]>>
 ```
 
 ## Parameters
@@ -766,8 +717,6 @@ const body: UpdateCurrencyPricesRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.updateProductCurrencyPrices(
   productPricePointId,
   body
@@ -776,8 +725,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -805,8 +752,7 @@ try {
 This method allows retrieval of a list of Products Price Points belonging to a Site.
 
 ```ts
-async listAllProductPricePoints(
-  direction?: ListAllProductPricePointsInputDirection,
+async listAllProductPricePoints(  direction?: ListAllProductPricePointsInputDirection,
   filterArchivedAt?: IncludeNotNull,
   filterDateField?: BasicDateField,
   filterEndDate?: string,
@@ -818,8 +764,7 @@ async listAllProductPricePoints(
   include?: ListProductsPricePointsInclude,
   page?: number,
   perPage?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListProductPricePointsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListProductPricePointsResponse>>
 ```
 
 ## Parameters
@@ -836,8 +781,8 @@ async listAllProductPricePoints(
 | `filterStartDatetime` | `string \| undefined` | Query, Optional | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns price points with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. |
 | `filterType` | [`PricePointType \| undefined`](../../doc/models/price-point-type.md) | Query, Optional | Allows fetching price points with matching type. Use in query: `filter[type]=catalog,custom`. |
 | `include` | [`ListProductsPricePointsInclude \| undefined`](../../doc/models/list-products-price-points-include.md) | Query, Optional | Allows including additional data in the response. Use in query: `include=currency_prices`. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -852,16 +797,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.listAllProductPricePoints(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -910,12 +852,10 @@ try {
 Use this endpoint to retrieve details for a specific product price point.
 
 ```ts
-async readProductPricePoint(
-  productId: number,
+async readProductPricePoint(  productId: number,
   pricePointId: number,
   currencyPrices?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductPricePointResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductPricePointResponse>>
 ```
 
 ## Parameters
@@ -939,8 +879,6 @@ const productId = 202;
 const pricePointId = 10;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productPricePointsController.readProductPricePoint(
   productId,
   pricePointId
@@ -949,8 +887,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

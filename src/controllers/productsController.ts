@@ -1,11 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import { BasicDateField, basicDateFieldSchema } from '../models/basicDateField';
 import {
   CreateOrUpdateProductRequest,
@@ -22,6 +21,7 @@ import {
 } from '../models/productResponse';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class ProductsController extends BaseController {
   /**
@@ -257,31 +257,32 @@ export class ProductsController extends BaseController {
    *                                                                                           e_rate]=true`.
    * @return Response from the API call
    */
-  async listProducts({
-    dateField,
-    endDate,
-    endDatetime,
-    startDate,
-    startDatetime,
-    page,
-    perPage,
-    includeArchived,
-    include,
-    filterPrepaidProductPricePointProductPricePointId,
-    filterUseSiteExchangeRate,
-  }: {
-    dateField?: BasicDateField,
-    endDate?: string,
-    endDatetime?: string,
-    startDate?: string,
-    startDatetime?: string,
-    page?: number,
-    perPage?: number,
-    includeArchived?: boolean,
-    include?: ListProductsInclude,
-    filterPrepaidProductPricePointProductPricePointId?: IncludeNotNull,
-    filterUseSiteExchangeRate?: boolean,
-  },
+  async listProducts(
+    {
+      dateField,
+      endDate,
+      endDatetime,
+      startDate,
+      startDatetime,
+      page,
+      perPage,
+      includeArchived,
+      include,
+      filterPrepaidProductPricePointProductPricePointId,
+      filterUseSiteExchangeRate,
+    }: {
+      dateField?: BasicDateField;
+      endDate?: string;
+      endDatetime?: string;
+      startDate?: string;
+      startDatetime?: string;
+      page?: number;
+      perPage?: number;
+      includeArchived?: boolean;
+      include?: ListProductsInclude;
+      filterPrepaidProductPricePointProductPricePointId?: IncludeNotNull;
+      filterUseSiteExchangeRate?: boolean;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ProductResponse[]>> {
     const req = this.createRequest('GET', '/products.json');
@@ -313,8 +314,14 @@ export class ProductsController extends BaseController {
     req.query('per_page', mapped.perPage);
     req.query('include_archived', mapped.includeArchived);
     req.query('include', mapped.include);
-    req.query('filter[prepaid_product_price_point][product_price_point_id]', mapped.filterPrepaidProductPricePointProductPricePointId);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.query(
+      'filter[prepaid_product_price_point][product_price_point_id]',
+      mapped.filterPrepaidProductPricePointProductPricePointId
+    );
+    req.query(
+      'filter[use_site_exchange_rate]',
+      mapped.filterUseSiteExchangeRate
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(productResponseSchema), requestOptions);
   }

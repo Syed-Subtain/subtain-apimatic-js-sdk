@@ -34,10 +34,8 @@ const invoicesController = new InvoicesController(client);
 Use this endpoint to retrieve the details for an invoice.
 
 ```ts
-async readInvoice(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+async readInvoice(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -57,15 +55,11 @@ async readInvoice(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.readInvoice(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -193,8 +187,7 @@ Credit Notes are like inverse invoices. They reduce the amount a customer owes.
 By default, the credit notes returned by this endpoint will exclude the arrays of `line_items`, `discounts`, `taxes`, `applications`, or `refunds`. To include these arrays, pass the specific field as a key in the query with a value set to `true`.
 
 ```ts
-async listCreditNotes(
-  subscriptionId?: number,
+async listCreditNotes(  subscriptionId?: number,
   page?: number,
   perPage?: number,
   lineItems?: boolean,
@@ -202,8 +195,7 @@ async listCreditNotes(
   taxes?: boolean,
   refunds?: boolean,
   applications?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListCreditNotesResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListCreditNotesResponse>>
 ```
 
 ## Parameters
@@ -211,13 +203,13 @@ async listCreditNotes(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `subscriptionId` | `number \| undefined` | Query, Optional | The subscription's Chargify id |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
-| `lineItems` | `boolean \| undefined` | Query, Optional | Include line items data |
-| `discounts` | `boolean \| undefined` | Query, Optional | Include discounts data |
-| `taxes` | `boolean \| undefined` | Query, Optional | Include taxes data |
-| `refunds` | `boolean \| undefined` | Query, Optional | Include refunds data |
-| `applications` | `boolean \| undefined` | Query, Optional | Include applications data |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
+| `lineItems` | `boolean \| undefined` | Query, Optional | Include line items data<br>**Default**: `false` |
+| `discounts` | `boolean \| undefined` | Query, Optional | Include discounts data<br>**Default**: `false` |
+| `taxes` | `boolean \| undefined` | Query, Optional | Include taxes data<br>**Default**: `false` |
+| `refunds` | `boolean \| undefined` | Query, Optional | Include refunds data<br>**Default**: `false` |
+| `applications` | `boolean \| undefined` | Query, Optional | Include applications data<br>**Default**: `false` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -236,16 +228,13 @@ const collect = {
   refunds: false,
   applications: false
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.listCreditNotes(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -538,10 +527,8 @@ try {
 Use this endpoint to retrieve the details for a credit note.
 
 ```ts
-async readCreditNote(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CreditNote>>
+async readCreditNote(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<CreditNote>>
 ```
 
 ## Parameters
@@ -561,15 +548,11 @@ async readCreditNote(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.readCreditNote(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -864,11 +847,9 @@ Excess payment will result in the creation of a prepayment on the Invoice Accoun
 Only ungrouped or primary subscriptions may be paid using the "bulk" payment request.
 
 ```ts
-async recordPaymentForSubscription(
-  subscriptionId: string,
+async recordPaymentForSubscription(  subscriptionId: string,
   body?: RecordPaymentRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<PaymentResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<PaymentResponse>>
 ```
 
 ## Parameters
@@ -898,8 +879,6 @@ const body: RecordPaymentRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.recordPaymentForSubscription(
   subscriptionId,
   body
@@ -908,8 +887,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -954,11 +931,9 @@ try {
 This endpoint allows you to void any invoice with the "open" or "canceled" status.  It will also allow voiding of an invoice with the "pending" status if it is not a consolidated invoice.
 
 ```ts
-async voidInvoice(
-  uid: string,
+async voidInvoice(  uid: string,
   body?: VoidInvoiceRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -985,8 +960,6 @@ const body: VoidInvoiceRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.voidInvoice(
   uid,
   body
@@ -995,8 +968,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1016,13 +987,11 @@ try {
 Invoice segments returned on the index will only include totals, not detailed breakdowns for `line_items`, `discounts`, `taxes`, `credits`, `payments`, or `custom_fields`.
 
 ```ts
-async listInvoiceSegments(
-  invoiceUid: string,
+async listInvoiceSegments(  invoiceUid: string,
   page?: number,
   perPage?: number,
   direction?: Direction,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ConsolidatedInvoice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ConsolidatedInvoice>>
 ```
 
 ## Parameters
@@ -1030,9 +999,9 @@ async listInvoiceSegments(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `invoiceUid` | `string` | Template, Required | The unique identifier of the consolidated invoice |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
-| `direction` | [`Direction \| undefined`](../../doc/models/direction.md) | Query, Optional | Sort direction of the returned segments. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
+| `direction` | [`Direction \| undefined`](../../doc/models/direction.md) | Query, Optional | Sort direction of the returned segments.<br>**Default**: `Direction.Asc` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -1048,16 +1017,13 @@ const collect = {
   perPage: 50,
   direction: Direction.Asc
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.listInvoiceSegments(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1349,11 +1315,9 @@ A refund less than the total of a consolidated invoice will be split across its 
 A $50.00 refund on a $100.00 consolidated invoice with one $60.00 and one $40.00 segment, the refunded amount will be applied as 50% of each ($30.00 and $20.00 respectively).
 
 ```ts
-async refundInvoice(
-  uid: string,
+async refundInvoice(  uid: string,
   body?: RefundInvoiceRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -1385,8 +1349,6 @@ const body: RefundInvoiceRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.refundInvoice(
   uid,
   body
@@ -1395,8 +1357,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1453,11 +1413,9 @@ In order to apply a service credit to an invoice, specify the `type` as `service
 Note that Chargify will attempt to fully pay the invoice's `due_amount` from the Subscription's Service Credit account. At this time, partial payments from a Service Credit Account are only allowed for consolidated invoices (subscription groups). Therefore, for normal invoices the Service Credit account balance must be greater than or equal to the invoice's `due_amount`.
 
 ```ts
-async recordPaymentForInvoice(
-  uid: string,
+async recordPaymentForInvoice(  uid: string,
   body?: CreateInvoicePaymentRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -1487,8 +1445,6 @@ const body: CreateInvoicePaymentRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.recordPaymentForInvoice(
   uid,
   body
@@ -1497,8 +1453,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1536,10 +1490,8 @@ In order apply a payment to multiple invoices, at minimum, specify the `amount` 
 Note that the invoice payment amounts must be greater than 0. Total amount must be greater or equal to invoices payment amount sum.
 
 ```ts
-async recordExternalPaymentForInvoices(
-  body?: CreateMultiInvoicePaymentRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<MultiInvoicePaymentResponse>>
+async recordExternalPaymentForInvoices(  body?: CreateMultiInvoicePaymentRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<MultiInvoicePaymentResponse>>
 ```
 
 ## Parameters
@@ -1576,15 +1528,11 @@ const body: CreateMultiInvoicePaymentRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.recordExternalPaymentForInvoices(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1638,10 +1586,8 @@ A note about reactivations: any canceled invoices from the most recent active pe
 When reopening a consolidated invoice, all of its canceled segments will also be reopened.
 
 ```ts
-async reopenInvoice(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+async reopenInvoice(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -1661,15 +1607,11 @@ async reopenInvoice(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.reopenInvoice(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1689,8 +1631,7 @@ try {
 By default, invoices returned on the index will only include totals, not detailed breakdowns for `line_items`, `discounts`, `taxes`, `credits`, `payments`, `custom_fields`, or `refunds`. To include breakdowns, pass the specific field as a key in the query with a value set to `true`.
 
 ```ts
-async listInvoices(
-  startDate?: string,
+async listInvoices(  startDate?: string,
   endDate?: string,
   status?: Status,
   subscriptionId?: number,
@@ -1712,8 +1653,7 @@ async listInvoices(
   mNumber?: string[],
   productIds?: number[],
   sort?: InvoiceSortField,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListInvoicesResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListInvoicesResponse>>
 ```
 
 ## Parameters
@@ -1725,23 +1665,23 @@ async listInvoices(
 | `status` | [`Status \| undefined`](../../doc/models/status.md) | Query, Optional | The current status of the invoice.  Allowed Values: draft, open, paid, pending, voided |
 | `subscriptionId` | `number \| undefined` | Query, Optional | The subscription's ID. |
 | `subscriptionGroupUid` | `string \| undefined` | Query, Optional | The UID of the subscription group you want to fetch consolidated invoices for. This will return a paginated list of consolidated invoices for the specified group. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
-| `direction` | [`Direction \| undefined`](../../doc/models/direction.md) | Query, Optional | The sort direction of the returned invoices. |
-| `lineItems` | `boolean \| undefined` | Query, Optional | Include line items data |
-| `discounts` | `boolean \| undefined` | Query, Optional | Include discounts data |
-| `taxes` | `boolean \| undefined` | Query, Optional | Include taxes data |
-| `credits` | `boolean \| undefined` | Query, Optional | Include credits data |
-| `payments` | `boolean \| undefined` | Query, Optional | Include payments data |
-| `customFields` | `boolean \| undefined` | Query, Optional | Include custom fields data |
-| `refunds` | `boolean \| undefined` | Query, Optional | Include refunds data |
-| `dateField` | [`InvoiceDateField \| undefined`](../../doc/models/invoice-date-field.md) | Query, Optional | The type of filter you would like to apply to your search. Use in query `date_field=issue_date`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
+| `direction` | [`Direction \| undefined`](../../doc/models/direction.md) | Query, Optional | The sort direction of the returned invoices.<br>**Default**: `Direction.Desc` |
+| `lineItems` | `boolean \| undefined` | Query, Optional | Include line items data<br>**Default**: `false` |
+| `discounts` | `boolean \| undefined` | Query, Optional | Include discounts data<br>**Default**: `false` |
+| `taxes` | `boolean \| undefined` | Query, Optional | Include taxes data<br>**Default**: `false` |
+| `credits` | `boolean \| undefined` | Query, Optional | Include credits data<br>**Default**: `false` |
+| `payments` | `boolean \| undefined` | Query, Optional | Include payments data<br>**Default**: `false` |
+| `customFields` | `boolean \| undefined` | Query, Optional | Include custom fields data<br>**Default**: `false` |
+| `refunds` | `boolean \| undefined` | Query, Optional | Include refunds data<br>**Default**: `false` |
+| `dateField` | [`InvoiceDateField \| undefined`](../../doc/models/invoice-date-field.md) | Query, Optional | The type of filter you would like to apply to your search. Use in query `date_field=issue_date`.<br>**Default**: `InvoiceDateField.DueDate` |
 | `startDatetime` | `string \| undefined` | Query, Optional | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns invoices with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. Allowed to be used only along with date_field set to created_at or updated_at. |
 | `endDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns invoices with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. Allowed to be used only along with date_field set to created_at or updated_at. |
 | `customerIds` | `number[] \| undefined` | Query, Optional | Allows fetching invoices with matching customer id based on provided values. Use in query `customer_ids=1,2,3`. |
 | `number` | `string[] \| undefined` | Query, Optional | Allows fetching invoices with matching invoice number based on provided values. Use in query `number=1234,1235`. |
 | `productIds` | `number[] \| undefined` | Query, Optional | Allows fetching invoices with matching line items product ids based on provided values. Use in query `product_ids=23,34`. |
-| `sort` | [`InvoiceSortField \| undefined`](../../doc/models/invoice-sort-field.md) | Query, Optional | Allows specification of the order of the returned list. Use in query `sort=total_amount`. |
+| `sort` | [`InvoiceSortField \| undefined`](../../doc/models/invoice-sort-field.md) | Query, Optional | Allows specification of the order of the returned list. Use in query `sort=total_amount`.<br>**Default**: `InvoiceSortField.Number` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -1778,16 +1718,13 @@ const collect = {
   ],
   sort: InvoiceSortField.TotalAmount
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.listInvoices(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -2092,16 +2029,14 @@ If both a `since_date` and `since_id` are provided in request parameters, the `s
 Note - invoice events that occurred prior to 09/05/2018 __will not__ contain an `invoice` snapshot.
 
 ```ts
-async listInvoiceEvents(
-  sinceDate?: string,
+async listInvoiceEvents(  sinceDate?: string,
   sinceId?: number,
   page?: number,
   perPage?: number,
   invoiceUid?: string,
   withChangeInvoiceStatus?: string,
   eventTypes?: InvoiceEventType[],
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ListInvoiceEventsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ListInvoiceEventsResponse>>
 ```
 
 ## Parameters
@@ -2110,8 +2045,8 @@ async listInvoiceEvents(
 |  --- | --- | --- | --- |
 | `sinceDate` | `string \| undefined` | Query, Optional | The timestamp in a format `YYYY-MM-DD T HH:MM:SS Z`, or `YYYY-MM-DD`(in this case, it returns data from the beginning of the day). of the event from which you want to start the search. All the events before the `since_date` timestamp are not returned in the response. |
 | `sinceId` | `number \| undefined` | Query, Optional | The ID of the event from which you want to start the search(ID is not included. e.g. if ID is set to 2, then all events with ID 3 and more will be shown) This parameter is not used if since_date is defined. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 100. The maximum allowed values is 200; any per_page value over 200 will be changed to 200. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 100. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>**Default**: `100` |
 | `invoiceUid` | `string \| undefined` | Query, Optional | Providing an invoice_uid allows for scoping of the invoice events to a single invoice or credit note. |
 | `withChangeInvoiceStatus` | `string \| undefined` | Query, Optional | Use this parameter if you want to fetch also invoice events with change_invoice_status type. |
 | `eventTypes` | [`InvoiceEventType[] \| undefined`](../../doc/models/invoice-event-type.md) | Query, Optional | Filter results by event_type. Supply a comma separated list of event types (listed above). Use in query: `event_types=void_invoice,void_remainder`. |
@@ -2128,393 +2063,16 @@ const collect = {
   page: 2,
   perPage: 100
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.listInvoiceEvents(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
-}
-```
-
-## Example Response *(as JSON)*
-
-```json
-{
-  "events": [
-    {
-      "id": 83,
-      "event_type": "apply_payment",
-      "event_data": {
-        "memo": "Non-Resumable Canceled On Purpose - Standard Plan: Renewal payment",
-        "original_amount": "168.61",
-        "applied_amount": "168.61",
-        "transaction_time": "2018-08-01T16:00:00Z",
-        "payment_method": {
-          "card_brand": "visa",
-          "card_expiration": "12/2022",
-          "last_four": null,
-          "masked_card_number": "XXXX-XXXX-XXXX-1111",
-          "type": "credit_card"
-        },
-        "consolidation_level": "none"
-      },
-      "timestamp": "2018-08-01T16:00:00Z",
-      "invoice": {
-        "id": 614942008934401500,
-        "uid": "inv_8gk5bwkct3gqt",
-        "site_id": 20,
-        "customer_id": 6,
-        "subscription_id": 10,
-        "number": "25",
-        "sequence_number": 25,
-        "transaction_time": "2018-08-01T16:00:00Z",
-        "created_at": "2018-08-01T16:00:00Z",
-        "updated_at": "2018-08-01T16:00:00Z",
-        "issue_date": "2018-08-01",
-        "due_date": "2018-08-01",
-        "paid_date": "2018-08-01",
-        "status": "paid",
-        "role": "renewal",
-        "collection_method": "automatic",
-        "payment_instructions": "Please make checks payable to \"Acme, Inc.\"",
-        "currency": "USD",
-        "consolidation_level": "none",
-        "parent_invoice_id": null,
-        "subscription_group_id": null,
-        "parent_invoice_number": null,
-        "product_name": "Standard Plan",
-        "product_family_name": "Cloud Compute Servers",
-        "seller": {
-          "name": "Acme, Inc.",
-          "address": {
-            "street": null,
-            "line2": null,
-            "city": null,
-            "state": null,
-            "zip": null,
-            "country": null
-          },
-          "phone": "555-555-1234 x137",
-          "logo_url": null
-        },
-        "customer": {
-          "chargify_id": 6,
-          "first_name": "Non-Resumable",
-          "last_name": "Canceled On Purpose",
-          "organization": null,
-          "email": "evan4@example.com"
-        },
-        "payer": {
-          "chargify_id": 6,
-          "first_name": "Non-Resumable",
-          "last_name": "Canceled On Purpose",
-          "organization": null,
-          "email": "evan4@example.com"
-        },
-        "recipient_emails": [],
-        "net_terms": 0,
-        "memo": "Thanks for your business! If you have any questions, please contact your account manager.",
-        "billing_address": {
-          "street": "200 Billing Rd.",
-          "line2": "Suite 100",
-          "city": "Needham",
-          "state": "MA",
-          "zip": "02494",
-          "country": "US"
-        },
-        "shipping_address": {
-          "street": "100 Shipping St.",
-          "line2": "Apt 200",
-          "city": "Pleasantville",
-          "state": "NC",
-          "zip": "12345",
-          "country": "US"
-        },
-        "line_items": [
-          {
-            "uid": "li_8gk5bwkct3gqk",
-            "title": "Standard Plan",
-            "description": "08/01/2018 - 09/01/2018",
-            "quantity": "1.0",
-            "unit_price": "99.0",
-            "subtotal_amount": "99.0",
-            "discount_amount": "9.9",
-            "tax_amount": "6.01425",
-            "total_amount": "95.11425",
-            "tiered_unit_price": false,
-            "period_range_start": "2018-08-01",
-            "period_range_end": "2018-09-01",
-            "transaction_id": 120,
-            "product_id": 84,
-            "product_version": 1,
-            "component_id": null,
-            "price_point_id": null,
-            "hide": false
-          },
-          {
-            "uid": "li_8gk5bwkct3gqm",
-            "title": "Small Instance (Hourly)",
-            "description": "07/22/2018 - 08/01/2018",
-            "quantity": "162.0",
-            "unit_price": "0.09567901",
-            "subtotal_amount": "15.5",
-            "discount_amount": "1.55",
-            "tax_amount": "0.941625",
-            "total_amount": "14.891625",
-            "tiered_unit_price": true,
-            "period_range_start": "2018-07-22",
-            "period_range_end": "2018-08-01",
-            "transaction_id": 121,
-            "product_id": 84,
-            "product_version": 1,
-            "component_id": 76,
-            "price_point_id": null,
-            "hide": false,
-            "component_cost_data": {
-              "rates": [
-                {
-                  "component_code_id": null,
-                  "price_point_id": 160,
-                  "product_id": 84,
-                  "quantity": "162.0",
-                  "amount": "15.5",
-                  "pricing_scheme": "tiered",
-                  "tiers": [
-                    {
-                      "starting_quantity": 1,
-                      "ending_quantity": 100,
-                      "quantity": "100.0",
-                      "unit_price": "0.0",
-                      "amount": "0.0"
-                    },
-                    {
-                      "starting_quantity": 101,
-                      "ending_quantity": null,
-                      "quantity": "62.0",
-                      "unit_price": "0.25",
-                      "amount": "15.5"
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "uid": "li_8gk5bwkct3gqn",
-            "title": "Large Instance (Hourly)",
-            "description": "07/22/2018 - 08/01/2018",
-            "quantity": "194.0",
-            "unit_price": "0.24226804",
-            "subtotal_amount": "47.0",
-            "discount_amount": "4.7",
-            "tax_amount": "2.85525",
-            "total_amount": "45.15525",
-            "tiered_unit_price": true,
-            "period_range_start": "2018-07-22",
-            "period_range_end": "2018-08-01",
-            "transaction_id": 122,
-            "product_id": 84,
-            "product_version": 1,
-            "component_id": 77,
-            "price_point_id": null,
-            "hide": false,
-            "component_cost_data": {
-              "rates": [
-                {
-                  "component_code_id": null,
-                  "price_point_id": 161,
-                  "product_id": 84,
-                  "quantity": "194.0",
-                  "amount": "47.0",
-                  "pricing_scheme": "tiered",
-                  "tiers": [
-                    {
-                      "starting_quantity": 1,
-                      "ending_quantity": 100,
-                      "quantity": "100.0",
-                      "unit_price": "0.0",
-                      "amount": "0.0"
-                    },
-                    {
-                      "starting_quantity": 101,
-                      "ending_quantity": null,
-                      "quantity": "94.0",
-                      "unit_price": "0.5",
-                      "amount": "47.0"
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "uid": "li_8gk5bwkct3gqp",
-            "title": "IP Addresses",
-            "description": "08/01/2018 - 09/01/2018",
-            "quantity": "7.0",
-            "unit_price": "2.0",
-            "subtotal_amount": "14.0",
-            "discount_amount": "1.4",
-            "tax_amount": "0.8505",
-            "total_amount": "13.4505",
-            "tiered_unit_price": false,
-            "period_range_start": "2018-08-01",
-            "period_range_end": "2018-09-01",
-            "transaction_id": 123,
-            "product_id": 84,
-            "product_version": 1,
-            "component_id": 79,
-            "price_point_id": 163,
-            "hide": false,
-            "component_cost_data": {
-              "rates": [
-                {
-                  "component_code_id": null,
-                  "price_point_id": 163,
-                  "product_id": 84,
-                  "quantity": "7.0",
-                  "amount": "14.0",
-                  "pricing_scheme": "per_unit",
-                  "tiers": [
-                    {
-                      "starting_quantity": 1,
-                      "ending_quantity": null,
-                      "quantity": "7.0",
-                      "unit_price": "2.0",
-                      "amount": "14.0"
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        ],
-        "subtotal_amount": "175.5",
-        "discount_amount": "17.55",
-        "discounts": [
-          {
-            "uid": "dli_8gk5bwkct3gqq",
-            "title": "Multi-service discount (10%)",
-            "description": null,
-            "code": "MULTI3",
-            "source_type": "Coupon",
-            "source_id": 40,
-            "discount_type": "percentage",
-            "percentage": "10.0",
-            "eligible_amount": "175.5",
-            "discount_amount": "17.55",
-            "transaction_id": 124,
-            "line_item_breakouts": [
-              {
-                "uid": "li_8gk5bwkct3gqk",
-                "eligible_amount": "99.0",
-                "discount_amount": "9.9"
-              },
-              {
-                "uid": "li_8gk5bwkct3gqm",
-                "eligible_amount": "15.5",
-                "discount_amount": "1.55"
-              },
-              {
-                "uid": "li_8gk5bwkct3gqn",
-                "eligible_amount": "47.0",
-                "discount_amount": "4.7"
-              },
-              {
-                "uid": "li_8gk5bwkct3gqp",
-                "eligible_amount": "14.0",
-                "discount_amount": "1.4"
-              }
-            ]
-          }
-        ],
-        "tax_amount": "10.66",
-        "taxes": [
-          {
-            "uid": "tli_8gk5bwkct3gqr",
-            "title": "NC Sales Tax",
-            "description": null,
-            "source_type": "Tax",
-            "source_id": 1,
-            "percentage": "6.75",
-            "taxable_amount": "157.95",
-            "tax_amount": "10.66",
-            "transaction_id": 125,
-            "line_item_breakouts": [
-              {
-                "uid": "li_8gk5bwkct3gqk",
-                "taxable_amount": "89.1",
-                "tax_amount": "6.01425"
-              },
-              {
-                "uid": "li_8gk5bwkct3gqm",
-                "taxable_amount": "13.95",
-                "tax_amount": "0.941625"
-              },
-              {
-                "uid": "li_8gk5bwkct3gqn",
-                "taxable_amount": "42.3",
-                "tax_amount": "2.85525"
-              },
-              {
-                "uid": "li_8gk5bwkct3gqp",
-                "taxable_amount": "12.6",
-                "tax_amount": "0.8505"
-              }
-            ],
-            "tax_component_breakouts": [
-              {
-                "tax_rule_id": 1,
-                "percentage": "6.75",
-                "country_code": "US",
-                "subdivision_code": "NC"
-              }
-            ]
-          }
-        ],
-        "credit_amount": "0.0",
-        "refund_amount": "0.0",
-        "total_amount": "168.61",
-        "paid_amount": "168.61",
-        "due_amount": "0.0",
-        "credits": [],
-        "refunds": [],
-        "payments": [
-          {
-            "memo": "Non-Resumable Canceled On Purpose - Standard Plan: Renewal payment",
-            "original_amount": "168.61",
-            "applied_amount": "168.61",
-            "transaction_time": "2018-08-01T16:00:00Z",
-            "payment_method": {
-              "card_brand": "visa",
-              "card_expiration": "12/2022",
-              "last_four": null,
-              "masked_card_number": "XXXX-XXXX-XXXX-1111",
-              "type": "credit_card"
-            },
-            "transaction_id": 126,
-            "prepayment": false
-          }
-        ],
-        "custom_fields": [],
-        "display_settings": {
-          "hide_zero_subtotal_lines": false,
-          "include_discounts_on_lines": false
-        }
-      }
-    }
-  ],
-  "page": 48,
-  "per_page": 1,
-  "total_pages": 102
 }
 ```
 
@@ -2526,10 +2084,8 @@ This endpoint updates customer information on an open invoice and returns the up
 The endpoint doesn't accept a request body. Customer information differences are calculated on the application side.
 
 ```ts
-async updateCustomerInformation(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+async updateCustomerInformation(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -2549,15 +2105,11 @@ async updateCustomerInformation(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.updateCustomerInformation(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -2932,11 +2484,9 @@ A custom memo can be sent with the `memo` parameter to override the site's defau
 By default, invoices will be created with open status. Possible alternative is `draft`.
 
 ```ts
-async createInvoice(
-  subscriptionId: string,
+async createInvoice(  subscriptionId: string,
   body?: CreateInvoiceRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<InvoiceResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<InvoiceResponse>>
 ```
 
 ## Parameters
@@ -2969,8 +2519,6 @@ const body: CreateInvoiceRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.createInvoice(
   subscriptionId,
   body
@@ -2979,8 +2527,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -3113,11 +2659,9 @@ For Automatic subscriptions, prepayments and service credits will apply to the i
 - `initiate_dunning` - prepayments and credits applied to the invoice; invoice status set to "open"; email sent to the customer for the issued invoice (if setting applies); payment failure recorded in the invoice history; subscription will  most likely go into "past_due" or "canceled" state (depending upon net terms and dunning settings).
 
 ```ts
-async issueInvoice(
-  uid: string,
+async issueInvoice(  uid: string,
   body?: IssueInvoiceRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice>>
 ```
 
 ## Parameters
@@ -3142,8 +2686,6 @@ const body: IssueInvoiceRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.issueInvoice(
   uid,
   body
@@ -3152,8 +2694,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -3178,11 +2718,9 @@ Please note that if no recipient email addresses are specified in the request, t
 On success, a 204 no-content response will be returned. Please note that this does not indicate that email(s) have been delivered, but instead indicates that emails have been successfully queued for delivery. If _any_ invalid or malformed email address is found in the request body, the entire request will be rejected and a 422 response will be returned.
 
 ```ts
-async sendInvoice(
-  uid: string,
+async sendInvoice(  uid: string,
   body?: SendInvoiceRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -3215,8 +2753,6 @@ const body: SendInvoiceRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.sendInvoice(
   uid,
   body
@@ -3225,8 +2761,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -3247,10 +2781,8 @@ Customer information may change after an invoice is issued which may lead to a m
 The endpoint doesn't accept a request body. Customer information differences are calculated on the application side.
 
 ```ts
-async previewCustomerInformationChanges(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CustomerChangesPreviewResponse>>
+async previewCustomerInformationChanges(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<CustomerChangesPreviewResponse>>
 ```
 
 ## Parameters
@@ -3270,15 +2802,11 @@ async previewCustomerInformationChanges(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await invoicesController.previewCustomerInformationChanges(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

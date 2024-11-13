@@ -1,19 +1,15 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
-import { ApiResponse, plainPrefix, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import { NestedErrorResponseError } from '../errors/nestedErrorResponseError';
 import {
-  SubscriptionAddCouponError,
-} from '../errors/subscriptionAddCouponError';
-import {
-  SubscriptionRemoveCouponErrorsError,
-} from '../errors/subscriptionRemoveCouponErrorsError';
+  ApiResponse,
+  commaPrefix,
+  RequestOptions,
+  unindexedPrefix,
+} from '../core';
 import {
   ActivateSubscriptionRequest,
   activateSubscriptionRequestSchema,
@@ -76,6 +72,11 @@ import {
 } from '../models/upsertPrepaidConfigurationRequest';
 import { array, dict, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { NestedErrorResponseError } from '../errors/nestedErrorResponseError';
+import { SubscriptionAddCouponError } from '../errors/subscriptionAddCouponError';
+import { SubscriptionRemoveCouponErrorsError } from '../errors/subscriptionRemoveCouponErrorsError';
 
 export class SubscriptionsController extends BaseController {
   /**
@@ -1062,7 +1063,7 @@ export class SubscriptionsController extends BaseController {
       cascade: [cascade, optional(array(subscriptionPurgeTypeSchema))],
     });
     req.query('ack', mapped.ack);
-    req.query('cascade[]', mapped.cascade, plainPrefix);
+    req.query('cascade[]', mapped.cascade, commaPrefix);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/purge.json`;
     req.throwOn(400, ApiError, 'Bad Request');
     req.authenticate([{ basicAuth: true }]);
@@ -1092,7 +1093,7 @@ export class SubscriptionsController extends BaseController {
       subscriptionId: [subscriptionId, string()],
       include: [include, optional(array(subscriptionIncludeSchema))],
     });
-    req.query('include[]', mapped.include, plainPrefix);
+    req.query('include[]', mapped.include, unindexedPrefix);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}.json`;
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
@@ -1180,7 +1181,11 @@ export class SubscriptionsController extends BaseController {
     });
     req.query('coupon_code', mapped.couponCode);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/remove_coupon.json`;
-    req.throwOn(422, SubscriptionRemoveCouponErrorsError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      SubscriptionRemoveCouponErrorsError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsText(requestOptions);
   }
@@ -1262,37 +1267,38 @@ export class SubscriptionsController extends BaseController {
    * @param sort                   The attribute by which to sort
    * @return Response from the API call
    */
-  async listSubscriptions({
-    page,
-    perPage,
-    state,
-    product,
-    productPricePointId,
-    coupon,
-    dateField,
-    startDate,
-    endDate,
-    startDatetime,
-    endDatetime,
-    metadata,
-    direction,
-    sort,
-  }: {
-    page?: number,
-    perPage?: number,
-    state?: SubscriptionState,
-    product?: number,
-    productPricePointId?: number,
-    coupon?: number,
-    dateField?: SubscriptionDateField,
-    startDate?: string,
-    endDate?: string,
-    startDatetime?: string,
-    endDatetime?: string,
-    metadata?: Record<string, string>,
-    direction?: ListSubscriptionsInputDirection,
-    sort?: SubscriptionSort,
-  },
+  async listSubscriptions(
+    {
+      page,
+      perPage,
+      state,
+      product,
+      productPricePointId,
+      coupon,
+      dateField,
+      startDate,
+      endDate,
+      startDatetime,
+      endDatetime,
+      metadata,
+      direction,
+      sort,
+    }: {
+      page?: number;
+      perPage?: number;
+      state?: SubscriptionState;
+      product?: number;
+      productPricePointId?: number;
+      coupon?: number;
+      dateField?: SubscriptionDateField;
+      startDate?: string;
+      endDate?: string;
+      startDatetime?: string;
+      endDatetime?: string;
+      metadata?: Record<string, string>;
+      direction?: ListSubscriptionsInputDirection;
+      sort?: SubscriptionSort;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<SubscriptionResponse[]>> {
     const req = this.createRequest('GET', '/subscriptions.json');
@@ -1323,7 +1329,7 @@ export class SubscriptionsController extends BaseController {
     req.query('end_date', mapped.endDate);
     req.query('start_datetime', mapped.startDatetime);
     req.query('end_datetime', mapped.endDatetime);
-    req.query(mapped.metadata);
+    req.query('metadata', mapped.metadata);
     req.query('direction', mapped.direction);
     req.query('sort', mapped.sort);
     req.authenticate([{ basicAuth: true }]);
@@ -1502,7 +1508,11 @@ export class SubscriptionsController extends BaseController {
     req.query('code', mapped.code);
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/add_coupon.json`;
-    req.throwOn(422, SubscriptionAddCouponError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      SubscriptionAddCouponError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);
   }

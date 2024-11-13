@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import { Invoice, invoiceSchema } from '../models/invoice';
 import {
   IssueAdvanceInvoiceRequest,
@@ -18,6 +16,8 @@ import {
 } from '../models/voidInvoiceRequest';
 import { optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class AdvanceInvoiceController extends BaseController {
   /**

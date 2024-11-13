@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -198,7 +198,7 @@ export const createSubscriptionSchema: Schema<CreateSubscription> = object({
   ],
   components: [
     'components',
-    optional(array(lazy(() => createSubscriptionComponentsSchema))),
+    optional(array(createSubscriptionComponentsSchema)),
   ],
   calendarBilling: [
     'calendar_billing',

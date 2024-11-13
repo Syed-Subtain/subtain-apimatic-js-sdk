@@ -23,11 +23,9 @@ const subscriptionInvoiceAccountController = new SubscriptionInvoiceAccountContr
 Credit will be added to the subscription in the amount specified in the request body. The credit is subsequently applied to the next generated invoice.
 
 ```ts
-async issueServiceCredit(
-  subscriptionId: string,
+async issueServiceCredit(  subscriptionId: string,
   body?: IssueServiceCreditRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ServiceCredit>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ServiceCredit>>
 ```
 
 ## Parameters
@@ -55,8 +53,6 @@ const body: IssueServiceCreditRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionInvoiceAccountController.issueServiceCredit(
   subscriptionId,
   body
@@ -65,8 +61,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -91,10 +85,8 @@ try {
 Returns the `balance_in_cents` of the Subscription's Pending Discount, Service Credit, and Prepayment accounts, as well as the sum of the Subscription's open, payable invoices.
 
 ```ts
-async readAccountBalances(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<AccountBalances>>
+async readAccountBalances(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<AccountBalances>>
 ```
 
 ## Parameters
@@ -114,15 +106,11 @@ async readAccountBalances(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionInvoiceAccountController.readAccountBalances(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -135,15 +123,13 @@ try {
 This request will list a subscription's prepayments.
 
 ```ts
-async listPrepayments(
-  subscriptionId: string,
+async listPrepayments(  subscriptionId: string,
   page?: number,
   perPage?: number,
   filterDateField?: BasicDateField,
   filterStartDate?: string,
   filterEndDate?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<PrepaymentsResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<PrepaymentsResponse>>
 ```
 
 ## Parameters
@@ -151,8 +137,8 @@ async listPrepayments(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `subscriptionId` | `string` | Template, Required | The Chargify id of the subscription |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `filterDateField` | [`BasicDateField \| undefined`](../../doc/models/basic-date-field.md) | Query, Optional | The type of filter you would like to apply to your search. created_at - Time when prepayment was created. application_at - Time when prepayment was applied to invoice. Use in query `filter[date_field]=created_at`. |
 | `filterStartDate` | `string \| undefined` | Query, Optional | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns prepayments with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. Use in query `filter[start_date]=2011-12-15`. |
 | `filterEndDate` | `string \| undefined` | Query, Optional | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns prepayments with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. Use in query `filter[end_date]=2011-12-15`. |
@@ -170,16 +156,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   page: 2,
   perPage: 50
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionInvoiceAccountController.listPrepayments(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -221,11 +204,9 @@ try {
 Credit will be removed from the subscription in the amount specified in the request body. The credit amount being deducted must be equal to or less than the current credit balance.
 
 ```ts
-async deductServiceCredit(
-  subscriptionId: string,
+async deductServiceCredit(  subscriptionId: string,
   body?: DeductServiceCreditRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -253,8 +234,6 @@ const body: DeductServiceCreditRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionInvoiceAccountController.deductServiceCredit(
   subscriptionId,
   body
@@ -263,8 +242,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -289,11 +266,9 @@ When the `method` specified is `"credit_card_on_file"`, the prepayment amount wi
 Please note that you **can't** pass `amount_in_cents`.
 
 ```ts
-async createPrepayment(
-  subscriptionId: string,
+async createPrepayment(  subscriptionId: string,
   body?: CreatePrepaymentRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<CreatePrepaymentResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<CreatePrepaymentResponse>>
 ```
 
 ## Parameters
@@ -323,8 +298,6 @@ const body: CreatePrepaymentRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionInvoiceAccountController.createPrepayment(
   subscriptionId,
   body
@@ -333,8 +306,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -365,12 +336,10 @@ This endpoint will refund, completely or partially, a particular prepayment appl
 The amount may be passed either as a decimal, with `amount`, or an integer in cents, with `amount_in_cents`.
 
 ```ts
-async refundPrepayment(
-  subscriptionId: string,
+async refundPrepayment(  subscriptionId: string,
   prepaymentId: string,
   body?: RefundPrepaymentRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<PrepaymentResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<PrepaymentResponse>>
 ```
 
 ## Parameters
@@ -394,8 +363,6 @@ const subscriptionId = 'subscription_id0';
 const prepaymentId = 'prepayment_id8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionInvoiceAccountController.refundPrepayment(
   subscriptionId,
   prepaymentId
@@ -404,8 +371,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

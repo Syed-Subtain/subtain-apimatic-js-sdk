@@ -9,16 +9,16 @@
 
 | Name |
 |  --- |
-| `active` |
-| `canceled` |
-| `expired` |
-| `expiredCards` |
-| `onHold` |
-| `pastDue` |
-| `pendingCancellation` |
-| `pendingRenewal` |
-| `suspended` |
-| `trialEnded` |
-| `trialing` |
-| `unpaid` |
+| `Active` |
+| `Canceled` |
+| `Expired` |
+| `ExpiredCards` |
+| `OnHold` |
+| `PastDue` |
+| `PendingCancellation` |
+| `PendingRenewal` |
+| `Suspended` |
+| `TrialEnded` |
+| `Trialing` |
+| `Unpaid` |
 

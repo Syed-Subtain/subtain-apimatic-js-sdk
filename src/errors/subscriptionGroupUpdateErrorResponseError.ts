@@ -1,13 +1,11 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import { ApiError } from '../core';
-import {
-  SubscriptionGroupUpdateError,
-} from '../models/subscriptionGroupUpdateError';
+import { SubscriptionGroupUpdateError } from '../models/subscriptionGroupUpdateError';
 
 /**
  * Creates an instance of SubscriptionGroupUpdateErrorResponse
@@ -16,4 +14,6 @@ interface SubscriptionGroupUpdateErrorResponse {
   errors?: SubscriptionGroupUpdateError;
 }
 
-export class SubscriptionGroupUpdateErrorResponseError extends ApiError<SubscriptionGroupUpdateErrorResponse> {}
+export class SubscriptionGroupUpdateErrorResponseError extends ApiError<
+  SubscriptionGroupUpdateErrorResponse
+> {}

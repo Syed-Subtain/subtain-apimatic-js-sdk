@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -16,10 +16,10 @@ export const quantityBasedComponentPricingSchemeSchema: Schema<QuantityBasedComp
 
 export namespace QuantityBasedComponentPricingScheme {
   /**
-  * Validation method to narrow down union type to PricingScheme type case.
-  *
-  * This is Pricing Scheme case.
-  */
+   * Validation method to narrow down union type to PricingScheme type case.
+   *
+   * This is Pricing Scheme case.
+   */
   export function isPricingScheme(value: unknown): value is PricingScheme {
     const validationResult = validateAndMap(value, pricingSchemeSchema);
     return validationResult.errors === false;

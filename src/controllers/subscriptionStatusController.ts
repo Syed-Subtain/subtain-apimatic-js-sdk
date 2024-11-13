@@ -1,12 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
 import {
   CancellationRequest,
   cancellationRequestSchema,
@@ -38,6 +36,8 @@ import {
 } from '../models/subscriptionResponse';
 import { optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
 
 export class SubscriptionStatusController extends BaseController {
   /**
@@ -153,7 +153,10 @@ export class SubscriptionStatusController extends BaseController {
         optional(resumptionChargeSchema),
       ],
     });
-    req.query('calendar_billing[\'resumption_charge\']', mapped.calendarBillingResumptionCharge);
+    req.query(
+      "calendar_billing['resumption_charge']",
+      mapped.calendarBillingResumptionCharge
+    );
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/resume.json`;
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(subscriptionResponseSchema, requestOptions);

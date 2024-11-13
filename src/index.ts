@@ -1,12 +1,12 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 export * from './client';
 export * from './configuration';
-export type { ApiResponse } from './core'
+export type { ApiResponse } from './core';
 export {
   AbortError,
   ArgumentsValidationError,

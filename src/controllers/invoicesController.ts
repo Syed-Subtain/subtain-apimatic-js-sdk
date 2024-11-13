@@ -1,13 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, commaPrefix, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import { NestedErrorResponseError } from '../errors/nestedErrorResponseError';
 import {
   ConsolidatedInvoice,
   consolidatedInvoiceSchema,
@@ -90,6 +87,9 @@ import {
 } from '../models/voidInvoiceRequest';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { NestedErrorResponseError } from '../errors/nestedErrorResponseError';
 
 export class InvoicesController extends BaseController {
   /**
@@ -134,25 +134,26 @@ export class InvoicesController extends BaseController {
    * @param applications    Include applications data
    * @return Response from the API call
    */
-  async listCreditNotes({
-    subscriptionId,
-    page,
-    perPage,
-    lineItems,
-    discounts,
-    taxes,
-    refunds,
-    applications,
-  }: {
-    subscriptionId?: number,
-    page?: number,
-    perPage?: number,
-    lineItems?: boolean,
-    discounts?: boolean,
-    taxes?: boolean,
-    refunds?: boolean,
-    applications?: boolean,
-  },
+  async listCreditNotes(
+    {
+      subscriptionId,
+      page,
+      perPage,
+      lineItems,
+      discounts,
+      taxes,
+      refunds,
+      applications,
+    }: {
+      subscriptionId?: number;
+      page?: number;
+      perPage?: number;
+      lineItems?: boolean;
+      discounts?: boolean;
+      taxes?: boolean;
+      refunds?: boolean;
+      applications?: boolean;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListCreditNotesResponse>> {
     const req = this.createRequest('GET', '/credit_notes.json');
@@ -273,17 +274,18 @@ export class InvoicesController extends BaseController {
    * @param direction   Sort direction of the returned segments.
    * @return Response from the API call
    */
-  async listInvoiceSegments({
-    invoiceUid,
-    page,
-    perPage,
-    direction,
-  }: {
-    invoiceUid: string,
-    page?: number,
-    perPage?: number,
-    direction?: Direction,
-  },
+  async listInvoiceSegments(
+    {
+      invoiceUid,
+      page,
+      perPage,
+      direction,
+    }: {
+      invoiceUid: string;
+      page?: number;
+      perPage?: number;
+      direction?: Direction;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ConsolidatedInvoice>> {
     const req = this.createRequest('GET');
@@ -561,53 +563,54 @@ export class InvoicesController extends BaseController {
    *                                                   query `sort=total_amount`.
    * @return Response from the API call
    */
-  async listInvoices({
-    startDate,
-    endDate,
-    status,
-    subscriptionId,
-    subscriptionGroupUid,
-    page,
-    perPage,
-    direction,
-    lineItems,
-    discounts,
-    taxes,
-    credits,
-    payments,
-    customFields,
-    refunds,
-    dateField,
-    startDatetime,
-    endDatetime,
-    customerIds,
-    mNumber,
-    productIds,
-    sort,
-  }: {
-    startDate?: string,
-    endDate?: string,
-    status?: Status,
-    subscriptionId?: number,
-    subscriptionGroupUid?: string,
-    page?: number,
-    perPage?: number,
-    direction?: Direction,
-    lineItems?: boolean,
-    discounts?: boolean,
-    taxes?: boolean,
-    credits?: boolean,
-    payments?: boolean,
-    customFields?: boolean,
-    refunds?: boolean,
-    dateField?: InvoiceDateField,
-    startDatetime?: string,
-    endDatetime?: string,
-    customerIds?: number[],
-    mNumber?: string[],
-    productIds?: number[],
-    sort?: InvoiceSortField,
-  },
+  async listInvoices(
+    {
+      startDate,
+      endDate,
+      status,
+      subscriptionId,
+      subscriptionGroupUid,
+      page,
+      perPage,
+      direction,
+      lineItems,
+      discounts,
+      taxes,
+      credits,
+      payments,
+      customFields,
+      refunds,
+      dateField,
+      startDatetime,
+      endDatetime,
+      customerIds,
+      mNumber,
+      productIds,
+      sort,
+    }: {
+      startDate?: string;
+      endDate?: string;
+      status?: Status;
+      subscriptionId?: number;
+      subscriptionGroupUid?: string;
+      page?: number;
+      perPage?: number;
+      direction?: Direction;
+      lineItems?: boolean;
+      discounts?: boolean;
+      taxes?: boolean;
+      credits?: boolean;
+      payments?: boolean;
+      customFields?: boolean;
+      refunds?: boolean;
+      dateField?: InvoiceDateField;
+      startDatetime?: string;
+      endDatetime?: string;
+      customerIds?: number[];
+      mNumber?: string[];
+      productIds?: number[];
+      sort?: InvoiceSortField;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListInvoicesResponse>> {
     const req = this.createRequest('GET', '/invoices.json');
@@ -715,23 +718,24 @@ export class InvoicesController extends BaseController {
    *                                                         `event_types=void_invoice,void_remainder`.
    * @return Response from the API call
    */
-  async listInvoiceEvents({
-    sinceDate,
-    sinceId,
-    page,
-    perPage,
-    invoiceUid,
-    withChangeInvoiceStatus,
-    eventTypes,
-  }: {
-    sinceDate?: string,
-    sinceId?: number,
-    page?: number,
-    perPage?: number,
-    invoiceUid?: string,
-    withChangeInvoiceStatus?: string,
-    eventTypes?: InvoiceEventType[],
-  },
+  async listInvoiceEvents(
+    {
+      sinceDate,
+      sinceId,
+      page,
+      perPage,
+      invoiceUid,
+      withChangeInvoiceStatus,
+      eventTypes,
+    }: {
+      sinceDate?: string;
+      sinceId?: number;
+      page?: number;
+      perPage?: number;
+      invoiceUid?: string;
+      withChangeInvoiceStatus?: string;
+      eventTypes?: InvoiceEventType[];
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListInvoiceEventsResponse>> {
     const req = this.createRequest('GET', '/invoices/events.json');

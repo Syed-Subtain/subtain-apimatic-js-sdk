@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,11 +19,13 @@ export const createCouponBodySchema: Schema<CreateCouponBody> = oneOf([
 
 export namespace CreateCouponBody {
   /**
-  * Validation method to narrow down union type to CreateOrUpdateCoupon type case.
-  *
-  * This is Create or Update Coupon case.
-  */
-  export function isCreateOrUpdateCoupon(value: unknown): value is CreateOrUpdateCoupon {
+   * Validation method to narrow down union type to CreateOrUpdateCoupon type case.
+   *
+   * This is Create or Update Coupon case.
+   */
+  export function isCreateOrUpdateCoupon(
+    value: unknown
+  ): value is CreateOrUpdateCoupon {
     const validationResult = validateAndMap(value, createOrUpdateCouponSchema);
     return validationResult.errors === false;
   }

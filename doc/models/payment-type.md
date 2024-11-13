@@ -9,7 +9,7 @@
 
 | Name |
 |  --- |
-| `creditCard` |
-| `bankAccount` |
-| `paypalAccount` |
+| `CreditCard` |
+| `BankAccount` |
+| `PaypalAccount` |
 

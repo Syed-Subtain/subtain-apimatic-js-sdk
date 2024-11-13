@@ -21,10 +21,8 @@ const subscriptionGroupStatusController = new SubscriptionGroupStatusController(
 Removing the delayed cancellation on a subscription group will ensure that the subscriptions do not get canceled at the end of the period. The request will reset the `cancel_at_end_of_period` flag to false on each member in the group.
 
 ```ts
-async stopDelayedCancellationForGroup(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async stopDelayedCancellationForGroup(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -44,15 +42,11 @@ async stopDelayedCancellationForGroup(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupStatusController.stopDelayedCancellationForGroup(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -89,11 +83,9 @@ Member subscriptions can have billing periods that are longer than the primary (
 For calendar billing subscriptions, the new billing period created will be a partial one, spanning from the date of reactivation to the next corresponding calendar renewal date.
 
 ```ts
-async reactivateSubscriptionGroup(
-  uid: string,
+async reactivateSubscriptionGroup(  uid: string,
   body?: ReactivateSubscriptionGroupRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ReactivateSubscriptionGroupResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ReactivateSubscriptionGroupResponse>>
 ```
 
 ## Parameters
@@ -118,8 +110,6 @@ const body: ReactivateSubscriptionGroupRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupStatusController.reactivateSubscriptionGroup(
   uid,
   body
@@ -128,8 +118,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -169,10 +157,8 @@ This endpoint will schedule all subscriptions within the specified group to be c
 All subscriptions in the group must be on automatic billing in order to successfully cancel them, and the group must not be in a "past_due" state.
 
 ```ts
-async initiateDelayedCancellationForGroup(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async initiateDelayedCancellationForGroup(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -192,15 +178,11 @@ async initiateDelayedCancellationForGroup(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupStatusController.initiateDelayedCancellationForGroup(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -221,11 +203,9 @@ This endpoint will immediately cancel all subscriptions within the specified gro
 In order to cancel a subscription group while also charging for any unbilled usage on metered or prepaid components, the `charge_unbilled_usage=true` parameter must be included in the request.
 
 ```ts
-async cancelSubscriptionsInGroup(
-  uid: string,
+async cancelSubscriptionsInGroup(  uid: string,
   body?: CancelGroupedSubscriptionsRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -250,8 +230,6 @@ const body: CancelGroupedSubscriptionsRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionGroupStatusController.cancelSubscriptionsInGroup(
   uid,
   body
@@ -260,8 +238,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

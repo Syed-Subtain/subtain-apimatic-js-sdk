@@ -1,10 +1,9 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
 import {
   SubscriptionNoteResponse,
@@ -16,6 +15,7 @@ import {
 } from '../models/updateSubscriptionNoteRequest';
 import { array, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
 
 export class SubscriptionNotesController extends BaseController {
   /**
@@ -81,15 +81,16 @@ export class SubscriptionNotesController extends BaseController {
    *                                  be changed to 200. Use in query `per_page=200`.
    * @return Response from the API call
    */
-  async listSubscriptionNotes({
-    subscriptionId,
-    page,
-    perPage,
-  }: {
-    subscriptionId: string,
-    page?: number,
-    perPage?: number,
-  },
+  async listSubscriptionNotes(
+    {
+      subscriptionId,
+      page,
+      perPage,
+    }: {
+      subscriptionId: string;
+      page?: number;
+      perPage?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<SubscriptionNoteResponse[]>> {
     const req = this.createRequest('GET');

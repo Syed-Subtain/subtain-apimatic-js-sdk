@@ -32,11 +32,9 @@ Pass a payload that resembles a subscription create or signup preview request. F
 A product and customer first name, last name, and email are the minimum requirements.
 
 ```ts
-async previewSignupProformaInvoice(
-  includeNextProformaInvoice?: string,
+async previewSignupProformaInvoice(  includeNextProformaInvoice?: string,
   body?: CreateSubscriptionRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SignupProformaPreviewResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SignupProformaPreviewResponse>>
 ```
 
 ## Parameters
@@ -66,8 +64,6 @@ const body: CreateSubscriptionRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.previewSignupProformaInvoice(
   undefined,
   body
@@ -76,8 +72,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -104,10 +98,8 @@ If you would like to preview the next billing amounts without generating a full 
 Proforma invoices are only available on Relationship Invoicing sites. To create a proforma invoice, the subscription must not be in a group, must not be prepaid, and must be in a live state.
 
 ```ts
-async createProformaInvoice(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProformaInvoice>>
+async createProformaInvoice(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProformaInvoice>>
 ```
 
 ## Parameters
@@ -127,15 +119,11 @@ async createProformaInvoice(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.createProformaInvoice(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -155,8 +143,7 @@ try {
 By default, proforma invoices returned on the index will only include totals, not detailed breakdowns for `line_items`, `discounts`, `taxes`, `credits`, `payments`, or `custom_fields`. To include breakdowns, pass the specific field as a key in the query with a value set to `true`.
 
 ```ts
-async listProformaInvoices(
-  subscriptionId: string,
+async listProformaInvoices(  subscriptionId: string,
   startDate?: string,
   endDate?: string,
   status?: Status,
@@ -169,8 +156,7 @@ async listProformaInvoices(
   credits?: boolean,
   payments?: boolean,
   customFields?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProformaInvoice[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProformaInvoice[]>>
 ```
 
 ## Parameters
@@ -181,15 +167,15 @@ async listProformaInvoices(
 | `startDate` | `string \| undefined` | Query, Optional | The beginning date range for the invoice's Due Date, in the YYYY-MM-DD format. |
 | `endDate` | `string \| undefined` | Query, Optional | The ending date range for the invoice's Due Date, in the YYYY-MM-DD format. |
 | `status` | [`Status \| undefined`](../../doc/models/status.md) | Query, Optional | The current status of the invoice.  Allowed Values: draft, open, paid, pending, voided |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
-| `direction` | [`Direction \| undefined`](../../doc/models/direction.md) | Query, Optional | The sort direction of the returned invoices. |
-| `lineItems` | `boolean \| undefined` | Query, Optional | Include line items data |
-| `discounts` | `boolean \| undefined` | Query, Optional | Include discounts data |
-| `taxes` | `boolean \| undefined` | Query, Optional | Include taxes data |
-| `credits` | `boolean \| undefined` | Query, Optional | Include credits data |
-| `payments` | `boolean \| undefined` | Query, Optional | Include payments data |
-| `customFields` | `boolean \| undefined` | Query, Optional | Include custom fields data |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
+| `direction` | [`Direction \| undefined`](../../doc/models/direction.md) | Query, Optional | The sort direction of the returned invoices.<br>**Default**: `Direction.Desc` |
+| `lineItems` | `boolean \| undefined` | Query, Optional | Include line items data<br>**Default**: `false` |
+| `discounts` | `boolean \| undefined` | Query, Optional | Include discounts data<br>**Default**: `false` |
+| `taxes` | `boolean \| undefined` | Query, Optional | Include taxes data<br>**Default**: `false` |
+| `credits` | `boolean \| undefined` | Query, Optional | Include credits data<br>**Default**: `false` |
+| `payments` | `boolean \| undefined` | Query, Optional | Include payments data<br>**Default**: `false` |
+| `customFields` | `boolean \| undefined` | Query, Optional | Include custom fields data<br>**Default**: `false` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -211,16 +197,13 @@ const collect = {
   payments: false,
   customFields: false
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.listProformaInvoices(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -241,11 +224,9 @@ Only proforma invoices that have the appropriate status may be reopened. If the 
 A reason for the void operation is required to be included in the request body. If one is not provided, the response will have HTTP status code 422 and an error message.
 
 ```ts
-async voidProformaInvoice(
-  proformaInvoiceUid: string,
+async voidProformaInvoice(  proformaInvoiceUid: string,
   body?: VoidInvoiceRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProformaInvoice>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProformaInvoice>>
 ```
 
 ## Parameters
@@ -266,15 +247,11 @@ async voidProformaInvoice(
 const proformaInvoiceUid = 'proforma_invoice_uid4';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.voidProformaInvoice(proformaInvoiceUid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -301,10 +278,8 @@ If the information becomes outdated, simply void the old consolidated proforma i
 Proforma invoices are only available on Relationship Invoicing sites. To create a proforma invoice, the subscription must not be prepaid, and must be in a live state.
 
 ```ts
-async createConsolidatedProformaInvoice(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+async createConsolidatedProformaInvoice(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -324,15 +299,11 @@ async createConsolidatedProformaInvoice(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.createConsolidatedProformaInvoice(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -353,10 +324,8 @@ Only proforma invoices with a `consolidation_level` of parent are returned.
 By default, proforma invoices returned on the index will only include totals, not detailed breakdowns for `line_items`, `discounts`, `taxes`, `credits`, `payments`, `custom_fields`. To include breakdowns, pass the specific field as a key in the query with a value set to true.
 
 ```ts
-async listSubscriptionGroupProformaInvoices(
-  uid: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProformaInvoice>>
+async listSubscriptionGroupProformaInvoices(  uid: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProformaInvoice>>
 ```
 
 ## Parameters
@@ -376,15 +345,11 @@ async listSubscriptionGroupProformaInvoices(
 const uid = 'uid0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.listSubscriptionGroupProformaInvoices(uid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -408,10 +373,8 @@ Use this endpoint to read the details of an existing proforma invoice.
 Proforma invoices are only available on Relationship Invoicing sites.
 
 ```ts
-async readProformaInvoice(
-  proformaInvoiceUid: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProformaInvoice>>
+async readProformaInvoice(  proformaInvoiceUid: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProformaInvoice>>
 ```
 
 ## Parameters
@@ -431,15 +394,11 @@ async readProformaInvoice(
 const proformaInvoiceUid = 242;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.readProformaInvoice(proformaInvoiceUid);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -465,10 +424,8 @@ If all the data returned in the preview is as expected, you may then create a st
 Alternatively, if you have some proforma invoices already, you may make a preview call to determine whether any billing information for the subscription's upcoming renewal has changed.
 
 ```ts
-async previewProformaInvoice(
-  subscriptionId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProformaInvoicePreview>>
+async previewProformaInvoice(  subscriptionId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProformaInvoicePreview>>
 ```
 
 ## Parameters
@@ -488,15 +445,11 @@ async previewProformaInvoice(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.previewProformaInvoice(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -523,10 +476,8 @@ Pass a payload that resembles a subscription create or signup preview request. F
 A product and customer first name, last name, and email are the minimum requirements. We recommend associating the proforma invoice with a customer_id to easily find their proforma invoices, since the subscription_id will always be blank.
 
 ```ts
-async createSignupProformaInvoice(
-  body?: CreateSubscriptionRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProformaInvoice>>
+async createSignupProformaInvoice(  body?: CreateSubscriptionRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProformaInvoice>>
 ```
 
 ## Parameters
@@ -555,15 +506,11 @@ const body: CreateSubscriptionRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await proformaInvoicesController.createSignupProformaInvoice(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

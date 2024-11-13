@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -16,10 +16,10 @@ export const subscriptionComponentPricePointTypeSchema: Schema<SubscriptionCompo
 
 export namespace SubscriptionComponentPricePointType {
   /**
-  * Validation method to narrow down union type to PricePointType type case.
-  *
-  * This is Price Point Type case.
-  */
+   * Validation method to narrow down union type to PricePointType type case.
+   *
+   * This is Price Point Type case.
+   */
   export function isPricePointType(value: unknown): value is PricePointType {
     const validationResult = validateAndMap(value, pricePointTypeSchema);
     return validationResult.errors === false;

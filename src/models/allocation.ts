@@ -1,12 +1,11 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import {
   boolean,
-  lazy,
   nullable,
   number,
   object,
@@ -65,8 +64,5 @@ export const allocationSchema: Schema<Allocation> = object({
   accrueCharge: ['accrue_charge', optional(boolean())],
   upgradeCharge: ['upgrade_charge', optional(string())],
   downgradeCredit: ['downgrade_credit', optional(string())],
-  payment: [
-    'payment',
-    optional(nullable(lazy(() => allocationPayment2Schema))),
-  ],
+  payment: ['payment', optional(nullable(allocationPayment2Schema))],
 });

@@ -1,17 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, commaPrefix, RequestOptions } from '../core';
-import { ComponentAllocationError } from '../errors/componentAllocationError';
-import { ComponentPricePointError } from '../errors/componentPricePointError';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import {
-  SubscriptionComponentAllocationError,
-} from '../errors/subscriptionComponentAllocationError';
 import {
   AllocateComponents,
   allocateComponentsSchema,
@@ -89,6 +82,11 @@ import {
 import { UsageResponse, usageResponseSchema } from '../models/usageResponse';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ComponentAllocationError } from '../errors/componentAllocationError';
+import { ComponentPricePointError } from '../errors/componentPricePointError';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { SubscriptionComponentAllocationError } from '../errors/subscriptionComponentAllocationError';
 
 export class SubscriptionComponentsController extends BaseController {
   /**
@@ -166,7 +164,11 @@ export class SubscriptionComponentsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations/${mapped.allocationId}.json`;
-    req.throwOn(422, SubscriptionComponentAllocationError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      SubscriptionComponentAllocationError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
@@ -212,7 +214,11 @@ export class SubscriptionComponentsController extends BaseController {
     req.header('Content-Type', 'application/json');
     req.json(mapped.body);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components/${mapped.componentId}/allocations/${mapped.allocationId}.json`;
-    req.throwOn(422, SubscriptionComponentAllocationError, 'Unprocessable Entity (WebDAV)');
+    req.throwOn(
+      422,
+      SubscriptionComponentAllocationError,
+      'Unprocessable Entity (WebDAV)'
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.call(requestOptions);
   }
@@ -422,35 +428,36 @@ export class SubscriptionComponentsController extends BaseController {
    *                                                                                   `filter[currencies]=EUR,USD`.
    * @return Response from the API call
    */
-  async listSubscriptionComponents({
-    subscriptionId,
-    dateField,
-    direction,
-    endDate,
-    endDatetime,
-    pricePointIds,
-    productFamilyIds,
-    sort,
-    startDate,
-    startDatetime,
-    include,
-    filterUseSiteExchangeRate,
-    filterCurrencies,
-  }: {
-    subscriptionId: string,
-    dateField?: SubscriptionListDateField,
-    direction?: ListSubscriptionComponentsInputDirection,
-    endDate?: string,
-    endDatetime?: string,
-    pricePointIds?: IncludeNotNull,
-    productFamilyIds?: number[],
-    sort?: ListSubscriptionComponentsSort,
-    startDate?: string,
-    startDatetime?: string,
-    include?: ListSubscriptionComponentsInclude,
-    filterUseSiteExchangeRate?: boolean,
-    filterCurrencies?: string[],
-  },
+  async listSubscriptionComponents(
+    {
+      subscriptionId,
+      dateField,
+      direction,
+      endDate,
+      endDatetime,
+      pricePointIds,
+      productFamilyIds,
+      sort,
+      startDate,
+      startDatetime,
+      include,
+      filterUseSiteExchangeRate,
+      filterCurrencies,
+    }: {
+      subscriptionId: string;
+      dateField?: SubscriptionListDateField;
+      direction?: ListSubscriptionComponentsInputDirection;
+      endDate?: string;
+      endDatetime?: string;
+      pricePointIds?: IncludeNotNull;
+      productFamilyIds?: number[];
+      sort?: ListSubscriptionComponentsSort;
+      startDate?: string;
+      startDatetime?: string;
+      include?: ListSubscriptionComponentsInclude;
+      filterUseSiteExchangeRate?: boolean;
+      filterCurrencies?: string[];
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<SubscriptionComponentResponse[]>> {
     const req = this.createRequest('GET');
@@ -485,7 +492,10 @@ export class SubscriptionComponentsController extends BaseController {
     req.query('start_date', mapped.startDate);
     req.query('start_datetime', mapped.startDatetime);
     req.query('include', mapped.include);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.query(
+      'filter[use_site_exchange_rate]',
+      mapped.filterUseSiteExchangeRate
+    );
     req.query('filter[currencies]', mapped.filterCurrencies, commaPrefix);
     req.appendTemplatePath`/subscriptions/${mapped.subscriptionId}/components.json`;
     req.authenticate([{ basicAuth: true }]);
@@ -614,25 +624,26 @@ export class SubscriptionComponentsController extends BaseController {
    *                                  be changed to 200. Use in query `per_page=200`.
    * @return Response from the API call
    */
-  async listUsages({
-    subscriptionId,
-    componentId,
-    sinceId,
-    maxId,
-    sinceDate,
-    untilDate,
-    page,
-    perPage,
-  }: {
-    subscriptionId: string,
-    componentId: number,
-    sinceId?: number,
-    maxId?: number,
-    sinceDate?: string,
-    untilDate?: string,
-    page?: number,
-    perPage?: number,
-  },
+  async listUsages(
+    {
+      subscriptionId,
+      componentId,
+      sinceId,
+      maxId,
+      sinceDate,
+      untilDate,
+      page,
+      perPage,
+    }: {
+      subscriptionId: string;
+      componentId: number;
+      sinceId?: number;
+      maxId?: number;
+      sinceDate?: string;
+      untilDate?: string;
+      page?: number;
+      perPage?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<UsageResponse[]>> {
     const req = this.createRequest('GET');
@@ -1218,51 +1229,52 @@ export class SubscriptionComponentsController extends BaseController {
    *                                                                                                on`.
    * @return Response from the API call
    */
-  async listSubscriptionComponentsForSite({
-    page,
-    perPage,
-    sort,
-    direction,
-    dateField,
-    startDate,
-    startDatetime,
-    endDate,
-    endDatetime,
-    subscriptionIds,
-    pricePointIds,
-    productFamilyIds,
-    include,
-    filterUseSiteExchangeRate,
-    filterCurrencies,
-    filterSubscriptionStates,
-    filterSubscriptionDateField,
-    filterSubscriptionStartDate,
-    filterSubscriptionStartDatetime,
-    filterSubscriptionEndDate,
-    filterSubscriptionEndDatetime,
-  }: {
-    page?: number,
-    perPage?: number,
-    sort?: ListSubscriptionComponentsSort,
-    direction?: ListSubscriptionComponentsForSiteInputDirection,
-    dateField?: SubscriptionListDateField,
-    startDate?: string,
-    startDatetime?: string,
-    endDate?: string,
-    endDatetime?: string,
-    subscriptionIds?: number[],
-    pricePointIds?: IncludeNotNull,
-    productFamilyIds?: number[],
-    include?: ListSubscriptionComponentsInclude,
-    filterUseSiteExchangeRate?: boolean,
-    filterCurrencies?: string[],
-    filterSubscriptionStates?: SubscriptionState[],
-    filterSubscriptionDateField?: SubscriptionListDateField,
-    filterSubscriptionStartDate?: string,
-    filterSubscriptionStartDatetime?: string,
-    filterSubscriptionEndDate?: string,
-    filterSubscriptionEndDatetime?: string,
-  },
+  async listSubscriptionComponentsForSite(
+    {
+      page,
+      perPage,
+      sort,
+      direction,
+      dateField,
+      startDate,
+      startDatetime,
+      endDate,
+      endDatetime,
+      subscriptionIds,
+      pricePointIds,
+      productFamilyIds,
+      include,
+      filterUseSiteExchangeRate,
+      filterCurrencies,
+      filterSubscriptionStates,
+      filterSubscriptionDateField,
+      filterSubscriptionStartDate,
+      filterSubscriptionStartDatetime,
+      filterSubscriptionEndDate,
+      filterSubscriptionEndDatetime,
+    }: {
+      page?: number;
+      perPage?: number;
+      sort?: ListSubscriptionComponentsSort;
+      direction?: ListSubscriptionComponentsForSiteInputDirection;
+      dateField?: SubscriptionListDateField;
+      startDate?: string;
+      startDatetime?: string;
+      endDate?: string;
+      endDatetime?: string;
+      subscriptionIds?: number[];
+      pricePointIds?: IncludeNotNull;
+      productFamilyIds?: number[];
+      include?: ListSubscriptionComponentsInclude;
+      filterUseSiteExchangeRate?: boolean;
+      filterCurrencies?: string[];
+      filterSubscriptionStates?: SubscriptionState[];
+      filterSubscriptionDateField?: SubscriptionListDateField;
+      filterSubscriptionStartDate?: string;
+      filterSubscriptionStartDatetime?: string;
+      filterSubscriptionEndDate?: string;
+      filterSubscriptionEndDatetime?: string;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListSubscriptionComponentsResponse>> {
     const req = this.createRequest('GET', '/subscriptions_components.json');
@@ -1326,14 +1338,36 @@ export class SubscriptionComponentsController extends BaseController {
     req.query('price_point_ids', mapped.pricePointIds);
     req.query('product_family_ids', mapped.productFamilyIds, commaPrefix);
     req.query('include', mapped.include);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.query(
+      'filter[use_site_exchange_rate]',
+      mapped.filterUseSiteExchangeRate
+    );
     req.query('filter[currencies]', mapped.filterCurrencies, commaPrefix);
-    req.query('filter[subscription][states]', mapped.filterSubscriptionStates, commaPrefix);
-    req.query('filter[subscription][date_field]', mapped.filterSubscriptionDateField);
-    req.query('filter[subscription][start_date]', mapped.filterSubscriptionStartDate);
-    req.query('filter[subscription][start_datetime]', mapped.filterSubscriptionStartDatetime);
-    req.query('filter[subscription][end_date]', mapped.filterSubscriptionEndDate);
-    req.query('filter[subscription][end_datetime]', mapped.filterSubscriptionEndDatetime);
+    req.query(
+      'filter[subscription][states]',
+      mapped.filterSubscriptionStates,
+      commaPrefix
+    );
+    req.query(
+      'filter[subscription][date_field]',
+      mapped.filterSubscriptionDateField
+    );
+    req.query(
+      'filter[subscription][start_date]',
+      mapped.filterSubscriptionStartDate
+    );
+    req.query(
+      'filter[subscription][start_datetime]',
+      mapped.filterSubscriptionStartDatetime
+    );
+    req.query(
+      'filter[subscription][end_date]',
+      mapped.filterSubscriptionEndDate
+    );
+    req.query(
+      'filter[subscription][end_datetime]',
+      mapped.filterSubscriptionEndDatetime
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(
       listSubscriptionComponentsResponseSchema,

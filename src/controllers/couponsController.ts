@@ -1,15 +1,10 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, commaPrefix, RequestOptions } from '../core';
-import { ErrorListResponseError } from '../errors/errorListResponseError';
-import {
-  SingleStringErrorResponseError,
-} from '../errors/singleStringErrorResponseError';
 import { BasicDateField, basicDateFieldSchema } from '../models/basicDateField';
 import {
   CreateCouponBody,
@@ -33,6 +28,9 @@ import {
 import { CouponUsage, couponUsageSchema } from '../models/couponUsage';
 import { array, boolean, number, optional, string } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
+import { ErrorListResponseError } from '../errors/errorListResponseError';
+import { SingleStringErrorResponseError } from '../errors/singleStringErrorResponseError';
 
 export class CouponsController extends BaseController {
   /**
@@ -96,33 +94,34 @@ export class CouponsController extends BaseController {
    *                                                         query `filter[use_site_exchange_rate]=true`.
    * @return Response from the API call
    */
-  async listCouponsForProductFamily({
-    productFamilyId,
-    page,
-    perPage,
-    filterDateField,
-    filterEndDate,
-    filterEndDatetime,
-    filterStartDate,
-    filterStartDatetime,
-    filterIds,
-    filterCodes,
-    currencyPrices,
-    filterUseSiteExchangeRate,
-  }: {
-    productFamilyId: number,
-    page?: number,
-    perPage?: number,
-    filterDateField?: BasicDateField,
-    filterEndDate?: string,
-    filterEndDatetime?: string,
-    filterStartDate?: string,
-    filterStartDatetime?: string,
-    filterIds?: number[],
-    filterCodes?: string[],
-    currencyPrices?: boolean,
-    filterUseSiteExchangeRate?: boolean,
-  },
+  async listCouponsForProductFamily(
+    {
+      productFamilyId,
+      page,
+      perPage,
+      filterDateField,
+      filterEndDate,
+      filterEndDatetime,
+      filterStartDate,
+      filterStartDatetime,
+      filterIds,
+      filterCodes,
+      currencyPrices,
+      filterUseSiteExchangeRate,
+    }: {
+      productFamilyId: number;
+      page?: number;
+      perPage?: number;
+      filterDateField?: BasicDateField;
+      filterEndDate?: string;
+      filterEndDatetime?: string;
+      filterStartDate?: string;
+      filterStartDatetime?: string;
+      filterIds?: number[];
+      filterCodes?: string[];
+      currencyPrices?: boolean;
+      filterUseSiteExchangeRate?: boolean;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<CouponResponse[]>> {
     const req = this.createRequest('GET');
@@ -153,7 +152,10 @@ export class CouponsController extends BaseController {
     req.query('filter[ids]', mapped.filterIds, commaPrefix);
     req.query('filter[codes]', mapped.filterCodes, commaPrefix);
     req.query('currency_prices', mapped.currencyPrices);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.query(
+      'filter[use_site_exchange_rate]',
+      mapped.filterUseSiteExchangeRate
+    );
     req.appendTemplatePath`/product_families/${mapped.productFamilyId}/coupons.json`;
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(couponResponseSchema), requestOptions);
@@ -202,15 +204,16 @@ export class CouponsController extends BaseController {
    *                            200. Use in query `per_page=200`.
    * @return Response from the API call
    */
-  async listCouponSubcodes({
-    couponId,
-    page,
-    perPage,
-  }: {
-    couponId: number,
-    page?: number,
-    perPage?: number,
-  },
+  async listCouponSubcodes(
+    {
+      couponId,
+      page,
+      perPage,
+    }: {
+      couponId: number;
+      page?: number;
+      perPage?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<CouponSubcodes>> {
     const req = this.createRequest('GET');
@@ -439,41 +442,42 @@ export class CouponsController extends BaseController {
    *                                                         query `filter[use_site_exchange_rate]=true`.
    * @return Response from the API call
    */
-  async listCoupons({
-    page,
-    perPage,
-    dateField,
-    startDate,
-    endDate,
-    startDatetime,
-    endDatetime,
-    filterIds,
-    filterCodes,
-    currencyPrices,
-    filterEndDate,
-    filterEndDatetime,
-    filterStartDate,
-    filterStartDatetime,
-    filterDateField,
-    filterUseSiteExchangeRate,
-  }: {
-    page?: number,
-    perPage?: number,
-    dateField?: BasicDateField,
-    startDate?: string,
-    endDate?: string,
-    startDatetime?: string,
-    endDatetime?: string,
-    filterIds?: number[],
-    filterCodes?: string[],
-    currencyPrices?: boolean,
-    filterEndDate?: string,
-    filterEndDatetime?: string,
-    filterStartDate?: string,
-    filterStartDatetime?: string,
-    filterDateField?: BasicDateField,
-    filterUseSiteExchangeRate?: boolean,
-  },
+  async listCoupons(
+    {
+      page,
+      perPage,
+      dateField,
+      startDate,
+      endDate,
+      startDatetime,
+      endDatetime,
+      filterIds,
+      filterCodes,
+      currencyPrices,
+      filterEndDate,
+      filterEndDatetime,
+      filterStartDate,
+      filterStartDatetime,
+      filterDateField,
+      filterUseSiteExchangeRate,
+    }: {
+      page?: number;
+      perPage?: number;
+      dateField?: BasicDateField;
+      startDate?: string;
+      endDate?: string;
+      startDatetime?: string;
+      endDatetime?: string;
+      filterIds?: number[];
+      filterCodes?: string[];
+      currencyPrices?: boolean;
+      filterEndDate?: string;
+      filterEndDatetime?: string;
+      filterStartDate?: string;
+      filterStartDatetime?: string;
+      filterDateField?: BasicDateField;
+      filterUseSiteExchangeRate?: boolean;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<CouponResponse[]>> {
     const req = this.createRequest('GET', '/coupons.json');
@@ -513,7 +517,10 @@ export class CouponsController extends BaseController {
     req.query('filter[start_date]', mapped.filterStartDate);
     req.query('filter[start_datetime]', mapped.filterStartDatetime);
     req.query('filter[date_field]', mapped.filterDateField);
-    req.query('filter[use_site_exchange_rate]', mapped.filterUseSiteExchangeRate);
+    req.query(
+      'filter[use_site_exchange_rate]',
+      mapped.filterUseSiteExchangeRate
+    );
     req.authenticate([{ basicAuth: true }]);
     return req.callAsJson(array(couponResponseSchema), requestOptions);
   }

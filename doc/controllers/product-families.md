@@ -21,8 +21,7 @@ const productFamiliesController = new ProductFamiliesController(client);
 This method allows to retrieve a list of Products belonging to a Product Family.
 
 ```ts
-async listProductsForProductFamily(
-  productFamilyId: number,
+async listProductsForProductFamily(  productFamilyId: number,
   page?: number,
   perPage?: number,
   dateField?: BasicDateField,
@@ -34,8 +33,7 @@ async listProductsForProductFamily(
   include?: ListProductsInclude,
   filterPrepaidProductPricePointProductPricePointId?: IncludeNotNull,
   filterUseSiteExchangeRate?: boolean,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductResponse[]>>
 ```
 
 ## Parameters
@@ -43,8 +41,8 @@ async listProductsForProductFamily(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `productFamilyId` | `number` | Template, Required | The Chargify id of the product family to which the product belongs |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `dateField` | [`BasicDateField \| undefined`](../../doc/models/basic-date-field.md) | Query, Optional | The type of filter you would like to apply to your search.<br>Use in query: `date_field=created_at`. |
 | `startDate` | `string \| undefined` | Query, Optional | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns products with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | `endDate` | `string \| undefined` | Query, Optional | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns products with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
@@ -70,16 +68,13 @@ const collect = {Liquid error: Value cannot be null. (Parameter 'key')Liquid err
   dateField: BasicDateField.UpdatedAt,
   include: ListProductsInclude.PrepaidProductPricePoint
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productFamiliesController.listProductsForProductFamily(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -199,10 +194,8 @@ This method will create a Product Family within your Chargify site. Create a Pro
 Full documentation on how Product Families operate within the Chargify UI can be located [here](https://maxio-chargify.zendesk.com/hc/en-us/articles/5405369633421).
 
 ```ts
-async createProductFamily(
-  body?: CreateProductFamilyRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductFamilyResponse>>
+async createProductFamily(  body?: CreateProductFamilyRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductFamilyResponse>>
 ```
 
 ## Parameters
@@ -227,15 +220,11 @@ const body: CreateProductFamilyRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productFamiliesController.createProductFamily(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -262,14 +251,12 @@ try {
 This method allows to retrieve a list of Product Families for a site.
 
 ```ts
-async listProductFamilies(
-  dateField?: BasicDateField,
+async listProductFamilies(  dateField?: BasicDateField,
   startDate?: string,
   endDate?: string,
   startDatetime?: string,
   endDatetime?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductFamilyResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductFamilyResponse[]>>
 ```
 
 ## Parameters
@@ -293,16 +280,13 @@ async listProductFamilies(
 const collect = {
   dateField: BasicDateField.UpdatedAt
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productFamiliesController.listProductFamilies(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -346,10 +330,8 @@ This method allows to retrieve a Product Family via the `product_family_id`. The
 The product family can be specified either with the id number, or with the `handle:my-family` format.
 
 ```ts
-async readProductFamily(
-  id: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProductFamilyResponse>>
+async readProductFamily(  id: number,
+requestOptions?: RequestOptions): Promise<ApiResponse<ProductFamilyResponse>>
 ```
 
 ## Parameters
@@ -369,15 +351,11 @@ async readProductFamily(
 const id = 112;
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await productFamiliesController.readProductFamily(id);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

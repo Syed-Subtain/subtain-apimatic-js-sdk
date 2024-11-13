@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -27,7 +27,12 @@ import {
 } from '../createQuantityBasedComponent';
 
 /** This is a container type for one-of types. */
-export type CreateComponentBody = CreateMeteredComponent | CreateQuantityBasedComponent | CreateOnOffComponent | CreatePrepaidComponent | CreateEBBComponent;
+export type CreateComponentBody =
+  | CreateMeteredComponent
+  | CreateQuantityBasedComponent
+  | CreateOnOffComponent
+  | CreatePrepaidComponent
+  | CreateEBBComponent;
 
 export const createComponentBodySchema: Schema<CreateComponentBody> = oneOf([
   createMeteredComponentSchema,
@@ -39,51 +44,70 @@ export const createComponentBodySchema: Schema<CreateComponentBody> = oneOf([
 
 export namespace CreateComponentBody {
   /**
-  * Validation method to narrow down union type to CreateMeteredComponent type case.
-  *
-  * This is Create Metered Component case.
-  */
-  export function isCreateMeteredComponent(value: unknown): value is CreateMeteredComponent {
-    const validationResult = validateAndMap(value, createMeteredComponentSchema);
+   * Validation method to narrow down union type to CreateMeteredComponent type case.
+   *
+   * This is Create Metered Component case.
+   */
+  export function isCreateMeteredComponent(
+    value: unknown
+  ): value is CreateMeteredComponent {
+    const validationResult = validateAndMap(
+      value,
+      createMeteredComponentSchema
+    );
     return validationResult.errors === false;
   }
 
   /**
-  * Validation method to narrow down union type to CreateQuantityBasedComponent type case.
-  *
-  * This is Create Quantity Based Component case.
-  */
-  export function isCreateQuantityBasedComponent(value: unknown): value is CreateQuantityBasedComponent {
-    const validationResult = validateAndMap(value, createQuantityBasedComponentSchema);
+   * Validation method to narrow down union type to CreateQuantityBasedComponent type case.
+   *
+   * This is Create Quantity Based Component case.
+   */
+  export function isCreateQuantityBasedComponent(
+    value: unknown
+  ): value is CreateQuantityBasedComponent {
+    const validationResult = validateAndMap(
+      value,
+      createQuantityBasedComponentSchema
+    );
     return validationResult.errors === false;
   }
 
   /**
-  * Validation method to narrow down union type to CreateOnOffComponent type case.
-  *
-  * This is Create On/Off Component case.
-  */
-  export function isCreateOnOffComponent(value: unknown): value is CreateOnOffComponent {
+   * Validation method to narrow down union type to CreateOnOffComponent type case.
+   *
+   * This is Create On/Off Component case.
+   */
+  export function isCreateOnOffComponent(
+    value: unknown
+  ): value is CreateOnOffComponent {
     const validationResult = validateAndMap(value, createOnOffComponentSchema);
     return validationResult.errors === false;
   }
 
   /**
-  * Validation method to narrow down union type to CreatePrepaidComponent type case.
-  *
-  * This is Create Prepaid Component case.
-  */
-  export function isCreatePrepaidComponent(value: unknown): value is CreatePrepaidComponent {
-    const validationResult = validateAndMap(value, createPrepaidComponentSchema);
+   * Validation method to narrow down union type to CreatePrepaidComponent type case.
+   *
+   * This is Create Prepaid Component case.
+   */
+  export function isCreatePrepaidComponent(
+    value: unknown
+  ): value is CreatePrepaidComponent {
+    const validationResult = validateAndMap(
+      value,
+      createPrepaidComponentSchema
+    );
     return validationResult.errors === false;
   }
 
   /**
-  * Validation method to narrow down union type to CreateEBBComponent type case.
-  *
-  * This is Create EBB Component case.
-  */
-  export function isCreateEBBComponent(value: unknown): value is CreateEBBComponent {
+   * Validation method to narrow down union type to CreateEBBComponent type case.
+   *
+   * This is Create EBB Component case.
+   */
+  export function isCreateEBBComponent(
+    value: unknown
+  ): value is CreateEBBComponent {
     const validationResult = validateAndMap(value, createEBBComponentSchema);
     return validationResult.errors === false;
   }

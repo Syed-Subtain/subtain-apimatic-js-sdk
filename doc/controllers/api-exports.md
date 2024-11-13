@@ -26,9 +26,7 @@ const aPIExportsController = new APIExportsController(client);
 This API creates an invoices export and returns a batchjob object.
 
 ```ts
-async exportInvoices(
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<BatchJobResponse>>
+async exportInvoices(requestOptions?: RequestOptions): Promise<ApiResponse<BatchJobResponse>>
 ```
 
 ## Parameters
@@ -45,15 +43,11 @@ async exportInvoices(
 
 ```ts
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.exportInvoices();
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -75,12 +69,10 @@ This API returns an array of exported proforma invoices for a provided `batch_id
 Example: `GET https://{subdomain}.chargify.com/api_exports/proforma_invoices/123/rows?per_page=10000&page=1`.
 
 ```ts
-async listExportedProformaInvoices(
-  batchId: string,
+async listExportedProformaInvoices(  batchId: string,
   perPage?: number,
   page?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<ProformaInvoice[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<ProformaInvoice[]>>
 ```
 
 ## Parameters
@@ -88,8 +80,8 @@ async listExportedProformaInvoices(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `batchId` | `string` | Template, Required | Id of a Batch Job. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request.<br>Default value is 100.<br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request.<br>Default value is 100.<br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000.<br>**Default**: `100`<br>**Constraints**: `>= 1`, `<= 10000` |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -104,16 +96,13 @@ const collect = {
   perPage: 100,
   page: 2
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.listExportedProformaInvoices(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -132,10 +121,8 @@ try {
 This API returns a batchjob object for proforma invoices export.
 
 ```ts
-async readProformaInvoicesExport(
-  batchId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<BatchJobResponse>>
+async readProformaInvoicesExport(  batchId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<BatchJobResponse>>
 ```
 
 ## Parameters
@@ -155,15 +142,11 @@ async readProformaInvoicesExport(
 const batchId = 'batch_id8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.readProformaInvoicesExport(batchId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -182,10 +165,8 @@ try {
 This API returns a batchjob object for subscriptions export.
 
 ```ts
-async readSubscriptionsExport(
-  batchId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<BatchJobResponse>>
+async readSubscriptionsExport(  batchId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<BatchJobResponse>>
 ```
 
 ## Parameters
@@ -205,15 +186,11 @@ async readSubscriptionsExport(
 const batchId = 'batch_id8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.readSubscriptionsExport(batchId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -234,12 +211,10 @@ This API returns an array of exported subscriptions for a provided `batch_id`. P
 Example: `GET https://{subdomain}.chargify.com/api_exports/subscriptions/123/rows?per_page=200&page=1`.
 
 ```ts
-async listExportedSubscriptions(
-  batchId: string,
+async listExportedSubscriptions(  batchId: string,
   perPage?: number,
   page?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Subscription[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Subscription[]>>
 ```
 
 ## Parameters
@@ -247,8 +222,8 @@ async listExportedSubscriptions(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `batchId` | `string` | Template, Required | Id of a Batch Job. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request.<br>Default value is 100.<br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request.<br>Default value is 100.<br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000.<br>**Default**: `100`<br>**Constraints**: `>= 1`, `<= 10000` |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -263,16 +238,13 @@ const collect = {
   perPage: 100,
   page: 2
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.listExportedSubscriptions(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -293,12 +265,10 @@ This API returns an array of exported invoices for a provided `batch_id`. Pay cl
 Example: `GET https://{subdomain}.chargify.com/api_exports/invoices/123/rows?per_page=10000&page=1`.
 
 ```ts
-async listExportedInvoices(
-  batchId: string,
+async listExportedInvoices(  batchId: string,
   perPage?: number,
   page?: number,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<Invoice[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<Invoice[]>>
 ```
 
 ## Parameters
@@ -306,8 +276,8 @@ async listExportedInvoices(
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `batchId` | `string` | Template, Required | Id of a Batch Job. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request.<br>Default value is 100.<br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000. |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request.<br>Default value is 100.<br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000.<br>**Default**: `100`<br>**Constraints**: `>= 1`, `<= 10000` |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -322,16 +292,13 @@ const collect = {
   perPage: 100,
   page: 2
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.listExportedInvoices(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -352,9 +319,7 @@ This API creates a proforma invoices export and returns a batchjob object.
 It is only available for Relationship Invoicing architecture.
 
 ```ts
-async exportProformaInvoices(
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<BatchJobResponse>>
+async exportProformaInvoices(requestOptions?: RequestOptions): Promise<ApiResponse<BatchJobResponse>>
 ```
 
 ## Parameters
@@ -371,15 +336,11 @@ async exportProformaInvoices(
 
 ```ts
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.exportProformaInvoices();
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -399,10 +360,8 @@ try {
 This API returns a batchjob object for invoices export.
 
 ```ts
-async readInvoicesExport(
-  batchId: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<BatchJobResponse>>
+async readInvoicesExport(  batchId: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<BatchJobResponse>>
 ```
 
 ## Parameters
@@ -422,15 +381,11 @@ async readInvoicesExport(
 const batchId = 'batch_id8';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.readInvoicesExport(batchId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -449,9 +404,7 @@ try {
 This API creates a subscriptions export and returns a batchjob object.
 
 ```ts
-async exportSubscriptions(
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<BatchJobResponse>>
+async exportSubscriptions(requestOptions?: RequestOptions): Promise<ApiResponse<BatchJobResponse>>
 ```
 
 ## Parameters
@@ -468,15 +421,11 @@ async exportSubscriptions(
 
 ```ts
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await aPIExportsController.exportSubscriptions();
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

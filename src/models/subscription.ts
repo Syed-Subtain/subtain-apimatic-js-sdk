@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -192,7 +192,7 @@ export const subscriptionSchema: Schema<Subscription> = object({
   customer: ['customer', optional(lazy(() => customerSchema))],
   product: ['product', optional(lazy(() => productSchema))],
   creditCard: ['credit_card', optional(lazy(() => paymentProfileSchema))],
-  group: ['group', optional(nullable(lazy(() => subscriptionGroup2Schema)))],
+  group: ['group', optional(nullable(subscriptionGroup2Schema))],
   bankAccount: [
     'bank_account',
     optional(lazy(() => subscriptionBankAccountSchema)),

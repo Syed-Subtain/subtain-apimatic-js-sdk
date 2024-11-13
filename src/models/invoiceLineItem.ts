@@ -1,12 +1,11 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import {
   boolean,
-  lazy,
   nullable,
   number,
   object,
@@ -112,7 +111,7 @@ export const invoiceLineItemSchema: Schema<InvoiceLineItem> = object({
   hide: ['hide', optional(boolean())],
   componentCostData: [
     'component_cost_data',
-    optional(nullable(lazy(() => invoiceLineItemComponentCostData2Schema))),
+    optional(nullable(invoiceLineItemComponentCostData2Schema)),
   ],
   productPricePointId: ['product_price_point_id', optional(nullable(number()))],
   customItem: ['custom_item', optional(boolean())],

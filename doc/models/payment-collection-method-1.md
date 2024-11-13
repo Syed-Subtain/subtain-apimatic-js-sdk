@@ -11,8 +11,8 @@
 
 | Name |
 |  --- |
-| `automatic` |
-| `remittance` |
-| `prepaid` |
-| `invoice` |
+| `Automatic` |
+| `Remittance` |
+| `Prepaid` |
+| `Invoice` |
 

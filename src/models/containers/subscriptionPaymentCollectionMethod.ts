@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -19,12 +19,17 @@ export const subscriptionPaymentCollectionMethodSchema: Schema<SubscriptionPayme
 
 export namespace SubscriptionPaymentCollectionMethod {
   /**
-  * Validation method to narrow down union type to PaymentCollectionMethod type case.
-  *
-  * This is Payment Collection Method case.
-  */
-  export function isPaymentCollectionMethod(value: unknown): value is PaymentCollectionMethod {
-    const validationResult = validateAndMap(value, paymentCollectionMethodSchema);
+   * Validation method to narrow down union type to PaymentCollectionMethod type case.
+   *
+   * This is Payment Collection Method case.
+   */
+  export function isPaymentCollectionMethod(
+    value: unknown
+  ): value is PaymentCollectionMethod {
+    const validationResult = validateAndMap(
+      value,
+      paymentCollectionMethodSchema
+    );
     return validationResult.errors === false;
   }
 }

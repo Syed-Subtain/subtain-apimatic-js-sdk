@@ -1,10 +1,9 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
-import { ApiError } from '@apimatic/core';
 import { ApiResponse, RequestOptions } from '../core';
 import { CleanupScope, cleanupScopeSchema } from '../models/cleanupScope';
 import {
@@ -14,6 +13,7 @@ import {
 import { SiteResponse, siteResponseSchema } from '../models/siteResponse';
 import { number, optional } from '../schema';
 import { BaseController } from './baseController';
+import { ApiError } from '@apimatic/core';
 
 export class SitesController extends BaseController {
   /**
@@ -29,13 +29,14 @@ export class SitesController extends BaseController {
    *                           Use in query `per_page=200`.
    * @return Response from the API call
    */
-  async listChargifyJsPublicKeys({
-    page,
-    perPage,
-  }: {
-    page?: number,
-    perPage?: number,
-  },
+  async listChargifyJsPublicKeys(
+    {
+      page,
+      perPage,
+    }: {
+      page?: number;
+      perPage?: number;
+    },
     requestOptions?: RequestOptions
   ): Promise<ApiResponse<ListPublicKeysResponse>> {
     const req = this.createRequest('GET', '/chargify_js_keys.json');

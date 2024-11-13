@@ -638,10 +638,8 @@ Each of them is required.
 ```
 
 ```ts
-async createSubscription(
-  body?: CreateSubscriptionRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+async createSubscription(  body?: CreateSubscriptionRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -693,15 +691,11 @@ const body: CreateSubscriptionRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.createSubscription(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -877,11 +871,9 @@ When passing `current_period_starts_at` some validations are made:
 If unpermitted parameters are sent, a 400 HTTP response is sent along with a string giving the reason for the problem.
 
 ```ts
-async overrideSubscription(
-  subscriptionId: string,
+async overrideSubscription(  subscriptionId: string,
   body?: OverrideSubscriptionRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -911,8 +903,6 @@ const body: OverrideSubscriptionRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.overrideSubscription(
   subscriptionId,
   body
@@ -921,8 +911,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -984,11 +972,9 @@ You can read more about the behavior of trialing subscriptions [here](https://ma
 When the `revert_on_failure` parameter is set to `true`, the subscription's state will remain as Trialing, we will void the invoice from activation and return any prepayments and credits applied to the invoice back to the subscription.
 
 ```ts
-async activateSubscription(
-  subscriptionId: string,
+async activateSubscription(  subscriptionId: string,
   body?: ActivateSubscriptionRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -1009,15 +995,11 @@ async activateSubscription(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.activateSubscription(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1044,12 +1026,10 @@ If you need to remove subscriptions from a live site, please contact support to 
 The query params will be: `?ack={customer_id}&cascade[]=customer&cascade[]=payment_profile`
 
 ```ts
-async purgeSubscription(
-  subscriptionId: string,
+async purgeSubscription(  subscriptionId: string,
   ack: number,
   cascade?: SubscriptionPurgeType[],
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<void>>
+requestOptions?: RequestOptions): Promise<ApiResponse<void>>
 ```
 
 ## Parameters
@@ -1073,8 +1053,6 @@ const subscriptionId = 'subscription_id0';
 const ack = 252;
 
 Liquid error: Value cannot be null. (Parameter 'key')try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = Liquid error: Value cannot be null. (Parameter 'key')await subscriptionsController.purgeSubscription(
   subscriptionId,
   ack
@@ -1083,8 +1061,6 @@ Liquid error: Value cannot be null. (Parameter 'key')try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1107,11 +1083,9 @@ Use this endpoint to find subscription details.
 Self-Service Page token for the subscription is not returned by default. If this information is desired, the include[]=self_service_page_token parameter must be provided with the request.
 
 ```ts
-async readSubscription(
-  subscriptionId: string,
+async readSubscription(  subscriptionId: string,
   include?: SubscriptionInclude[],
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -1132,15 +1106,11 @@ async readSubscription(
 const subscriptionId = 'subscription_id0';
 
 Liquid error: Value cannot be null. (Parameter 'key')try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = Liquid error: Value cannot be null. (Parameter 'key')await subscriptionsController.readSubscription(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1316,10 +1286,8 @@ You can pass shipping and billing addresses and still decide not to calculate ta
 If you'd like to calculate subscriptions that do not include tax, please feel free to leave off the billing information.
 
 ```ts
-async previewSubscription(
-  body?: CreateSubscriptionRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionPreviewResponse>>
+async previewSubscription(  body?: CreateSubscriptionRequest,
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionPreviewResponse>>
 ```
 
 ## Parameters
@@ -1343,15 +1311,11 @@ const body: CreateSubscriptionRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.previewSubscription(body);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1486,11 +1450,9 @@ Use this endpoint to remove a coupon from an existing subscription.
 For more information on the expected behaviour of removing a coupon from a subscription, please see our documentation [here.](https://chargify.zendesk.com/hc/en-us/articles/4407896488987#removing-a-coupon)
 
 ```ts
-async deleteCouponFromSubscription(
-  subscriptionId: string,
+async deleteCouponFromSubscription(  subscriptionId: string,
   couponCode?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<string>>
+requestOptions?: RequestOptions): Promise<ApiResponse<string>>
 ```
 
 ## Parameters
@@ -1511,15 +1473,11 @@ async deleteCouponFromSubscription(
 const subscriptionId = 'subscription_id0';
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.deleteCouponFromSubscription(subscriptionId);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1552,8 +1510,7 @@ Use the query strings below to search for a subscription using the criteria avai
 Self-Service Page token for the subscriptions is not returned by default. If this information is desired, the include[]=self_service_page_token parameter must be provided with the request.
 
 ```ts
-async listSubscriptions(
-  page?: number,
+async listSubscriptions(  page?: number,
   perPage?: number,
   state?: SubscriptionState,
   product?: number,
@@ -1567,16 +1524,15 @@ async listSubscriptions(
   metadata?: Record<string, string>,
   direction?: ListSubscriptionsInputDirection,
   sort?: SubscriptionSort,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse[]>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse[]>>
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| `page` | `number \| undefined` | Query, Optional | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: `1`<br>**Constraints**: `>= 1` |
+| `perPage` | `number \| undefined` | Query, Optional | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: `20`<br>**Constraints**: `<= 200` |
 | `state` | [`SubscriptionState \| undefined`](../../doc/models/subscription-state.md) | Query, Optional | The current state of the subscription |
 | `product` | `number \| undefined` | Query, Optional | The product id of the subscription. (Note that the product handle cannot be used.) |
 | `productPricePointId` | `number \| undefined` | Query, Optional | The ID of the product price point. If supplied, product is required |
@@ -1588,7 +1544,7 @@ async listSubscriptions(
 | `endDatetime` | `string \| undefined` | Query, Optional | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns subscriptions with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. Use in query `end_datetime=2022-08-01 10:00:05`. |
 | `metadata` | `Record<string, string> \| undefined` | Query, Optional | The value of the metadata field specified in the parameter. Use in query `metadata[my-field]=value&metadata[other-field]=another_value`. |
 | `direction` | [`ListSubscriptionsInputDirection \| undefined`](../../doc/models/containers/list-subscriptions-input-direction.md) | Query, Optional | This is a container for one-of cases. |
-| `sort` | [`SubscriptionSort \| undefined`](../../doc/models/subscription-sort.md) | Query, Optional | The attribute by which to sort |
+| `sort` | [`SubscriptionSort \| undefined`](../../doc/models/subscription-sort.md) | Query, Optional | The attribute by which to sort<br>**Default**: `SubscriptionSort.SignupDate` |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 ## Response Type
@@ -1607,16 +1563,13 @@ const collect = {
   endDatetime: '2022-08-01 10:00:05',
   sort: SubscriptionSort.SignupDate
 }
+
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.listSubscriptions(collect);
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1669,11 +1622,9 @@ For a subscription using Calendar Billing, setting the next billing date is a bi
 Note: If you change the product associated with a subscription that contains a `snap_date` and immediately `READ/GET` the subscription data, it will still contain evidence of the existing `snap_date`. This is due to the fact that a product change is instantanous and only affects the product associated with a subscription. After the `next_billing` date arrives, the `snap_day` associated with the subscription will return to `null.` Another way of looking at this is that you willl have to wait for the next billing cycle to arrive before the `snap_date` will reset to `null`.
 
 ```ts
-async updateSubscription(
-  subscriptionId: string,
+async updateSubscription(  subscriptionId: string,
   body?: UpdateSubscriptionRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -1705,8 +1656,6 @@ const body: UpdateSubscriptionRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.updateSubscription(
   subscriptionId,
   body
@@ -1715,8 +1664,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1845,10 +1792,8 @@ try {
 Use this endpoint to find a subscription by its reference.
 
 ```ts
-async readSubscriptionByReference(
-  reference?: string,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+async readSubscriptionByReference(  reference?: string,
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -1866,15 +1811,11 @@ async readSubscriptionByReference(
 
 ```ts
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.readSubscriptionByReference();
   // Get more response info...
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1887,11 +1828,9 @@ try {
 Use this endpoint to update a subscription's prepaid configuration.
 
 ```ts
-async createPrepaidSubscription(
-  subscriptionId: string,
+async createPrepaidSubscription(  subscriptionId: string,
   body?: UpsertPrepaidConfigurationRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<PrepaidConfigurationResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<PrepaidConfigurationResponse>>
 ```
 
 ## Parameters
@@ -1921,8 +1860,6 @@ const body: UpsertPrepaidConfigurationRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.createPrepaidSubscription(
   subscriptionId,
   body
@@ -1931,8 +1868,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }
@@ -1965,12 +1900,10 @@ Passing in a coupon code as a query parameter will add the code to the subscript
 For this reason, using this query parameter on this endpoint has been deprecated in favor of using the request body parameters as described below. When passing in request body parameters, the list of coupon codes will simply be added to any existing list of codes on the subscription.
 
 ```ts
-async applyCouponToSubscription(
-  subscriptionId: string,
+async applyCouponToSubscription(  subscriptionId: string,
   code?: string,
   body?: AddCouponsRequest,
-  requestOptions?: RequestOptions
-): Promise<ApiResponse<SubscriptionResponse>>
+requestOptions?: RequestOptions): Promise<ApiResponse<SubscriptionResponse>>
 ```
 
 ## Parameters
@@ -1999,8 +1932,6 @@ const body: AddCouponsRequest = {
 };
 
 try {
-  // @ts-expect-error: unused variables
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { result, ...httpResponse } = await subscriptionsController.applyCouponToSubscription(
   subscriptionId,
   undefined,
@@ -2010,8 +1941,6 @@ try {
   // const { statusCode, headers } = httpResponse;
 } catch (error) {
   if (error instanceof ApiError) {
-    // @ts-expect-error: unused variables
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const errors = error.result;
     // const { statusCode, headers } = error;
   }

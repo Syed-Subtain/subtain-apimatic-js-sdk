@@ -1,5 +1,5 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
@@ -7,7 +7,9 @@
 import { number, oneOf, Schema, string } from '../../schema';
 
 /** This is a container type for one-of types. */
-export type CustomPriceUsedForSubscriptionCreateUpdateExpirationInterval = string | number;
+export type CustomPriceUsedForSubscriptionCreateUpdateExpirationInterval =
+  | string
+  | number;
 
 export const customPriceUsedForSubscriptionCreateUpdateExpirationIntervalSchema: Schema<CustomPriceUsedForSubscriptionCreateUpdateExpirationInterval> = oneOf(
   [string(), number()]
@@ -15,19 +17,19 @@ export const customPriceUsedForSubscriptionCreateUpdateExpirationIntervalSchema:
 
 export namespace CustomPriceUsedForSubscriptionCreateUpdateExpirationInterval {
   /**
-  * Validation method to narrow down union type to string type case.
-  *
-  * This is String case.
-  */
+   * Validation method to narrow down union type to string type case.
+   *
+   * This is String case.
+   */
   export function isString(value: unknown): value is string {
     return typeof value === 'string';
   }
 
   /**
-  * Validation method to narrow down union type to number type case.
-  *
-  * This is Number case.
-  */
+   * Validation method to narrow down union type to number type case.
+   *
+   * This is Number case.
+   */
   export function isNumber(value: unknown): value is number {
     return typeof value === 'number';
   }

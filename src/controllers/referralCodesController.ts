@@ -1,19 +1,17 @@
 /**
- * Maxio Advanced BillingLib
+ * AdvancedBilling
  *
  * This file was automatically generated for Maxio by APIMATIC v3.0 ( https://www.apimatic.io ).
  */
 
 import { ApiResponse, RequestOptions } from '../core';
 import {
-  SingleStringErrorResponseError,
-} from '../errors/singleStringErrorResponseError';
-import {
   ReferralValidationResponse,
   referralValidationResponseSchema,
 } from '../models/referralValidationResponse';
 import { string } from '../schema';
 import { BaseController } from './baseController';
+import { SingleStringErrorResponseError } from '../errors/singleStringErrorResponseError';
 
 export class ReferralCodesController extends BaseController {
   /**
